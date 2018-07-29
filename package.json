@@ -1,0 +1,26 @@
+{
+  "name": "server-io-core",
+  "version": "1.0.0",
+  "description": "Developement server using Koa with Socket.io reload and debugger",
+  "main": "index.js",
+  "scripts": {
+    "test": "ava"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/newbranltd/server-io-core.git"
+  },
+  "keywords": [
+    "Koa",
+    "Node.js",
+    "Debugger",
+    "development",
+    "server"
+  ],
+  "author": "Joel Chu",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://gitlab.com/newbranltd/server-io-core/issues"
+  },
+  "homepage": "https://gitlab.com/newbranltd/server-io-core#README"
+}
