@@ -1,10 +1,13 @@
 {
   "name": "server-io-core",
   "version": "1.0.0",
-  "description": "Developement server using Koa with Socket.io reload and debugger",
+  "description": "Developement server using Koa with Socket.io reload and Javascript remote debugger",
   "main": "index.js",
   "scripts": {
-    "test": "ava"
+    "test": "DEBUG=gulp-server-io* nyc ava --verbose --timeout=10s",
+    "prepublish-Only": "nsp check",
+    "pretest": "eslint . --fix",
+    "precommit": "lint-staged"
   },
   "repository": {
     "type": "git",
@@ -22,5 +25,82 @@
   "bugs": {
     "url": "https://gitlab.com/newbranltd/server-io-core/issues"
   },
-  "homepage": "https://gitlab.com/newbranltd/server-io-core#README"
+  "homepage": "https://gitlab.com/newbranltd/server-io-core#README",
+  "dependencies": {
+    "chalk": "^2.4.1",
+    "cheerio": "^1.0.0-rc.2",
+    "chokidar": "^2.0.4",
+    "fancy-log": "^1.3.2",
+    "fs-extra": "^6.0.1",
+    "http-proxy-middleware": "^0.18.0",
+    "json-server": "^0.14.0",
+    "lodash": "^4.17.10",
+    "meow": "^5.0.0",
+    "opn": "^5.3.0",
+    "socket.io": "^2.1.1",
+    "stacktrace-js": "^2.0.0"
+  },
+  "devDependencies": {
+    "ava": "1.0.0-beta.6",
+    "debug": "^3.1.0",
+    "eslint": "^5.0.1",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-config-xo": "^0.23.0",
+    "eslint-plugin-prettier": "^2.6.1",
+    "husky": "^0.14.3",
+    "lint-staged": "^7.2.0",
+    "nsp": "^3.2.1",
+    "nyc": "^12.0.2",
+    "prettier": "^1.13.7"
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "git add"
+    ],
+    "*.json": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "eslintConfig": {
+    "extends": [
+      "xo",
+      "prettier"
+    ],
+    "env": {
+      "jest": true,
+      "node": true
+    },
+    "rules": {
+      "prettier/prettier": [
+        "error",
+        {
+          "singleQuote": true,
+          "printWidth": 90
+        }
+      ]
+    },
+    "plugins": [
+      "prettier"
+    ]
+  },
+  "ava": {
+    "files": [
+      "__tests__/**/*.test.js",
+      "!__tests__/examples/**/*.*",
+      "!__tests__/funcs/**/*.*",
+      "!__tests__/gulp/**/*.*",
+      "!__tests__/main/**/*.*",
+      "!__tests__/standalone/**/*.*"
+    ],
+    "failFast": true
+  },
+  "bin": {
+    "server-io-core": "./cli.js",
+    "srvio": "./cli.js"
+  },
+  "engines": {
+    "node": ">=7.00"
+  }
 }
