@@ -26,7 +26,7 @@ const defaultOptions = {
   path: '/',
   webroot: path.join(process.cwd(), 'app'),
   fallback: false,
-  indexes: ['index.html', 'index.htm'],
+  index: 'index.html', // Can only have one!
   callback: () => {},
   staticOptions: {},
   headers: {},

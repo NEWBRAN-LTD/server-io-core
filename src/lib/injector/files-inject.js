@@ -51,11 +51,9 @@
 
  */
 const { logutil } = require('../utils/helper');
-
+const cheerio = require('cheerio');
 const glob = require('glob');
 const chalk = require('chalk');
-const cheerio = require('cheerio');
-const interceptor = require('express-interceptor');
 const debug = require('debug')('gulp-server-io:inject');
 
 /**
@@ -84,7 +82,7 @@ const tagJs = (files, ignorePath) => {
       if (ignorePath) {
         file = file.replace(ignorePath, '');
       }
-      return `<script type="text/javascript" src="${file}"></script>`;
+      return `<script type="text/javascript" src="${file}" defer></script>`;
     })
     .join('\r\n');
 };
@@ -148,50 +146,43 @@ const getSource = source => {
     css: css.length ? css : false
   };
 };
+
 /**
- * @param {mixed} target array or string
- * @return {mixed} Array on success of false
+ * Prepare the css / js array to inject
+ * @param {object} config the config.inject properties
+ * @return {object} for use
  */
-/*
-const getTarget = target => {
-  if (target) {
-    return Array.isArray(target) ? target : [target];
-  }
-  return false;
-};
-*/
-// Main
-module.exports = function(config) {
+exports.getFilesToInject = function(config) {
   // @2018-05-07 disbale this check because we couldn't get the fileanme from the middleware
   // const target = getTarget(config.target);
   const { js, css } = getSource(config.source);
+  // @2018-07-30 now only return the tagged items
+  let files = {};
   // Const check = target && (js || css);
   if (!js || !css) {
     // Display an error inline here
     const msg = '[inject] Configuration is incorrect for inject to work!';
-    debug('error', msg);
+    debug('injector error', msg);
     logutil(chalk.red(msg), config);
-    return function(req, res, next) {
-      next();
-    };
+    return files;
   }
-  // Pass validation then proceed
-  return interceptor(function(req, res) {
-    return {
-      isInterceptable: function() {
-        // @TODO need to check file name also - still no solution
-        if (/text\/html/.test(res.get('Content-Type'))) {
-          // Console.logutil(req.url, res.get('Content-Type'));
-          return true;
-        }
-        return false;
-      },
-      intercept: function(body, send) {
-        let $doc = cheerio.load(body);
-        $doc('head').append(tagCss(css, config.ignorePath));
-        $doc('body').append(tagJs(js, config.ignorePath));
-        send($doc.html());
-      }
-    };
-  });
+  return {
+    js: tagJs(js, config.ignorePath),
+    css: tagCss(css, config.ignorePath)
+  };
 };
+
+/**
+ * @param {string} body rendered html
+ * @param {array} js of tag javascripts
+ * @param {array} css of tag CSS
+ * @return {string} overwritten HTML
+ */
+exports.injectToHtml = (body, js, css) => {
+  const $doc = cheerio.load(body);
+  $doc('head').append(js);
+  $doc('body').append(css);
+  return $doc.html();
+};
+// Re-export for re-use
+exports.tagJs = tagJs;

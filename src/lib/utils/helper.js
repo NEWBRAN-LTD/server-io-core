@@ -4,9 +4,7 @@
  */
 const fs = require('fs');
 const path = require('path');
-
 const _ = require('lodash');
-const express = require('express');
 const log = require('fancy-log');
 const test = process.env.NODE_ENV === 'test';
 // Const debug = process.env.DEBUG;
@@ -75,72 +73,6 @@ const setHeaders = (config, urlToOpen) => {
 };
 
 /**
- * @param {string} webroot path to where the files are
- * @param {object} config the main config
- * @param {string} urlToOpen (optional) @TODO
- * @return {function} middleware
- */
-const serveStatic = (webroot, config, urlToOpen = '') => {
-  let etag = true;
-  // @TODO this is not quite right, need to allow set the path
-  if (config.development === false) {
-    const _root = process.cwd();
-    if (webroot === path.join(_root, 'app')) {
-      webroot = path.join(_root, 'dest');
-    }
-  } else {
-    etag = false;
-  }
-  // set header only when not using the http-proxy-middlewares
-  const headerOption = (config.proxies.length) ? {setHeaders: setHeaders(config, urlToOpen)} : {};
-  // @TODO configure the directoryListing option here
-  const staticOptions = _.merge(
-    {
-      index: toArray(config.indexes),
-      etag: etag
-    },
-    headerOption,
-    config.staticOptions
-  );
-  // Does this need to be replace with serve-static? 05032018
-  return express.static(webroot, staticOptions);
-};
-
-/**
- * delay proxy @TODO not finish yet - 1.5.0 feature
- * @param {string} originalUrl (url to delay)
- * @param {int} delayReqTime time to delay when request in ms
- * @param {int} delayResTime time to delay when response in ms
- * @return {function} middleware to use: app.use(url, proxyDelay, myProxy);
- */
-const proxyDelay = (originalUrl, delayReqTime, delayResTime) => {
-  return function (req, res, next) {
-    if (req.originalUrl === originalUrl) {
-      // Delay request by 2 seconds
-      setTimeout(next, delayReqTime);
-      // Delay response completion by 5 seconds
-      const endOriginal = res.end;
-      res.end = function (...args) {
-        setTimeout(function () {
-          endOriginal.apply(res, args);
-        }, delayResTime);
-      };
-    } else {
-      next();
-    }
-  }
-};
-
-/**
- * directory listing - no longer support since 1.4.0-alpha.2
- */
-/*
-exports.directoryListing = (dir) => {
-  return express.directory(dir);
-};
-*/
-
-/**
  * For use in debugger / reload client file generator
  */
 const getSocketConnectionConfig = config => {
@@ -177,14 +109,30 @@ const ensureIsDir = filePaths => {
   );
 };
 
+/**
+ * The koa ctx object is not returning what it said on the documentation
+ * So I need to write a custom parser to check the request content-type
+ * @param {object} req the ctx.request
+ * @param {string} type (optional) to check against
+ * @return {mixed} Array or Boolean
+ */
+const headerParser = (req, type) => {
+  const headers = req.headers.accept.split(',');
+  if (type) {
+    return headers.filter(h => {
+      return h === type;
+    });
+  }
+  return headers;
+};
+
 // Export
 module.exports = {
   setHeaders,
   getRandomInt,
   toArray,
-  proxyDelay,
-  serveStatic,
   getSocketConnectionConfig,
   ensureIsDir,
-  logutil
+  logutil,
+  headerParser
 };
