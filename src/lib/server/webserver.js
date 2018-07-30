@@ -8,7 +8,7 @@ const chalk = require('chalk');
 const { logutil } = require('../utils/helper');
 // According to https://github.com/visionmedia/supertest/issues/111
 // Put this here to make sure it works everywhere
-// process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 /**
  * @param {object} app the connect app
  * @param {object} config options

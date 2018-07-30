@@ -6,7 +6,26 @@
 const webserver = require('./webserver');
 const socketServer = require('./socket');
 const mockServer = require('./mock-server');
-
-exports.webserver = webserver;
+const staticDir = require('koa-static');
+const { toArray } = require('../utils/helper');
+/**
+ * Customize version of koa-static
+ * @param {object} config full options
+ * @return {function} to call
+ */
+exports.serveStatic = config => {
+  const dirs = toArray(config.webroot);
+  const opts = {
+    defer: true,
+    index: config.index
+  };
+  return app => {
+    dirs.forEach(dir => {
+      app.use(staticDir(dir, opts));
+    });
+  };
+};
+// Exports
+exports.webserverGenerator = webserver;
 exports.socketServer = socketServer;
 exports.mockServer = mockServer;
