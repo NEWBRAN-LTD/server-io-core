@@ -6,10 +6,10 @@ const _ = require('lodash');
 const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
-const helmet = require('helmet');
-const express = require('express');
-const bodyParser = require('body-parser');
-const httpProxy = require('http-proxy-middleware');
+const helmet = require('koa-helmet');
+const Koa = require('koa');
+// Const bodyParser = require('body-parser');
+const proxy = require('koa-nginx');
 // Shorthands
 const join = path.join;
 const isarray = Array.isArray;
@@ -31,7 +31,7 @@ module.exports = function(options) {
   // Config the config options
   let config = options.__processed__ === true ? options : createConfiguration(options);
   // Init the app
-  const app = express();
+  const app = new Koa();
   const addReload = config.reload.enable;
   let addDebugger = false;
   // Fixed on 1.4.0-beta.3
@@ -46,10 +46,10 @@ module.exports = function(options) {
   Proxies.length
     ? []
     : [bodyParser.urlencoded({ extended: true }), bodyParser.json()];
+  */
   if (config.development) {
     middlewares.push(helmet.noCache());
   }
-  */
 
   // Make sure the namespace is correct first
   if (config.debugger.enable && config.development) {
@@ -98,6 +98,7 @@ module.exports = function(options) {
 
   // First need to setup the mock json server
   // @2010-05-08 remove the development flag it could be confusing
+  // @TODO update the proxy defintion to work with koa-nginx
   if (config.mock.enable && config.mock.json) {
     // Here we overwrite the proxies so the proxy get to the mock server
     // @TODO sort out particular url that shouldn't be mock?
@@ -108,6 +109,7 @@ module.exports = function(options) {
   }
 
   // Proxy requests final
+  // @TODO need to update the way how to configure the proxy
   proxies.forEach(proxyoptions => {
     if (!proxyoptions.target || !proxyoptions.source) {
       console.log(
@@ -118,7 +120,7 @@ module.exports = function(options) {
     }
     let source = proxyoptions.source;
     delete proxyoptions.source;
-    app.use(source, httpProxy(proxyoptions));
+    app.use(proxy(proxyoptions));
   });
 
   // This is the end - we continue in the next level to construct the server

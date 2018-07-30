@@ -48,9 +48,11 @@ module.exports = function(app, config) {
         cert: fs.readFileSync(config.https.devCrtPem)
       };
     }
-    webserver = https.createServer(opts, app);
+    // @2018-07-30 change to Koa style
+    webserver = https.createServer(opts, app.callback());
   } else {
-    webserver = http.createServer(app);
+    // See last comment
+    webserver = http.createServer(app.callback());
   }
   webserver.listen(config.port, config.host, config.callback);
   // Return it
