@@ -41,12 +41,15 @@ module.exports = function(options) {
   let mockServerInstance = closeFn;
   // Let debuggerInstance = closeFn;
   // Properties
-  let middlewares = proxies.length
+  let middlewares = [];
+  /*
+  Proxies.length
     ? []
     : [bodyParser.urlencoded({ extended: true }), bodyParser.json()];
   if (config.development) {
     middlewares.push(helmet.noCache());
   }
+  */
 
   // Make sure the namespace is correct first
   if (config.debugger.enable && config.development) {
