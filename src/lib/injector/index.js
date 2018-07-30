@@ -4,10 +4,11 @@
  */
 const fs = require('fs');
 const { extname } = require('path');
+const _ = require('lodash');
 const { getFilesToInject, injectToHtml, tagJs } = require('./files-inject');
 const { getFeatureScripts, renderScriptsMiddleware } = require('./client');
 const { headerParser, toArray } = require('../utils/helper');
-
+// Const debug = require('debug')('server-io-core:inject');
 /**
  * Search for the default index file
  * @param {object} config the serveStatic options
@@ -43,7 +44,7 @@ exports.scriptsInjectorMiddleware = function(config) {
   let features = {
     debugger: config.debugger.enable,
     reload: config.reload.enable,
-    inject: config.config.enable
+    inject: config.inject.enable
   };
   const { socketIoJs, debuggerJs, stacktraceJsFile, reloadJs } = getFeatureScripts(
     config
@@ -80,9 +81,11 @@ exports.scriptsInjectorMiddleware = function(config) {
           if (err) {
             ctx.throw(404, `Html file ${p} not found!`);
           } else {
+            const _html = injectToHtml(data, _.compact([files, js]).join('/r/n'), css);
             ctx.status = 200;
             ctx.type = contentType + '; charset=utf8';
-            ctx.body = injectToHtml(data, [files, js].join('/r/n'), css);
+            ctx.length = Buffer.byteLength(_html, 'utf8');
+            ctx.body = _html;
           }
         });
       }

@@ -51,10 +51,11 @@
 
  */
 const { logutil } = require('../utils/helper');
+const _ = require('lodash');
 const cheerio = require('cheerio');
 const glob = require('glob');
 const chalk = require('chalk');
-const debug = require('debug')('gulp-server-io:inject');
+const debug = require('debug')('server-io-core:inject');
 
 /**
  * @param {array} files to wrap with tag
@@ -179,10 +180,11 @@ exports.getFilesToInject = function(config) {
  * @return {string} overwritten HTML
  */
 exports.injectToHtml = (body, js, css) => {
-  const $doc = cheerio.load(body);
-  $doc('head').append(js);
-  $doc('body').append(css);
-  return $doc.html();
+  const html = _.isString(body) ? body : body.toString('utf8');
+  const $ = cheerio.load(html);
+  $('head').append(js);
+  $('body').append(css);
+  return $.html();
 };
 // Re-export for re-use
 exports.tagJs = tagJs;

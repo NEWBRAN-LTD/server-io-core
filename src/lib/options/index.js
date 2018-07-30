@@ -23,14 +23,14 @@ const defaultOptions = {
   development: true,
   host: 'localhost',
   port: 8000,
-  path: '/',
+  // Path: '/', // @2018-07-31 this no longer in use
   webroot: path.join(process.cwd(), 'app'),
   fallback: false,
   index: 'index.html', // Can only have one!
   callback: () => {},
   staticOptions: {},
   headers: {},
-  middleware: [],
+  middlewares: [],
   // Middleware: Proxy
   // For possible options, see:
   // https://github.com/chimurai/http-proxy-middleware
@@ -120,7 +120,7 @@ const defaultOptions = {
     server: true // Allow passing configuration - see middleware.js for more detail
   }
 };
-const arraySource = ['middleware', 'proxies'];
+const arraySource = ['middlewares', 'proxies'];
 // Export just one function
 module.exports = {
   defaultOptions,

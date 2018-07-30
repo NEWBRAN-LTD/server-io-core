@@ -16,9 +16,11 @@ const { toArray } = require('../utils/helper');
 exports.serveStatic = config => {
   const dirs = toArray(config.webroot);
   const opts = {
-    defer: true,
-    index: config.index
+    defer: true
   };
+  if (config.index) {
+    opts.index = config.index;
+  }
   return app => {
     dirs.forEach(dir => {
       app.use(staticDir(dir, opts));
