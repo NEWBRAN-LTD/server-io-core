@@ -4,7 +4,7 @@
 const socketIO = require('socket.io');
 // Export
 /**
- * @param {object} server express server instance
+ * @param {object} server http server instance
  * @param {object} config full config options
  * @return {object} io instance
  */

@@ -12,7 +12,7 @@ const { logutil } = require('../utils/helper');
 /**
  * @param {object} app the connect app
  * @param {object} config options
- * @return {object} http(s) webserver
+ * @return {object} http(s) webserver, (fn) start, (fn) stop
  */
 module.exports = function(app, config) {
   let webserver;
@@ -54,7 +54,14 @@ module.exports = function(app, config) {
     // See last comment
     webserver = http.createServer(app.callback());
   }
-  webserver.listen(config.port, config.host, config.callback);
   // Return it
-  return webserver;
+  return {
+    webserver,
+    start: () => {
+      webserver.listen(config.port, config.host, config.callback);
+    },
+    stop: () => {
+      webserver.close();
+    }
+  };
 };
