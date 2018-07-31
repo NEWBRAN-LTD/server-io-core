@@ -15,7 +15,7 @@ const { toArray } = require('../utils/helper');
  * @return {function} to call
  * @api public
  */
-exports.serveStatic = config => {
+module.exports = config => {
   const dirs = toArray(config.webroot);
   const opts = { defer: true };
   if (config.index) {
