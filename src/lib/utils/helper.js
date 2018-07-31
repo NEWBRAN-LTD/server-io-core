@@ -126,8 +126,18 @@ const headerParser = (req, type) => {
   return headers;
 };
 
+/**
+ * get document (string) byte length for use in header
+ * @param {string} doc to calculate
+ * @return {number} length
+ */
+const getDocLen = doc => {
+  return Buffer.byteLength(doc, 'utf8');
+};
+
 // Export
 module.exports = {
+  getDocLen,
   setHeaders,
   getRandomInt,
   toArray,

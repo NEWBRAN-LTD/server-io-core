@@ -10,8 +10,8 @@ const {
   getFeatureScripts,
   renderScriptsMiddleware
 } = require('./render-scripts-middleware');
-const { headerParser, toArray } = require('../utils/helper');
-// Const debug = require('debug')('server-io-core:inject');
+const { headerParser, toArray, getDocLen } = require('../utils/helper');
+const debug = require('debug')('server-io-core:inject');
 
 /**
  * Search for the default index file
@@ -37,6 +37,24 @@ const searchIndexFile = config => {
 const isHtmlFile = file => {
   const ext = extname(file).toLowerCase();
   return ext === '.html' || ext === '.htm';
+};
+
+/**
+ * Breaking out the read function for the aynsc operation
+ * @param {string} p path to file
+ * @param {string} js tags
+ * @param {string} css tags
+ * @return {object} promise resolve string
+ */
+const getHtmlDocument = (p, js, css) => {
+  return new Promise((resolver, rejecter) => {
+    fs.readFile(p, (err, data) => {
+      if (err) {
+        return rejecter(err);
+      }
+      resolver(injectToHtml(data, js, css));
+    });
+  });
 };
 
 /**
@@ -73,8 +91,7 @@ exports.scriptsInjectorMiddleware = function(config) {
   // Export the middleware
   return async function(ctx, next) {
     if (ctx.method === 'HEAD' || ctx.method === 'GET') {
-      const html = headerParser(ctx.request, contentType);
-      if (html) {
+      if (headerParser(ctx.request, contentType)) {
         const p =
           ctx.path === '/'
             ? searchIndexFile(config)
@@ -82,18 +99,21 @@ exports.scriptsInjectorMiddleware = function(config) {
               ? ctx.path
               : false;
         if (p) {
-          fs.readFile(p, (err, data) => {
-            if (err) {
-              ctx.throw(404, `Html file ${p} not found!`);
-            } else {
-              const _html = injectToHtml(data, _.compact([files, js]).join('/r/n'), css);
-              const len = Buffer.byteLength(_html, 'utf8');
-              ctx.status = 200;
-              ctx.type = contentType + '; charset=utf8';
-              ctx.length = len;
-              ctx.body = _html;
-            }
-          });
+          try {
+            const doc = await getHtmlDocument(
+              p,
+              _.compact([files, js]).join('/r/n'),
+              css
+            );
+            ctx.status = 200;
+            ctx.type = contentType + '; charset=utf8';
+            ctx.length = getDocLen(doc);
+            ctx.body = doc;
+          } catch (err) {
+            debug('get document error', err);
+            ctx.throw(404, `Html file ${p} not found!`);
+          }
+          return;
         }
       }
     }

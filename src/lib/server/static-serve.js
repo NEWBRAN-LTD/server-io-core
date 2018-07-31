@@ -4,7 +4,7 @@
 /**
  * Module dependencies.
  */
-const debug = require('debug')('koa-static');
+const debug = require('debug')('server-io-core:static');
 const { resolve } = require('path');
 const send = require('koa-send');
 const { toArray } = require('../utils/helper');
@@ -45,7 +45,6 @@ function serve(root, opts) {
   if (!opts.defer) {
     return async function(ctx, next) {
       let done = false;
-
       if (ctx.method === 'HEAD' || ctx.method === 'GET') {
         try {
           done = await send(ctx, ctx.path, opts);
@@ -55,20 +54,20 @@ function serve(root, opts) {
           }
         }
       }
-
       if (!done) {
         await next();
       }
     };
   }
-
   return async function(ctx, next) {
     await next();
-
+    // Check certain method
     if (ctx.method !== 'HEAD' && ctx.method !== 'GET') return;
     // Response is already handled
-    if (ctx.body != null || ctx.status !== 404) return // eslint-disable-line
-
+    if (ctx.body !== null || ctx.status !== 404) {
+      debug('skip serveStatic', ctx.body);
+      return; // eslint-disable-line
+    }
     try {
       await send(ctx, ctx.path, opts);
     } catch (err) {
