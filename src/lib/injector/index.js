@@ -2,42 +2,21 @@
  * This is breaking out to deal with the injecting reload.js script and
  * the debugger scripts
  */
-const fs = require('fs');
-const { extname } = require('path');
+
 const _ = require('lodash');
 const { getFilesToInject, injectToHtml, tagJs } = require('./files-inject');
 const {
   getFeatureScripts,
   renderScriptsMiddleware
 } = require('./render-scripts-middleware');
-const { headerParser, toArray, getDocLen } = require('../utils/helper');
+const {
+  searchIndexFile,
+  isHtmlFile,
+  headerParser,
+  getDocLen,
+  readDocument
+} = require('../utils/helper');
 const debug = require('debug')('server-io-core:inject');
-
-/**
- * Search for the default index file
- * @param {object} config the serveStatic options
- * @return {string} path to the index file
- */
-const searchIndexFile = config => {
-  const { webroot, index } = config;
-  const webroots = toArray(webroot);
-  return webroots
-    .map(d => [d, index].join('/'))
-    .filter(fs.existsSync)
-    .reduce((last, next) => {
-      return next;
-    }, null);
-};
-
-/**
- * Double check if its a HTML file
- * @param {string} file path
- * @return {boolean} or not
- */
-const isHtmlFile = file => {
-  const ext = extname(file).toLowerCase();
-  return ext === '.html' || ext === '.htm';
-};
 
 /**
  * Breaking out the read function for the aynsc operation
@@ -47,13 +26,10 @@ const isHtmlFile = file => {
  * @return {object} promise resolve string
  */
 const getHtmlDocument = (p, js, css) => {
-  return new Promise((resolver, rejecter) => {
-    fs.readFile(p, (err, data) => {
-      if (err) {
-        return rejecter(err);
-      }
-      resolver(injectToHtml(data, js, css));
-    });
+  return readDocument(p).then(data => {
+    if (data) {
+      return injectToHtml(data, js, css);
+    }
   });
 };
 
@@ -100,6 +76,7 @@ exports.scriptsInjectorMiddleware = function(config) {
               : false;
         if (p) {
           try {
+            debug('use overwrite', ctx.url, ctx.path);
             const doc = await getHtmlDocument(
               p,
               _.compact([files, js]).join('/r/n'),

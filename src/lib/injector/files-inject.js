@@ -182,8 +182,8 @@ exports.getFilesToInject = function(config) {
 exports.injectToHtml = (body, js, css) => {
   const html = _.isString(body) ? body : body.toString('utf8');
   const $ = cheerio.load(html);
-  $('head').append(js);
-  $('body').append(css);
+  $('body').append(js);
+  $('head').append(css);
   return $.html();
 };
 // Re-export for re-use

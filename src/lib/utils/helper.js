@@ -7,6 +7,7 @@ const path = require('path');
 const _ = require('lodash');
 const log = require('fancy-log');
 const test = process.env.NODE_ENV === 'test';
+
 // Const debug = process.env.DEBUG;
 // Main
 const logutil = function(...args) {
@@ -135,8 +136,54 @@ const getDocLen = doc => {
   return Buffer.byteLength(doc, 'utf8');
 };
 
+/**
+ * turn callback to promise
+ * @param {string} p path to file
+ * @return {object} promise to resolve
+ */
+const readDocument = p => {
+  return new Promise((resolver, rejecter) => {
+    fs.readFile(p, (err, data) => {
+      if (err) {
+        return rejecter(err);
+      }
+      resolver(data);
+    });
+  });
+};
+
+/**
+ * Search for the default index file
+ * @param {object} config the serveStatic options
+ * @return {string} path to the index file
+ */
+const searchIndexFile = config => {
+  const { webroot, index } = config;
+  const webroots = toArray(webroot);
+  return webroots
+    .map(d => [d, index].join('/'))
+    .filter(fs.existsSync)
+    .reduce((last, next) => {
+      return next;
+    }, null);
+};
+
+/**
+ * Double check if its a HTML file
+ * @param {string} file path
+ * @return {boolean} or not
+ */
+const isHtmlFile = file => {
+  const ext = path.extname(file).toLowerCase();
+  return ext === '.html' || ext === '.htm';
+};
+
+
 // Export
 module.exports = {
+  searchIndexFile,
+  isHtmlFile,
+  readDocument,
   getDocLen,
   setHeaders,
   getRandomInt,
