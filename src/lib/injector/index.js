@@ -6,9 +6,13 @@ const fs = require('fs');
 const { extname } = require('path');
 const _ = require('lodash');
 const { getFilesToInject, injectToHtml, tagJs } = require('./files-inject');
-const { getFeatureScripts, renderScriptsMiddleware } = require('./client');
+const {
+  getFeatureScripts,
+  renderScriptsMiddleware
+} = require('./render-scripts-middleware');
 const { headerParser, toArray } = require('../utils/helper');
 const debug = require('debug')('server-io-core:inject');
+
 /**
  * Search for the default index file
  * @param {object} config the serveStatic options

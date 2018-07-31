@@ -1,24 +1,13 @@
 /**
  * Modified from koa-static to allow us intercept the content and overwritten them
  */
-
-'use strict';
-
 /**
  * Module dependencies.
  */
-
 const debug = require('debug')('koa-static');
 const { resolve } = require('path');
-const assert = require('assert');
 const send = require('koa-send');
-
-/**
- * Expose `serve()`.
- */
-
-module.exports = serve;
-
+const { toArray } = require('../utils/helper');
 /**
  * Serve static files from `root`.
  *
@@ -28,10 +17,30 @@ module.exports = serve;
  * @api public
  */
 
+/**
+ * Customize version of koa-static
+ * @param {object} config full options
+ * @return {function} to call
+ */
+exports.serveStatic = config => {
+  const dirs = toArray(config.webroot);
+  const opts = {
+    defer: true
+  };
+  if (config.index) {
+    opts.index = config.index;
+  }
+  return app => {
+    dirs.forEach(dir => {
+      app.use(serve(dir, opts));
+    });
+  };
+};
+
 function serve(root, opts) {
   opts = Object.assign({}, opts);
 
-  assert(root, 'root directory is required to serve files');
+  // Assert(root, 'root directory is required to serve files');
 
   // Options
   debug('static "%s" %j', root, opts);
