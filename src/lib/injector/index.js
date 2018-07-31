@@ -8,7 +8,7 @@ const _ = require('lodash');
 const { getFilesToInject, injectToHtml, tagJs } = require('./files-inject');
 const { getFeatureScripts, renderScriptsMiddleware } = require('./client');
 const { headerParser, toArray } = require('../utils/helper');
-// Const debug = require('debug')('server-io-core:inject');
+const debug = require('debug')('server-io-core:inject');
 /**
  * Search for the default index file
  * @param {object} config the serveStatic options
@@ -82,10 +82,13 @@ exports.scriptsInjectorMiddleware = function(config) {
             ctx.throw(404, `Html file ${p} not found!`);
           } else {
             const _html = injectToHtml(data, _.compact([files, js]).join('/r/n'), css);
+            const len = Buffer.byteLength(_html, 'utf8');
             ctx.status = 200;
             ctx.type = contentType + '; charset=utf8';
-            ctx.length = Buffer.byteLength(_html, 'utf8');
+            ctx.length = len;
             ctx.body = _html;
+
+            debug('size', len);
           }
         });
       }
