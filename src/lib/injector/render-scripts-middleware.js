@@ -64,6 +64,7 @@ const searchStacktraceSrc = () => {
  * This become a standalone middleware and always going to inject to the app
  * @param {object} config the main config object
  * @return {undefined} nothing
+ * @api public
  */
 const renderScriptsMiddleware = config => {
   const {
@@ -79,8 +80,12 @@ const renderScriptsMiddleware = config => {
   // logutil(chalk.white('[debugger] ') + chalk.yellow('client is running'));
   // Export middleware
   return async function(ctx, next) {
-    await next();
-    // Check
+    // Only catch certain methods
+    if (ctx.method !== 'HEAD' || ctx.method !== 'GET') {
+      await next();
+      return;
+    }
+    // Now check
     switch (ctx.url) {
       case debuggerJs:
         fs.readFile(join(__dirname, '..', 'debugger', 'client.tpl'), (err, data) => {
@@ -152,6 +157,7 @@ const renderScriptsMiddleware = config => {
         });
         break;
       default:
+        await next();
     }
   };
 };

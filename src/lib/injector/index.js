@@ -11,7 +11,7 @@ const {
   renderScriptsMiddleware
 } = require('./render-scripts-middleware');
 const { headerParser, toArray } = require('../utils/helper');
-const debug = require('debug')('server-io-core:inject');
+// Const debug = require('debug')('server-io-core:inject');
 
 /**
  * Search for the default index file
@@ -42,6 +42,7 @@ const isHtmlFile = file => {
 /**
  * @param {object} config the main config
  * @return {function} middleware
+ * @api public
  */
 exports.scriptsInjectorMiddleware = function(config) {
   let scripts = [];
@@ -62,7 +63,7 @@ exports.scriptsInjectorMiddleware = function(config) {
     scripts = scripts.concat([stacktraceJsFile, debuggerJs]);
   }
   if (features.reload) {
-    // @2018-05-14 using out new reload method
+    // @2018-05-14 using our new reload method
     scripts.push(reloadJs);
   }
   const files = tagJs(scripts);
@@ -71,32 +72,32 @@ exports.scriptsInjectorMiddleware = function(config) {
   const contentType = 'text/html';
   // Export the middleware
   return async function(ctx, next) {
-    await next();
-    const html = headerParser(ctx.request, contentType);
-    if (html) {
-      const p =
-        ctx.path === '/'
-          ? searchIndexFile(config)
-          : isHtmlFile(ctx.path)
-            ? ctx.path
-            : false;
-      if (p) {
-        fs.readFile(p, (err, data) => {
-          if (err) {
-            ctx.throw(404, `Html file ${p} not found!`);
-          } else {
-            const _html = injectToHtml(data, _.compact([files, js]).join('/r/n'), css);
-            const len = Buffer.byteLength(_html, 'utf8');
-            ctx.status = 200;
-            ctx.type = contentType + '; charset=utf8';
-            ctx.length = len;
-            ctx.body = _html;
-
-            debug('size', len);
-          }
-        });
+    if (ctx.method === 'HEAD' || ctx.method === 'GET') {
+      const html = headerParser(ctx.request, contentType);
+      if (html) {
+        const p =
+          ctx.path === '/'
+            ? searchIndexFile(config)
+            : isHtmlFile(ctx.path)
+              ? ctx.path
+              : false;
+        if (p) {
+          fs.readFile(p, (err, data) => {
+            if (err) {
+              ctx.throw(404, `Html file ${p} not found!`);
+            } else {
+              const _html = injectToHtml(data, _.compact([files, js]).join('/r/n'), css);
+              const len = Buffer.byteLength(_html, 'utf8');
+              ctx.status = 200;
+              ctx.type = contentType + '; charset=utf8';
+              ctx.length = len;
+              ctx.body = _html;
+            }
+          });
+        }
       }
     }
+    await next();
   };
 };
 
