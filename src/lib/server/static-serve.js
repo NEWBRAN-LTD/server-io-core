@@ -64,7 +64,8 @@ function serve(root, opts) {
     // Check certain method
     if (ctx.method !== 'HEAD' && ctx.method !== 'GET') return;
     // Response is already handled
-    if (ctx.body !== null || ctx.status !== 404) {
+    // @bug from Koa ctx.body is undefined not null
+    if ((ctx.body !== undefined && ctx.body !== null) || ctx.status !== 404) {
       debug('skip serveStatic', ctx.body);
       return; // eslint-disable-line
     }
