@@ -8,6 +8,3 @@ test:
   script:
    - npm install
    - npm run test
-only:
-  refs:
-   - master
