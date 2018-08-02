@@ -29,9 +29,9 @@ module.exports = function(config, io) {
     // Announce to the client that is working
     socket.emit('hello', config.debugger.hello);
     // Listen
-    socket.on('debugger', function(data) {
+    socket.on(config.debugger.eventName, function(data) {
       try {
-        // Provide a logger
+        // @TODO Provide a logger
         /*
         if (logger && typeof logger === 'function') {
           logger(data); // @TODO what to do with the logger

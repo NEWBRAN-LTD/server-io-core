@@ -111,6 +111,7 @@ const defaultOptions = {
   // Create our socket.io debugger
   // using the socket.io instead of just normal post allow us to do this cross domain
   debugger: {
+    eventName: 'debugging',
     enable: true, // Turn on by default otherwise they wouldn't be using this version anyway
     consoleDebug: true, // Overwrite the console.debug method
     namespace: '/debugger-nsp',

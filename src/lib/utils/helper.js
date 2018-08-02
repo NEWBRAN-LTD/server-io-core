@@ -118,13 +118,18 @@ const ensureIsDir = filePaths => {
  * @return {mixed} Array or Boolean
  */
 const headerParser = (req, type) => {
-  const headers = req.headers.accept.split(',');
-  if (type) {
-    return headers.filter(h => {
-      return h === type;
-    });
+  try {
+    const headers = req.headers.accept.split(',');
+    if (type) {
+      return headers.filter(h => {
+        return h === type;
+      });
+    }
+    return headers;
+  } catch(e) {
+    // When Chrome dev tool activate the headers become empty
+    return [];
   }
-  return headers;
 };
 
 /**

@@ -64,7 +64,7 @@ module.exports = function(defaults, props, arraySource, options) {
       // Then we add the enable here for the App to use
       config[prop].enable = true;
     } else if (config[prop] === false) {
-      config[prop] = { enable: false };
+      config[prop] = merge({}, originalDefaults[prop], { enable: false });
     }
   }
   // Here we add things that we don't want to get overwritten

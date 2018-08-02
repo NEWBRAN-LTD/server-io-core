@@ -8,7 +8,7 @@
   var send = function(payload) {
     payload.browser = navigator.userAgent;
     payload.location = window.location.href;
-    nsp.emit('debugger', payload);
+    nsp.emit('<%= eventName %>', payload);
   };
 
   /**

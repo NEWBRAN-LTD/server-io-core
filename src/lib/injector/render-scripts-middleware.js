@@ -15,12 +15,13 @@ const {
 } = require('../utils/helper');
 // @20171117 integration with stacktrace
 const { stacktraceName, contentType, dummyJs } = require('../utils/constants');
+const debug = require('debug')('server-io-core:renderscript');
 /**
  * Get scripts paths
  * @param {object} config the main config object
  * @return {object} parse file paths
  */
-const getFeatureScripts = config => {
+const getFeatureScripts = function(config) {
   const socketIoJs = '/socket.io/socket.io.js';
   // Debugger
   const debuggerPath = config.debugger.namespace;
@@ -32,7 +33,7 @@ const getFeatureScripts = config => {
   const reloadEventName = config.reload.eventName;
   const reloadJs = [reloadPath, config.reload.js].join('/');
   // Return
-  return {
+  const obj = {
     debuggerPath,
     eventName,
     reloadPath,
@@ -42,6 +43,8 @@ const getFeatureScripts = config => {
     stacktraceJsFile,
     reloadJs
   };
+  // Debug('obj', obj);
+  return obj;
 };
 
 /**
@@ -73,7 +76,6 @@ const searchStacktraceSrc = () => {
 const success = (ctx, doc) => {
   ctx.status = 200;
   ctx.type = contentType;
-  ctx.status = 200;
   ctx.length = getDocLen(doc);
   ctx.body = doc;
 };
@@ -100,18 +102,12 @@ const getCacheVer = doc => {
 };
 
 /**
- * Like what the name said
- * @return {string} dummy js content
- */
-const dummyOutput = () => Promise.resolve(`console.info('SERVER_IO_CORE', true);`);
-
-/**
  * This become a standalone middleware and always going to inject to the app
  * @param {object} config the main config object
  * @return {undefined} nothing
  * @api public
  */
-const renderScriptsMiddleware = config => {
+const renderScriptsMiddleware = function(config) {
   const {
     debuggerPath,
     eventName,
@@ -125,88 +121,77 @@ const renderScriptsMiddleware = config => {
   // logutil(chalk.white('[debugger] ') + chalk.yellow('client is running'));
   // Export middleware
   return async function(ctx, next) {
+    await next();
     // Only catch certain methods
-    if (ctx.method !== 'HEAD' || ctx.method !== 'GET') {
-      await next();
-      return;
-    }
-    // Now check
-    switch (ctx.url) {
-      case debuggerJs:
-        try {
-          const body = await readDocument(
-            join(__dirname, '..', 'debugger', 'client.tpl')
-          ).then(data => {
-            // If they want to ping the server back on init
-            const ping =
-              typeof config.debugger.client === 'object' && config.debugger.client.ping
-                ? 'true'
-                : 'false';
-            // There is a problem when the server is running from localhost
-            // and serving out to the proxy and the two ip address are not related to each other
-            // and for most of the cases, the client is always pointing back to itself anyway
-            const serveDataFn = _.template(data);
-            // Force websocket connection
-            // see: http://stackoverflow.com/questions/8970880/cross-domain-connection-in-socket-io
-            // @2017-06-29 forcing the connection to socket only because it just serving up local!
-            const connectionOptions = getSocketConnectionConfig(config);
-            // Using the template method instead
-            return getCacheVer(
-              serveDataFn({
-                debuggerPath,
-                eventName,
-                ping,
-                connectionOptions,
-                consoleDebug: config.debugger.consoleDebug
-              })
-            );
-          });
-
+    if (ctx.method === 'HEAD' || ctx.method === 'GET') {
+      const url = ctx.url;
+      // Now check @BUG 2018-08-03 using switch case always trigger at the first call!
+      switch (url) {
+        // Without the {} will get a Unexpected lexical declaration in case block  no-case-declarations
+        case dummyJs: {
+          debug('catch script', dummyJs);
+          const body = await Promise.resolve(`console.info('SERVER_IO_CORE', true);`);
           success(ctx, body);
-        } catch (e) {
-          failed(ctx, e, 'Error reading io-debugger-client file');
+          return;
         }
-        return; // Terminate it
-      case stacktraceJsFile:
-        try {
-          const body = await readDocument(searchStacktraceSrc());
-
-          success(ctx, body);
-        } catch (e) {
-          failed(ctx, e, 'Error reading stacktrace source file!');
-        }
-        return; // Terminate it
-      case reloadJs:
-        try {
-          const body = await readDocument(
-            join(__dirname, '..', 'reload', 'reload.tpl')
-          ).then(data => {
-            const clientFileFn = _.template(data.toString());
-            const connectionOptions = getSocketConnectionConfig(config);
-            return getCacheVer(
-              clientFileFn({
-                reloadNamespace: reloadPath,
-                eventName: reloadEventName,
-                connectionOptions
-              })
-            );
-          });
-
-          success(ctx, body);
-        } catch (e) {
-          failed(ctx, e, 'Error reading io-reload-client file');
-        }
-        return; // Terminate it
-      // Without the {} will get a Unexpected lexical declaration in case block  no-case-declarations
-      case dummyJs: {
-        // Purely for testing purpose
-        // taking off your pants to fart
-        const body = await dummyOutput();
-        success(ctx, body);
-        return; // Terminat it
+        case reloadJs:
+          try {
+            const body = await readDocument(
+              join(__dirname, '..', 'reload', 'reload.tpl')
+            ).then(data => {
+              const clientFileFn = _.template(data.toString());
+              const connectionOptions = getSocketConnectionConfig(config);
+              return getCacheVer(
+                clientFileFn({
+                  reloadNamespace: reloadPath,
+                  eventName: reloadEventName,
+                  connectionOptions
+                })
+              );
+            });
+            success(ctx, body);
+          } catch (e) {
+            failed(ctx, e, 'Error reading io-reload-client file');
+          }
+          return; // Terminate it
+        case stacktraceJsFile:
+          try {
+            const body = await readDocument(searchStacktraceSrc());
+            success(ctx, body);
+          } catch (e) {
+            failed(ctx, e, 'Error reading stacktrace source file!');
+          }
+          return; // Terminate it
+        case debuggerJs:
+          try {
+            const body = await readDocument(
+              join(__dirname, '..', 'debugger', 'client.tpl')
+            ).then(data => {
+              // If they want to ping the server back on init
+              const ping =
+                typeof config.debugger.client === 'object' && config.debugger.client.ping
+                  ? 'true'
+                  : 'false';
+              const serveDataFn = _.template(data);
+              const connectionOptions = getSocketConnectionConfig(config);
+              return getCacheVer(
+                serveDataFn({
+                  debuggerPath,
+                  eventName,
+                  ping,
+                  connectionOptions,
+                  consoleDebug: config.debugger.consoleDebug
+                })
+              );
+            });
+            success(ctx, body);
+          } catch (e) {
+            failed(ctx, e, 'Error reading io-debugger-client file');
+          }
+          break;
+        default:
+        // Do nothing
       }
-      default:
-        await next();
     }
   };
 };
