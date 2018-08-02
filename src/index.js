@@ -80,7 +80,7 @@ exports.serverIoCore = function(config) {
   // Keep the init of the static serve until the last call
   staticServe(config)(app);
   // Start server
-  const server = start();
+  start();
   // Detect ctrl-c
   process.on('kill', () => {
     debug('kill command');
@@ -88,7 +88,7 @@ exports.serverIoCore = function(config) {
   });
 
   // Call back on close
-  server.on('close', () => {
+  webserver.on('close', () => {
     if (mockServerInstance) {
       mockServerInstance.close();
     }
@@ -98,5 +98,5 @@ exports.serverIoCore = function(config) {
     unwatchFn.forEach(fn => fn());
   });
   // Finally return the instance
-  return server;
+  return webserver;
 };

@@ -8,7 +8,7 @@
     "prepublish-Only": "nsp check",
     "pretest": "eslint . --fix",
     "precommit": "lint-staged",
-    "dev": "DEBUG=server-io-core*,koa-send node ./demo"
+    "dev": "DEBUG=server-io-core* node ./demo"
   },
   "repository": {
     "type": "git",

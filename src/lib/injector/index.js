@@ -76,11 +76,7 @@ exports.scriptsInjectorMiddleware = function(config) {
         if (p) {
           try {
             debug('use overwrite', ctx.url, ctx.path);
-            const doc = await getHtmlDocument(
-              p,
-              _.compact([files, js]).join('/r/n'),
-              css
-            );
+            const doc = await getHtmlDocument(p, _.compact([files, js]).join(''), css);
             ctx.status = 200;
             ctx.type = contentType + '; charset=utf8';
             ctx.length = getDocLen(doc);
