@@ -166,7 +166,7 @@ const renderScriptsMiddleware = config => {
         } catch (e) {
           failed(ctx, e, 'Error reading io-debugger-client file');
         }
-        break;
+        return; // Terminate it
       case stacktraceJsFile:
         try {
           const body = await readDocument(searchStacktraceSrc());
@@ -175,7 +175,7 @@ const renderScriptsMiddleware = config => {
         } catch (e) {
           failed(ctx, e, 'Error reading stacktrace source file!');
         }
-        break;
+        return; // Terminate it
       case reloadJs:
         try {
           const body = await readDocument(
@@ -196,14 +196,14 @@ const renderScriptsMiddleware = config => {
         } catch (e) {
           failed(ctx, e, 'Error reading io-reload-client file');
         }
-        break;
+        return; // Terminate it
       // Without the {} will get a Unexpected lexical declaration in case block  no-case-declarations
       case dummyJs: {
         // Purely for testing purpose
         // taking off your pants to fart
         const body = await dummyOutput();
         success(ctx, body);
-        break;
+        return; // Terminat it
       }
       default:
         await next();
