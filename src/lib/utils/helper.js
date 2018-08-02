@@ -143,7 +143,7 @@ const getDocLen = doc => {
  */
 const readDocument = p => {
   return new Promise((resolver, rejecter) => {
-    fs.readFile(p, (err, data) => {
+    fs.readFile(p, {encoding: 'utf8'}, (err, data) => {
       if (err) {
         return rejecter(err);
       }

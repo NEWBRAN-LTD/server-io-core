@@ -2,7 +2,6 @@
  * This is breaking out to deal with the injecting reload.js script and
  * the debugger scripts
  */
-
 const _ = require('lodash');
 const { getFilesToInject, injectToHtml, tagJs } = require('./files-inject');
 const {

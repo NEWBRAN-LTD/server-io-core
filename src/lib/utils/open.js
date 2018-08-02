@@ -6,10 +6,7 @@ const open = require('opn');
  * @param {object} config options
  * @return {boolean} true on open false on failed
  */
-module.exports = function(config = {}) {
-  if (process.env.NODE_ENV === 'test' || config.open.enable === false) {
-    return true;
-  }
+module.exports = function(config) {
   let args = [];
   // If there is just the true option then we need to construct the link
   if (config.open.enable === true) {
@@ -39,6 +36,10 @@ module.exports = function(config = {}) {
     }
   } else {
     return false;
+  }
+  // Push this down for the nyc to do coverage deeper
+  if (process.env.NODE_ENV === 'test' || config.open.enable === false) {
+    return args;
   }
   Reflect.apply(open, open, args);
   return true;

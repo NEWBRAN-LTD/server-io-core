@@ -7,10 +7,14 @@ const _ = require('lodash');
 const chalk = require('chalk');
 const { join } = require('path');
 // Const gutil = require('gulp-util');
-const { logutil, getSocketConnectionConfig } = require('../utils/helper');
+const {
+  logutil,
+  getSocketConnectionConfig,
+  readDocument,
+  getDocLen
+} = require('../utils/helper');
 // @20171117 integration with stacktrace
-const stacktraceName = 'stacktrace.js';
-const contentType = 'application/javascript; charset=utf-8';
+const { stacktraceName, contentType, dummyJs } = require('../utils/constants');
 /**
  * Get scripts paths
  * @param {object} config the main config object
@@ -61,6 +65,47 @@ const searchStacktraceSrc = () => {
 };
 
 /**
+ * Success output
+ * @param {object} ctx koa app
+ * @param {string} doc rendered html
+ * @return {undefined} nothing
+ */
+const success = (ctx, doc) => {
+  ctx.status = 200;
+  ctx.type = contentType;
+  ctx.status = 200;
+  ctx.length = getDocLen(doc);
+  ctx.body = doc;
+};
+
+/**
+ * Group all the fail call
+ * @param {object} ctx koa app
+ * @param {object} e Error
+ * @param {string} msg to throw
+ * @return {undefined} nothing
+ */
+const failed = (ctx, e, msg) => {
+  logutil(chalk.red(msg), chalk.yellow(e));
+  ctx.throw(404, msg);
+};
+
+/**
+ * @TODO caching the document
+ * @param {string} doc html
+ * @return {string} html document
+ */
+const getCacheVer = doc => {
+  return doc;
+};
+
+/**
+ * Like what the name said
+ * @return {string} dummy js content
+ */
+const dummyOutput = () => Promise.resolve(`console.info('SERVER_IO_CORE', true);`);
+
+/**
  * This become a standalone middleware and always going to inject to the app
  * @param {object} config the main config object
  * @return {undefined} nothing
@@ -88,12 +133,10 @@ const renderScriptsMiddleware = config => {
     // Now check
     switch (ctx.url) {
       case debuggerJs:
-        fs.readFile(join(__dirname, '..', 'debugger', 'client.tpl'), (err, data) => {
-          if (err) {
-            const msg = 'Error reading io-debugger-client file';
-            logutil(chalk.red(msg), chalk.yellow(err));
-            ctx.throw(404, msg);
-          } else {
+        try {
+          const body = await readDocument(
+            join(__dirname, '..', 'debugger', 'client.tpl')
+          ).then(data => {
             // If they want to ping the server back on init
             const ping =
               typeof config.debugger.client === 'object' && config.debugger.client.ping
@@ -102,60 +145,65 @@ const renderScriptsMiddleware = config => {
             // There is a problem when the server is running from localhost
             // and serving out to the proxy and the two ip address are not related to each other
             // and for most of the cases, the client is always pointing back to itself anyway
-            const serveDataFn = _.template(data.toString());
+            const serveDataFn = _.template(data);
             // Force websocket connection
             // see: http://stackoverflow.com/questions/8970880/cross-domain-connection-in-socket-io
             // @2017-06-29 forcing the connection to socket only because it just serving up local!
             const connectionOptions = getSocketConnectionConfig(config);
             // Using the template method instead
-            const serveData = serveDataFn({
-              debuggerPath,
-              eventName,
-              ping,
-              connectionOptions,
-              consoleDebug: config.debugger.consoleDebug
-            });
-            // @TODO we should cache this file, otherwise every reload will have to generate it again
-            // The question is where do we cache it though ...
-            ctx.type = contentType;
-            ctx.status = 200;
-            ctx.body = serveData;
-          }
-        });
+            return getCacheVer(
+              serveDataFn({
+                debuggerPath,
+                eventName,
+                ping,
+                connectionOptions,
+                consoleDebug: config.debugger.consoleDebug
+              })
+            );
+          });
+
+          success(ctx, body);
+        } catch (e) {
+          failed(ctx, e, 'Error reading io-debugger-client file');
+        }
         break;
       case stacktraceJsFile:
-        fs.readFile(searchStacktraceSrc(), { encoding: 'utf8' }, (err, data) => {
-          if (err) {
-            const msg = 'Error reading stacktrace source file!';
-            logutil(chalk.red(msg), chalk.yellow(err));
-            ctx.throw(404, msg);
-          } else {
-            ctx.type = contentType;
-            ctx.status = 200;
-            ctx.body = `${data}`;
-          }
-        });
+        try {
+          const body = await readDocument(searchStacktraceSrc());
+
+          success(ctx, body);
+        } catch (e) {
+          failed(ctx, e, 'Error reading stacktrace source file!');
+        }
         break;
       case reloadJs:
-        fs.readFile(join(__dirname, '..', 'reload', 'reload.tpl'), (err, data) => {
-          if (err) {
-            const msg = 'Error reading io-reload-client file';
-            logutil(chalk.red(msg), chalk.yellow(err));
-            ctx.throw(404, msg);
-          } else {
+        try {
+          const body = await readDocument(
+            join(__dirname, '..', 'reload', 'reload.tpl')
+          ).then(data => {
             const clientFileFn = _.template(data.toString());
             const connectionOptions = getSocketConnectionConfig(config);
-            const serveData = clientFileFn({
-              reloadNamespace: reloadPath,
-              eventName: reloadEventName,
-              connectionOptions
-            });
-            ctx.type = contentType;
-            ctx.status = 200;
-            ctx.body = serveData;
-          }
-        });
+            return getCacheVer(
+              clientFileFn({
+                reloadNamespace: reloadPath,
+                eventName: reloadEventName,
+                connectionOptions
+              })
+            );
+          });
+
+          success(ctx, body);
+        } catch (e) {
+          failed(ctx, e, 'Error reading io-reload-client file');
+        }
         break;
+      case dummyJs: {
+        // Purely for testing purpose
+        // taking off your pants to fart
+        const body = await dummyOutput();
+        success(ctx, body);
+        break;
+      }
       default:
         await next();
     }
