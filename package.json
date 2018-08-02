@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "DEBUG=server-io-core* nyc ava --verbose --timeout=10s",
+    "cli": "DEBUG=server-io-core* node ./cli",
     "prepublish-Only": "nsp check",
     "pretest": "eslint . --fix",
     "precommit": "lint-staged",
@@ -92,12 +93,8 @@
   },
   "ava": {
     "files": [
-      "__tests__/**/*.test.js",
-      "!__tests__/examples/**/*.*",
-      "!__tests__/funcs/**/*.*",
-      "!__tests__/gulp/**/*.*",
-      "!__tests__/main/**/*.*",
-      "!__tests__/standalone/**/*.*"
+      "tests/**/*.test.js",
+      "!tests/fixtures/**/*.*"
     ],
     "failFast": true
   },
