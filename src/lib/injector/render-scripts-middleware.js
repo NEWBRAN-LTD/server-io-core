@@ -33,7 +33,7 @@ const getFeatureScripts = function(config) {
   const reloadEventName = config.reload.eventName;
   const reloadJs = [reloadPath, config.reload.js].join('/');
   // Return
-  const obj = {
+  return {
     debuggerPath,
     eventName,
     reloadPath,
@@ -43,8 +43,6 @@ const getFeatureScripts = function(config) {
     stacktraceJsFile,
     reloadJs
   };
-  // Debug('obj', obj);
-  return obj;
 };
 
 /**
