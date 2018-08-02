@@ -5,7 +5,7 @@
  * Module dependencies.
  */
 const debug = require('debug')('server-io-core:static');
-const { resolve } = require('path');
+// Const { resolve } = require('path');
 const send = require('koa-send');
 const { toArray } = require('../utils/helper');
 
@@ -39,7 +39,7 @@ function serve(root, opts) {
   // Assert(root, 'root directory is required to serve files');
   // Options
   debug('static "%s" %j', root, opts);
-  opts.root = resolve(root);
+  opts.root = root;
   if (opts.index !== false) opts.index = opts.index || 'index.html';
 
   if (!opts.defer) {

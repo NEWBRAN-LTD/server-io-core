@@ -157,15 +157,15 @@ exports.getFilesToInject = function(config) {
   // @2018-05-07 disbale this check because we couldn't get the fileanme from the middleware
   // const target = getTarget(config.target);
   const { js, css } = getSource(config.source);
-  // @2018-07-30 now only return the tagged items
-  let files = {};
   // Const check = target && (js || css);
   if (!js || !css) {
-    // Display an error inline here
-    const msg = '[inject] Configuration is incorrect for inject to work!';
-    debug('injector error', msg);
-    logutil(chalk.red(msg), config);
-    return files;
+    if (config.enable) {
+      // Display an error inline here
+      const msg = '[inject] Configuration is incorrect for inject to work!';
+      debug('injector error', msg);
+      logutil(chalk.red(msg), config);
+    }
+    return { js: [], css: [] };
   }
   return {
     js: tagJs(js, config.ignorePath),

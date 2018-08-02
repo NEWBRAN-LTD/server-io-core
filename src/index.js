@@ -26,7 +26,7 @@ exports.serverIoCore = function(config) {
   let io = null;
   let unwatchFn = [];
   // Init web server
-  const { webserver, start } = webserverGenerator(app, config);
+  const { webserver, start, stop } = webserverGenerator(app, config);
   // Setup the callback
   const cb = config.callback;
   config.callback = () => {
@@ -70,21 +70,21 @@ exports.serverIoCore = function(config) {
   }
   // Enable the injectors here, if socket server is enable that means
   // The injector related function need to be activated
-  const mockServerInstance = middlewaresHandler(app, config);
+  const { unwatchMockFn } = middlewaresHandler(app, config);
   // Keep the init of the static serve until the last call
   staticServe(config)(app);
   // Start server
   start();
-
   // Call back on close
   webserver.on('close', () => {
     debug('server on close');
-    mockServerInstance.close();
+    unwatchMockFn();
+    // MockServerInstance.close();
     if (io && io.server && io.server.close) {
       io.server.close();
     }
     unwatchFn.forEach(fn => fn());
   });
   // Finally return the instance
-  return webserver;
+  return { webserver, stop };
 };

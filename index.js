@@ -1,5 +1,8 @@
 const { createConfiguration } = require('./src/lib/options');
 const { serverIoCore } = require('./src');
+const { resolve } = require('path');
+const { toArray } = require('./src/lib/utils/helper');
+const debug = require('debug')('server-io-core:main');
 /**
  * Main entry point for server-io-core
  * @param {object} config options
@@ -8,6 +11,10 @@ const { serverIoCore } = require('./src');
  */
 module.exports = function(config = {}) {
   const opts = createConfiguration(config);
+  opts.webroot = toArray(opts.webroot).map(dir => resolve(dir));
   opts.__processed__ = true;
+
+  debug('options', opts);
+
   return serverIoCore(opts);
 };
