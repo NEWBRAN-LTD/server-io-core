@@ -202,9 +202,9 @@ When you enable it, there are several files get inject into your HTML document a
 [21:54:37] ------------------------------------------------------------------------------------------ END
 ```
 
-There is an additonal method inject into the windows open which you can use `console.debug`. You can use this within your own Javascript code to and trigger the display in the console. This is especially useful when you use real mobile device to debug your web app.
+There is an additional method  `console.debug` inject into the windows document. You can use this within your own Javascript code to trigger debug message display in the console. This is especially useful when you use real mobile device to debug your web app.
 
-To disable this open you can pass the following option:
+To disable this option you can pass the following option:
 
 ```js
 // same as above
