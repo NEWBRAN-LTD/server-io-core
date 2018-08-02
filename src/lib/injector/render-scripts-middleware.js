@@ -197,6 +197,7 @@ const renderScriptsMiddleware = config => {
           failed(ctx, e, 'Error reading io-reload-client file');
         }
         break;
+      // Without the {} will get a Unexpected lexical declaration in case block  no-case-declarations
       case dummyJs: {
         // Purely for testing purpose
         // taking off your pants to fart
