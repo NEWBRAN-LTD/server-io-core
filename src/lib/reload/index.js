@@ -7,6 +7,7 @@ const chalk = require('chalk');
 const watcher = require('../watcher');
 const { logutil } = require('../utils/helper');
 const debug = require('debug')('gulp-server-io:watchers');
+const serverReload = require('./server-reload');
 /**
  * @v1.5.0 we create our own reload script and remove the old reload.js
  * because it keeps breaking down
@@ -17,7 +18,7 @@ const debug = require('debug')('gulp-server-io:watchers');
  * @param {object} config the config.reload object
  * @return {function} unwatch callback
  */
-module.exports = function(filePaths, io, config) {
+exports.clientReload = function(filePaths, io, config) {
   const props = watcher(_.extend({ filePaths }, config));
   // First setup the socket io namespace
   // debug('[reload][setup]', 'setup namespace', config.namespace);
@@ -47,3 +48,5 @@ module.exports = function(filePaths, io, config) {
     delete io.nsps[config.namespace];
   };
 };
+// Re-export it
+exports.serverReload = serverReload;

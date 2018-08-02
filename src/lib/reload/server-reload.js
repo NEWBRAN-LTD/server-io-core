@@ -11,7 +11,11 @@ const { logutil } = require('../utils/helper');
 const debug = require('debug')('gulp-server-io:watchers');
 // Debug('path to external watcher', watcher);
 // Main
-module.exports = config => {
+/**
+ * @param {object} config for serverReload
+ * @return {function} unwatch callback
+ */
+module.exports = function(config) {
   if (config.enable && config.dir && _.isFunction(config.callback)) {
     const watcherInt = watcher({
       filePaths: config.dir,

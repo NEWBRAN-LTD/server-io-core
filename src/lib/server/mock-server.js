@@ -25,7 +25,7 @@ module.exports = function(options) {
   _.forEach(json, (payload, name) => {
     const url = name.substring(0, 1) === '/' ? name.substring(1, name.length) : name;
     proxies.push({
-      source: '/' + url,
+      context: '/' + url,
       target: start + [host.replace(start, ''), port].join(':')
     });
   });
@@ -69,5 +69,10 @@ module.exports = function(options) {
   // 05032018 - also return a restart method, so whenever the file change
   // it will restart by itself
   // Return
-  return { server, proxies, restart, unwatchFn };
+  return {
+    server,
+    proxies,
+    restart,
+    unwatchFn
+  };
 };

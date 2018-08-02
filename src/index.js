@@ -5,14 +5,16 @@ const Koa = require('koa');
 const chalk = require('chalk');
 // Ours
 const { webserverGenerator, staticServe, socketServer } = require('./lib/server');
-const { scriptsInjectorMiddleware, renderScriptsMiddleware } = require('./lib/injector');
+
 // Const { createConfiguration } = require('./lib/options');
 const debuggerServer = require('./lib/debugger');
-const reloadServer = require('./lib/reload');
+const { clientReload, serverReload } = require('./lib/reload');
 const openInBrowser = require('./lib/utils/open');
 // Debug
 const debug = require('debug')('server-io-core:main');
 const { logutil } = require('./lib/utils/helper');
+
+const middlewaresHandler = require('./lib/middlewares');
 
 /**
  * @param {object} config options
@@ -23,9 +25,8 @@ exports.serverIoCore = function(config) {
   const app = new Koa();
   let io = null;
   let unwatchFn = [];
-  let mockServerInstance = null;
   // Init web server
-  const { webserver, start, stop } = webserverGenerator(app, config);
+  const { webserver, start } = webserverGenerator(app, config);
   // Setup the callback
   const cb = config.callback;
   config.callback = () => {
@@ -57,41 +58,28 @@ exports.serverIoCore = function(config) {
 
   if (config.reload.enable) {
     // Limiting the config options
-    unwatchFn.push(reloadServer(config.webroot, io, config.reload));
+    unwatchFn.push(clientReload(config.webroot, io, config.reload));
   }
   // Debugger server start
   if (config.debugger.enable && config.debugger.server === true) {
     unwatchFn.push(debuggerServer(config, io));
   }
-  // @TODO add watching server side files
-  // New @1.4.0-beta.11 watch a different path and pass a callback
-  /*
+  // Add watching server side file
   if (config.serverReload.enable) {
     unwatchFn.push(serverReload(config.serverReload));
   }
-  */
   // Enable the injectors here, if socket server is enable that means
   // The injector related function need to be activated
-  if (io) {
-    app.use(renderScriptsMiddleware(config));
-    app.use(scriptsInjectorMiddleware(config));
-  }
-
+  const mockServerInstance = middlewaresHandler(app, config);
   // Keep the init of the static serve until the last call
   staticServe(config)(app);
   // Start server
   start();
-  // Detect ctrl-c
-  process.on('kill', () => {
-    debug('kill command');
-    stop();
-  });
 
   // Call back on close
   webserver.on('close', () => {
-    if (mockServerInstance) {
-      mockServerInstance.close();
-    }
+    debug('server on close');
+    mockServerInstance.close();
     if (io && io.server && io.server.close) {
       io.server.close();
     }
