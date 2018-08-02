@@ -1,46 +1,47 @@
 /**
  * Open in browser during development
  */
+const _ = require('lodash');
 const open = require('opn');
+const debug = require('debug')('server-io-core:open');
+
+const constructUrl = config => {
+  return [
+    'http' + (config.https.enable === false ? '' : 's'),
+    '//' + config.host,
+    config.port
+  ].join(':');
+};
+
 /**
  * @param {object} config options
  * @return {boolean} true on open false on failed
  */
 module.exports = function(config) {
-  let args = [];
+  debug('config.open', config.open);
+  let multiple = false;
+  let args = [constructUrl(config)];
   // If there is just the true option then we need to construct the link
-  if (config.open.enable === true) {
-    args.push(
-      [
-        'http' + (config.https.enable === false ? '' : 's'),
-        '//' + config.host,
-        config.port
-      ].join(':')
-    );
-  } else if (
-    typeof config.open === 'string' &&
-    config.open.length > 0 &&
-    config.open.indexOf('http') !== 0
-  ) {
-    // This option might not appear again?
-    // Ensure leading slash if this is NOT a complete url form
-    args.push([config.open.substr(0, 1) === '/' ? '' : '/', config.open].join(''));
-  } else if (typeof config.open === 'object') {
-    if (config.open.url) {
-      args.push(config.open.url);
-    } else {
-      return false;
+  if (config.open.browser) {
+    if (_.isString(config.open.browser)) {
+      args.push({ app: config.open.browser });
+    } else if (_.isArray(config.open.browser)) {
+      multiple = config.open.browser.map(browser => {
+        return { app: browser };
+      });
     }
-    if (config.open.browser) {
-      args.push(config.open.browser);
-    }
-  } else {
-    return false;
   }
   // Push this down for the nyc to do coverage deeper
   if (process.env.NODE_ENV === 'test' || config.open.enable === false) {
     return args;
   }
-  Reflect.apply(open, open, args);
+  if (multiple === false) {
+    Reflect.apply(open, open, args);
+  } else {
+    // Open multiple browsers at once
+    multiple.forEach(browser => {
+      Reflect.apply(open, open, args.concat([browser]));
+    });
+  }
   return true;
 };

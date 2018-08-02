@@ -42,7 +42,6 @@ const defaultOptions = {
   // Stock certicates @TODO combine this together
   open: {
     enable: true,
-    url: '',
     browser: ''
   },
   https: {
