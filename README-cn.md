@@ -1,6 +1,6 @@
 # server-io-core
 
-> A development server based on Koa, within build it reload, watcher, debugger, mock server, proxyy server and a few more features
+> A development server based on Koa, with built-it reload, watcher, debugger, mock server, proxy server and a few more features
 
 This is a spin off from my [gulp-server-io](https://gitlab.com/newbranltd/gulp-server-io) (If you like it, please do a star, thanks)
 
