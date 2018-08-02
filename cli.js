@@ -58,7 +58,6 @@ const serve = cli => {
   serverIoCore(
     (function() {
       let config;
-      config.webroot = dirs.map(d => path.resolve(d));
       // Use the config to ovewrite everything else
       if (argv.config) {
         config = fs.readJsonSync(argv.config);
@@ -66,7 +65,7 @@ const serve = cli => {
           throw new Error(['configuration file', argv.config, 'not found!'].join(' '));
         }
       } else {
-        config = {};
+        config = { webroot: dirs.map(d => path.resolve(d)) };
         if (argv.port) {
           config.port = argv.port;
         }
