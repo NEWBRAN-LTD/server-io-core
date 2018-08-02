@@ -61,6 +61,32 @@ serverIoCore({
 });
 ```
 
+By default, there is default value of
+
+```js
+{
+  webroot: join(process.cwd(), 'app')
+}
+```
+
+But the serving directory should be where your destination directory is.
+
+It's recommended to pass a full path to the webroot option.
+
+```js
+'use strict';
+const server = require('server-io-core');
+const { join } = require('path');
+
+server({
+  webroot: [
+    join(__dirname, 'path', 'to', 'dist'),
+    join(__dirname, 'path', 'to', 'assets')
+  ]
+});
+
+```
+
 As you can see from above example, you can pass an array of directories, and it will
 able to serve up content from them all. If you pass the `webroot` as string, it will
 get converted to array.
