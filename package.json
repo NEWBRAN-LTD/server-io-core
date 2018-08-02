@@ -89,13 +89,21 @@
     },
     "plugins": [
       "prettier"
+    ],
+    "overrides": [
+      {
+        "files": "src/**/*.js"
+      }
     ]
   },
   "ava": {
     "files": [
-      "tests/**/*.test.js",
-      "!tests/fixtures/**/*.*"
+      "__tests__/**/*.test.js",
+      "!__tests__/fixtures/**/*",
+      "!demo/**/*",
+      "!src/**/*"
     ],
+    "tap": true,
     "failFast": true
   },
   "bin": {
