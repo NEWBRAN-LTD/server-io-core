@@ -98,6 +98,19 @@ With this minimum setup, you will have the follow features enable automatically:
 * Reload will be watch the `webroot` whenever any files change in those directories, the web browser will reload. You can see the message from your console.
 * Debugger a javascript debugger which capture the `Error` object from your browser document, and display within your console, nicely formatted with `stacktrace`. This is especially useful when you need to test HTML web app from a mobile device (there is no console.log!). Check debugger for more options
 
+#### Host, port options
+
+By default the host is `localhost` and port is `8000`. You can change them easily.
+
+```js
+// same as above
+serverIoCore({
+  webroot: '/path/to/webroot',
+  port: 34567,
+  host: '0.0.0.0'
+});
+```
+
 ### Open
 
 Open option is using [opn](https://www.npmjs.com/package/opn) internally. By default this is enable, you can disable it using `open:false` option.
@@ -121,7 +134,7 @@ If you need to specify what browser to open:
 serverIoCore({
   webroot: '/path/to/webroot',
   open: {
-    browser: '/path/to/browser/executable'
+    browser: 'firefox'
   }
 });
 ```
