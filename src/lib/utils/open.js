@@ -36,10 +36,12 @@ module.exports = function(config) {
     return args;
   }
   if (multiple === false) {
+    debug('[open]', args);
     Reflect.apply(open, open, args);
   } else {
     // Open multiple browsers at once
     multiple.forEach(browser => {
+      debug('[open]', browser, args);
       Reflect.apply(open, open, args.concat([browser]));
     });
   }

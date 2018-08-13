@@ -174,15 +174,28 @@ exports.getFilesToInject = function(config) {
 };
 
 /**
+ * @TODO add the before / after parameter
+ * @TODO add insertBefore / insertAfter in to config
  * @param {string} body rendered html
  * @param {array} js of tag javascripts
  * @param {array} css of tag CSS
+ * @param {boolean} before true new configuration option
  * @return {string} overwritten HTML
  */
-exports.injectToHtml = (body, js, css) => {
+exports.injectToHtml = (body, js, css, before = true) => {
   const html = _.isString(body) ? body : body.toString('utf8');
   const $ = cheerio.load(html);
-  $('body').append(js);
+  // @2018-08-13 add check if there is existing javascript tags
+  const $scripts = $('body script').toArray();
+  if ($scripts.length) {
+    if (before) {
+      $($scripts[0]).before(js);
+    } else {
+      $($scripts[$scripts.length - 1]).after(js);
+    }
+  } else {
+    $('body').append(js);
+  }
   $('head').append(css);
   return $.html();
 };

@@ -85,6 +85,7 @@ const defaultOptions = {
   },
   inject: {
     enable: false,
+    insertBefore: true,
     target: [], // List of files to inject
     source: [], // List of files to get inject
     options: {} // Reversed for future use

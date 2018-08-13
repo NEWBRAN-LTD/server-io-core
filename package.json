@@ -1,10 +1,11 @@
 {
   "name": "server-io-core",
-  "version": "1.0.0-alpha.2",
+  "version": "1.0.0-alpha.3",
   "description": "Developement server using Koa with Socket.io reload and Javascript remote debugger",
   "main": "index.js",
   "scripts": {
-    "test": "DEBUG=server-io-core* nyc ava --verbose --timeout=10s",
+    "test": "ava --timeout=10s",
+    "devtest": "DEBUG=server-io-core* nyc ava --verbose --timeout=10s",
     "cli": "DEBUG=server-io-core* node ./cli",
     "prepublish-Only": "nsp check",
     "pretest": "eslint . --fix",
@@ -103,7 +104,7 @@
       "!demo/**/*",
       "!src/**/*"
     ],
-    "tap": true,
+    "tap": false,
     "failFast": true
   },
   "bin": {
