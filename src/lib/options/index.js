@@ -25,6 +25,7 @@ const defaultOptions = {
   port: 8000,
   // Path: '/', // @2018-07-31 this no longer in use
   webroot: path.join(process.cwd(), 'app'),
+  autoStart: true,
   fallback: false,
   index: 'index.html', // Can only have one!
   callback: () => {},

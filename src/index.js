@@ -73,8 +73,10 @@ exports.serverIoCore = function(config) {
   const { unwatchMockFn } = middlewaresHandler(app, config);
   // Keep the init of the static serve until the last call
   staticServe(config)(app);
-  // Start server
-  start();
+  // Start server @2018-08-13
+  if (config.autoStart === true) {
+    start();
+  }
   // Call back on close
   webserver.on('close', () => {
     debug('server on close');
@@ -86,5 +88,5 @@ exports.serverIoCore = function(config) {
     unwatchFn.forEach(fn => fn());
   });
   // Finally return the instance
-  return { webserver, stop };
+  return { webserver, app, start, stop, io };
 };

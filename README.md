@@ -45,6 +45,25 @@ For more command line option
 $ server-io-core --help
 ```
 
+## Return objects
+
+```js
+
+const { webserver, app, start, stop, io } = serverIoCore({
+  autoStart: false,
+  webroot: ['/path/to/webroot', '/path/to/assets']
+});
+// if you provide this autoStart option, then you need to manually call the
+// start stop method to start and stop the server
+// And it will return the following
+// webserver - the underlying http.server
+// app - the Koa app
+// start - a method to start the entire server
+// stop - a method to stop the entire server and clean up
+// io - if you enable socket then this will be the socket.io instance
+
+```
+
 ## Usage
 
 The following are all the features and how to enable them

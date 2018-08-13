@@ -18,7 +18,7 @@ module.exports = function(config, callback) {
   const delay = config.debounce || config.interval || DEFAULT_DELAY;
   const directories = ensureIsDir(config.filePaths);
   const options = config.watcherOption || {};
-  debug('watching directories', directories);
+  // Debug('watching directories', directories);
   const w = chokidar.watch(
     directories,
     _.extend(
