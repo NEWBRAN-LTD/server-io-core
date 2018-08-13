@@ -104,6 +104,7 @@
       "!demo/**/*",
       "!src/**/*"
     ],
+    "verbose": true,
     "tap": false,
     "failFast": true
   },

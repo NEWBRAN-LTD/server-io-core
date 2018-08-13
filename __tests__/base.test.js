@@ -14,16 +14,11 @@ test.beforeEach(t => {
   t.context.stop = w.stop;
 });
 
-
 test.afterEach(t => {
   t.context.stop();
-  console.log('after each called');
-  // app = undefined;
 });
 
-
 test('It should start with no config option', async (t) => {
-
   t.plan(1);
   const res = await request(t.context.app).get('/');
   t.is(200, res.status);
