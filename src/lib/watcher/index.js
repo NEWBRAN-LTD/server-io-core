@@ -15,17 +15,21 @@ const debug = require('debug')('gulp-webserver-io:watchers');
 module.exports = function(config) {
   const evt = new WatcherCls();
   const props = fork(watcherFile);
-  props.send({ type: 'start', config });
-  debug('[Watcher][start]', config.filePaths);
-  if (config.verbose) {
-    logutil(chalk.yellow('[Watcher][start]', config.filePaths));
-  }
-  // Listen to the channel
-  props.on('message', opt => {
+  try {
+    props.send({ type: 'start', config });
+    debug('[Watcher][start]', config.filePaths);
     if (config.verbose) {
-      logutil(chalk.yellow(`[Watcher][${opt.type}]`), opt);
+      logutil(chalk.yellow('[Watcher][start]', config.filePaths));
     }
-    evt.emit(opt.type, opt);
-  });
+    // Listen to the channel
+    props.on('message', opt => {
+      if (config.verbose) {
+        logutil(chalk.yellow(`[Watcher][${opt.type}]`), opt);
+      }
+      evt.emit(opt.type, opt);
+    });
+  } catch (e) {
+    logutil('fork process crash', e);
+  }
   return evt;
 };
