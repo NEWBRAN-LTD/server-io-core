@@ -1,6 +1,6 @@
 {
   "name": "server-io-core",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0-alpha.4",
   "description": "Developement server using Koa with Socket.io reload and Javascript remote debugger",
   "main": "index.js",
   "scripts": {
