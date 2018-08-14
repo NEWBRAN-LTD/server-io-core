@@ -120,6 +120,10 @@ module.exports = function(app, config) {
 
   // Now inject the middlewares
   if (middlewares.length) {
+    // @TODO at the moment, we only accept function middlewares
+    // but the problem with Koa is the ctx.state is not falling through all the way
+    // so we might need to add the middleware in stack
+    // with app.use.apply(app, [middlewares_sub_array]);
     middlewares.filter(m => typeof m === 'function').forEach(m => app.use(m));
   }
 
