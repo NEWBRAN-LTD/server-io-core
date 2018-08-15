@@ -7,7 +7,7 @@ const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
 const helmet = require('koa-helmet');
-// Const bodyParser = require('body-parser');
+const bodyparser = require('koa-bodyparser');
 const { proxy } = require('koa-nginx');
 // Shorthands
 const join = path.join;
@@ -36,9 +36,8 @@ module.exports = function(app, config) {
   const closeFn = { close: () => {} };
   let mockServerInstance = closeFn;
   let unwatchMockFn = () => {};
-  // Let debuggerInstance = closeFn;
   // Properties
-  let middlewares = [];
+  let middlewares = [bodyparser()];
   // Start adding middlewares
   if (config.development) {
     middlewares.push(helmet.noCache());
