@@ -3,6 +3,7 @@
  */
 const path = require('path');
 const src = path.join(__dirname, '..', '..');
+const { getLocalIp } = require('../utils/helper');
 // Also export the function here
 const enableMiddlewareShorthand = require('./enable-middleware-shorthand');
 // Move from the app.js to here
@@ -21,7 +22,7 @@ const defaultOptions = {
    * Basic options
    */
   development: true,
-  host: 'localhost',
+  host: getLocalIp(), // @2018-08-15 use the ip address by default
   port: 8000,
   // Path: '/', // @2018-07-31 this no longer in use
   webroot: path.join(process.cwd(), 'app'),

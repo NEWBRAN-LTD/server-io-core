@@ -17,6 +17,7 @@ test.beforeEach(t => {
 
 test.afterEach(t => {
   t.context.stop();
+  // process.exit();
 });
 
 test('It should start with no config option', async (t) => {

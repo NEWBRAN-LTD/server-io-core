@@ -9,11 +9,28 @@ const log = require('fancy-log');
 const test = process.env.NODE_ENV === 'test';
 const os = require('os');
 
-const getLocalIp = () => {
-  return Object.values(os.networkInterfaces()).map(net => {
+/**
+ * @return {string} ip address
+ */
+const getLocalIp = () => (
+  Object.values(os.networkInterfaces()).filter(net => {
+    return net[0].address !== '127.0.0.1';
+  }).reduce((last, next) => {
+    return next[0].address;
+  }, '')
+);
 
-  });
-}
+/**
+ * If's it's windows then need to get the ip address of the network interface 
+ * otherwise we just need to use 0.0.0.0 to bind to all
+ * @return {string} ip address
+ */
+const getServingIpforOS = () => {
+  if (os.platform().indexOf('win') === 0) {
+    return getLocalIp();
+  }
+  return '0.0.0.0';
+};
 
 // Const debug = process.env.DEBUG;
 // Main
@@ -203,5 +220,7 @@ module.exports = {
   getSocketConnectionConfig,
   ensureIsDir,
   logutil,
-  headerParser
+  headerParser,
+  getLocalIp,
+  getServingIpforOS
 };
