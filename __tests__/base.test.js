@@ -8,6 +8,7 @@ const { join } = require('path');
 
 test.beforeEach(t => {
   const w = serverIoCore({
+    autoStart: false,
     webroot: join(__dirname, 'fixtures', 'demo', 'dist', 'base')
   });
   t.context.app = w.app;
