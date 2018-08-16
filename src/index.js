@@ -36,9 +36,16 @@ exports.serverIoCore = function(config) {
     }
     // Notify
     logutil(
-      chalk.white(`gulp-server-io (${config.version}) running at`),
-      chalk.cyan(
-        ['http', config.https ? 's' : '', '://', config.host, ':', config.port].join('')
+      chalk.white(`server-io-core (${config.version}) running at`),
+      chalk.yellow(
+        [
+          'http',
+          config.https.enable ? 's' : '',
+          '://',
+          config.host,
+          ':',
+          config.port
+        ].join('')
       )
     );
     openInBrowser(config);

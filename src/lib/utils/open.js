@@ -4,11 +4,26 @@
 const _ = require('lodash');
 const open = require('opn');
 const debug = require('debug')('server-io-core:open');
+const { isWindoze } = require('./helper');
 
+/**
+ * Get hostname to open
+ * @param {string} hostname config.hostname
+ * @return {string} modified hostname
+ */
+const getHostname = hostname => {
+  return isWindoze() ? hostname : hostname === '0.0.0.0' ? 'localhost' : hostname;
+};
+
+/**
+ * Construct the open url
+ * @param {object} config full configuration
+ * @return {string} url
+ */
 const constructUrl = config => {
   return [
     'http' + (config.https.enable === false ? '' : 's'),
-    '//' + config.host,
+    '//' + getHostname(config.host),
     config.port
   ].join(':');
 };

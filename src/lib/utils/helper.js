@@ -21,12 +21,17 @@ const getLocalIp = () => (
 );
 
 /**
+ * @return {boolean} windoze or not
+ */
+const isWindoze = () => (os.platform().indexOf('win') === 0);
+
+/**
  * If's it's windows then need to get the ip address of the network interface 
  * otherwise we just need to use 0.0.0.0 to bind to all
  * @return {string} ip address
  */
 const getServingIpforOS = () => {
-  if (os.platform().indexOf('win') === 0) {
+  if (isWindoze()) {
     return getLocalIp();
   }
   return '0.0.0.0';
@@ -222,5 +227,6 @@ module.exports = {
   logutil,
   headerParser,
   getLocalIp,
-  getServingIpforOS
+  getServingIpforOS,
+  isWindoze
 };
