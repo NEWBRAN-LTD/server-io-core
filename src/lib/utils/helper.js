@@ -7,6 +7,13 @@ const path = require('path');
 const _ = require('lodash');
 const log = require('fancy-log');
 const test = process.env.NODE_ENV === 'test';
+const os = require('os');
+
+const getLocalIp = () => {
+  return Object.values(os.networkInterfaces()).map(net => {
+
+  });
+}
 
 // Const debug = process.env.DEBUG;
 // Main
