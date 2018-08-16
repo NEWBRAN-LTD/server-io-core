@@ -60,9 +60,19 @@ const serve = cli => {
       let config;
       // Use the config to ovewrite everything else
       if (argv.config) {
-        config = fs.readJsonSync(argv.config);
+        // Now we need to check if that's a js file or json file
+        const configfile = argv.config;
+        if (path.extname(configfile) === '.json') {
+          config = fs.readJsonSync(configfile);
+        } else if (path.extname(configfile) === '.js') {
+          config = require(configfile);
+        }
         if (!config) {
-          throw new Error(['configuration file', argv.config, 'not found!'].join(' '));
+          throw new Error(
+            ['configuration file', configfile, ' is not supported or not found!'].join(
+              ' '
+            )
+          );
         }
       } else {
         config = { webroot: dirs.map(d => path.resolve(d)) };
