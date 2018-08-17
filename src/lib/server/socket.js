@@ -9,9 +9,6 @@ const socketIO = require('socket.io');
  * @return {object} io instance
  */
 module.exports = (server, config) => {
-  if (!config.socket.enable) {
-    return null;
-  }
   // Logger = logger || logutil; should not provide anything here!
   let socketConfig = null;
   // Force the socket.io server to use websocket protocol only

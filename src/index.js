@@ -50,8 +50,9 @@ exports.serverIoCore = function(config) {
     );
     openInBrowser(config);
   };
-
+  // 2018-08-17 unless specify the socket will always be enable
   if (
+    config.socket.enable ||
     config.reload.enable ||
     (config.debugger.enable && config.debugger.server === true)
   ) {

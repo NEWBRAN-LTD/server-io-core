@@ -64,6 +64,8 @@ const { webserver, app, start, stop, io } = serverIoCore({
 
 ```
 
+NOTE: Socket will always enable unless you pass `{socket: false}` in the configuration.
+
 ## Usage
 
 The following are all the features and how to enable them
