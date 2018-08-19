@@ -8,7 +8,7 @@ const chalk = require('chalk');
 // const watcher = join(__dirname, '..', 'watcher');
 const watcher = require('../watcher');
 const { logutil } = require('../utils/helper');
-const debug = require('debug')('gulp-server-io:watchers');
+const debug = require('debug')('server-io-core:watchers');
 // Debug('path to external watcher', watcher);
 // Main
 /**

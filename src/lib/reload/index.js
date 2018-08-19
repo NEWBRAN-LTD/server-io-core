@@ -1,12 +1,8 @@
 const _ = require('lodash');
 const chalk = require('chalk');
-// Const { join } = require('path');
-// const { fork } = require('child_process');
-// Path to the watcher file
-// const watcherProcess = join(__dirname, '..', 'watcher', 'index.js');
 const watcher = require('../watcher');
 const { logutil } = require('../utils/helper');
-const debug = require('debug')('gulp-server-io:watchers');
+const debug = require('debug')('server-io-core:watchers');
 const serverReload = require('./server-reload');
 /**
  * @v1.5.0 we create our own reload script and remove the old reload.js

@@ -7,7 +7,7 @@ const util = require('util');
 const chalk = require('chalk');
 const { logutil } = require('../utils/helper');
 const { table, parseObj, displayError } = require('./helpers');
-const debug = require('debug')('gulp-server-io:watchers');
+const debug = require('debug')('server-io-core:watchers');
 /**
  * DebuggerServer
  * @param {object} config - the full configuration object

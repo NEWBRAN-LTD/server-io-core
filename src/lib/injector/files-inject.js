@@ -7,7 +7,7 @@
  *New @ 1.4.0* This is an end user request, to add the injection. The configuration option as follow:
 
  ```js
-   const gulpServerIo = require('gulp-server-io');
+   const gulpServerIo = require('server-io-core');
    const config = {
      inject: {
        source: ['../src/js/*.js', '../src/css/*.css'],

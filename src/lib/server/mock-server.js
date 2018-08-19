@@ -8,7 +8,7 @@ const chalk = require('chalk');
 const jsonServer = require('json-server');
 const { logutil } = require('../utils/helper');
 const watcher = require('../watcher');
-const debug = require('debug')('gulp-server-io:mock');
+const debug = require('debug')('server-io-core:mock');
 // Expect to return this server config for the proxies
 module.exports = function(options) {
   let proxies = [];

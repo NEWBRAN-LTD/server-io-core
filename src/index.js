@@ -5,8 +5,6 @@ const Koa = require('koa');
 const chalk = require('chalk');
 // Ours
 const { webserverGenerator, staticServe, socketServer } = require('./lib/server');
-
-// Const { createConfiguration } = require('./lib/options');
 const debuggerServer = require('./lib/debugger');
 const { clientReload, serverReload } = require('./lib/reload');
 const openInBrowser = require('./lib/utils/open');
