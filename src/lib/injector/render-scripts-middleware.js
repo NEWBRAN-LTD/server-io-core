@@ -11,8 +11,7 @@ const {
   logutil,
   getSocketConnectionConfig,
   readDocument,
-  getDocLen,
-  readAsync
+  getDocLen
 } = require('../utils');
 // @20171117 integration with stacktrace
 const { stacktraceName, contentType, dummyJs, cordovaJs } = require('../utils/constants');
@@ -111,16 +110,15 @@ const getCacheVer = doc => {
 const hasExtraVirtualOverwrite = async function(ctx, config) {
   // Fake cordova.js @alpha.12
   if (config.cordova !== false) {
-    const match = config.cordova === true ? cordovaJs : config.cordova;
-    if (_.isString(match)) {
-      if (ctx.url === match) {
-        if (match === cordovaJs) {
-          success(ctx, await readAsync(join(__dirname, 'cordova.js.tpl')));
-          return true;
-        }
-
+    if (ctx.url === '/' + cordovaJs) {
+      if (config.cordova === true) {
+        const doc = await readDocument(join(__dirname, 'cordova.js.tpl'));
+        success(ctx, doc);
+        return true;
+      }
+      if (_.isString(config.cordova)) {
         try {
-          success(ctx, await readAsync(config.cordova));
+          success(ctx, await readDocument(config.cordova));
           return true;
         } catch (e) {
           failed(ctx, e, config.cordova + ' Not found!');
@@ -146,15 +144,12 @@ const renderScriptsMiddleware = function(config) {
     stacktraceJsFile,
     reloadJs
   } = getFeatureScripts(config);
-  // Just notify the console
-  // logutil(chalk.white('[debugger] ') + chalk.yellow('client is running'));
   // Export middleware
   return async function(ctx, next) {
     await next();
     // Only catch certain methods
     if (ctx.method === 'HEAD' || ctx.method === 'GET') {
       const url = ctx.url;
-      // Now check @BUG 2018-08-03 using switch case always trigger at the first call!
       switch (url) {
         // Without the {} will get a Unexpected lexical declaration in case block  no-case-declarations
         case dummyJs: {
@@ -221,7 +216,9 @@ const renderScriptsMiddleware = function(config) {
           break;
         default:
           // @2018-08-20 new feature in alpha.12
-          hasExtraVirtualOverwrite(ctx, config);
+          if ((await hasExtraVirtualOverwrite(ctx, config)) === true) {
+            return;
+          }
       }
     }
   };

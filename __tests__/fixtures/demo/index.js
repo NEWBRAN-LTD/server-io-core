@@ -25,6 +25,7 @@ const config = {
       'js/ie10-viewport-bug-workaround.js'
     ]
   },
+  cordova: true,
   webroot: [join(__dirname, 'dist', 'assets'), join(__dirname, 'dist', 'base')]
 };
 
