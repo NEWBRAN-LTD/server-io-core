@@ -50,7 +50,7 @@
  files to.
 
  */
-const { logutil } = require('../utils/helper');
+const { logutil } = require('../utils/');
 const _ = require('lodash');
 const cheerio = require('cheerio');
 const glob = require('glob');

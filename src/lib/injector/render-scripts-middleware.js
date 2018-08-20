@@ -12,7 +12,7 @@ const {
   getSocketConnectionConfig,
   readDocument,
   getDocLen
-} = require('../utils/helper');
+} = require('../utils/');
 // @20171117 integration with stacktrace
 const { stacktraceName, contentType, dummyJs } = require('../utils/constants');
 const debug = require('debug')('server-io-core:renderscript');

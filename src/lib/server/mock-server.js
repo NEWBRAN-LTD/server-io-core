@@ -6,7 +6,7 @@ const _ = require('lodash');
 const fs = require('fs-extra');
 const chalk = require('chalk');
 const jsonServer = require('json-server');
-const { logutil } = require('../utils/helper');
+const { logutil } = require('../utils/');
 const watcher = require('../watcher');
 const debug = require('debug')('server-io-core:mock');
 // Expect to return this server config for the proxies

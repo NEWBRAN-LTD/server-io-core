@@ -3,7 +3,7 @@
  */
 // const extend = require('util')._extend;
 const { merge, extend } = require('lodash');
-const { toArray } = require('../utils/helper');
+const { toArray } = require('../utils/');
 const { version } = require('../../../package.json');
 /**
  * Make sure the incoming parameter to be array when it's coming out

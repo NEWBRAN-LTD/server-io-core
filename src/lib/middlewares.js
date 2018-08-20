@@ -15,7 +15,7 @@ const isarray = Array.isArray;
 // Properties
 const { createConfiguration } = require('./options');
 // Modules
-const { toArray, logutil } = require('./utils/helper');
+const { toArray, logutil } = require('./utils/');
 // Servers
 const { mockServer } = require('./server');
 // Injectors

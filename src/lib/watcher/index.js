@@ -5,7 +5,7 @@
 const EventEmitter = require('events');
 const { fork } = require('child_process');
 const { join } = require('path');
-const { logutil } = require('../utils/helper');
+const { logutil } = require('../utils/');
 const chalk = require('chalk');
 // Const stockWatcher = require('./stock-watcher');
 const watcherFile = join(__dirname, 'fork.js');

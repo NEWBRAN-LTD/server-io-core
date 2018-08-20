@@ -8,7 +8,7 @@ const { createConfiguration } = require('../src/lib/options');
 const { scriptsInjectorMiddleware, renderScriptsMiddleware } = require('../src/lib/injector');
 const { dummyJs } = require('../src/lib/utils/constants');
 */
-const serverIoCore = require('../index');
+const serverIoCore = require('../../../index');
 const { join } = require('path');
 const debug = require('debug')('server-io-core:dev');
 // Const Koa = require('koa');

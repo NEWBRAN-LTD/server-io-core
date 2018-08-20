@@ -4,7 +4,7 @@
  */
 const _ = require('lodash');
 const chokidar = require('chokidar');
-const { ensureIsDir } = require('../utils/helper');
+const { ensureIsDir } = require('../utils/');
 const debug = require('debug')('server-io-core:watchers');
 const DEFAULT_DELAY = 500;
 /**

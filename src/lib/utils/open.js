@@ -4,15 +4,16 @@
 const _ = require('lodash');
 const open = require('opn');
 const debug = require('debug')('server-io-core:open');
-const { isWindoze } = require('./helper');
-
+const { isWindoze } = require('./index');
+const { defaultHostIp } = require('./constants');
 /**
  * Get hostname to open
  * @param {string} hostname config.hostname
  * @return {string} modified hostname
  */
 const getHostname = hostname => {
-  return isWindoze() ? hostname : hostname === '0.0.0.0' ? 'localhost' : hostname;
+  const h = _.isArray(hostname) ? hostname[0] : hostname;
+  return isWindoze() ? h : h === defaultHostIp ? 'localhost' : h;
 };
 
 /**

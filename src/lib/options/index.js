@@ -3,7 +3,7 @@
  */
 const path = require('path');
 const src = path.join(__dirname, '..', '..');
-const { getServingIpforOS } = require('../utils/helper');
+const { getServingIpforOS } = require('../utils/');
 // Also export the function here
 const enableMiddlewareShorthand = require('./enable-middleware-shorthand');
 // Move from the app.js to here

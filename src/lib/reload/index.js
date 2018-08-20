@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const chalk = require('chalk');
 const watcher = require('../watcher');
-const { logutil } = require('../utils/helper');
+const { logutil } = require('../utils/');
 const debug = require('debug')('server-io-core:watchers');
 const serverReload = require('./server-reload');
 /**

@@ -7,7 +7,7 @@
 const debug = require('debug')('server-io-core:static');
 // Const { resolve } = require('path');
 const send = require('koa-send');
-const { toArray } = require('../utils/helper');
+const { toArray } = require('../utils/');
 
 /**
  * Customize version of koa-static

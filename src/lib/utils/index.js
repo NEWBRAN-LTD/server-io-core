@@ -3,12 +3,15 @@
  * Move some of the functions out of the main.js to reduce the complexity
  */
 const fs = require('fs');
+const os = require('os');
 const path = require('path');
+
 const _ = require('lodash');
 const log = require('fancy-log');
+const { defaultHostIp } = require('./constants');
+
 const test = process.env.NODE_ENV === 'test';
-const os = require('os');
-const defaultIp = '0.0.0.0';
+
 /**
  * @return {string} ip address
  */
@@ -35,7 +38,7 @@ const getServingIpforOS = () => {
   if (isWindoze()) {
     return [ip, ip];
   }
-  return [defaultIp, ip];
+  return [defaultHostIp, ip];
 };
 
 // Const debug = process.env.DEBUG;

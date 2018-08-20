@@ -5,7 +5,7 @@
 // const _ = require('lodash');
 const util = require('util');
 const chalk = require('chalk');
-const { logutil } = require('../utils/helper');
+const { logutil } = require('../utils/');
 const { table, parseObj, displayError } = require('./helpers');
 const debug = require('debug')('server-io-core:watchers');
 /**

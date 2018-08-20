@@ -4,8 +4,9 @@
 const fs = require('fs');
 const http = require('http');
 const https = require('https');
+const _ = require('lodash');
 const chalk = require('chalk');
-const { logutil } = require('../utils/helper');
+const { logutil } = require('../utils/');
 // According to https://github.com/visionmedia/supertest/issues/111
 // Put this here to make sure it works everywhere
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
@@ -54,11 +55,13 @@ module.exports = function(app, config) {
     // See last comment
     webserver = http.createServer(app.callback());
   }
+  // @2018-08-20 add a new double ip options for serving and display
+  const hostname = _.isArray(config.host) ? config.host[0] : config.host;
   // Return it
   return {
     webserver,
     start: () => {
-      webserver.listen(config.port, config.host[0], config.callback);
+      webserver.listen(config.port, hostname, config.callback);
     },
     stop: () => {
       webserver.close();

@@ -10,7 +10,7 @@
     "prepublish-Only": "nsp check",
     "pretest": "eslint . --fix",
     "precommit": "lint-staged",
-    "dev": "DEBUG=server-io-core* node ./demo"
+    "demo": "DEBUG=server-io-core* node ./__tests__/fixtures/demo"
   },
   "repository": {
     "type": "git",

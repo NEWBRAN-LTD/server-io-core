@@ -4,7 +4,7 @@
 const _ = require('lodash');
 const util = require('util');
 const chalk = require('chalk');
-const { logutil } = require('../utils/helper');
+const { logutil } = require('../utils/');
 
 const keys = ['browser', 'location'];
 const lb = chalk.white('-'.repeat(90));

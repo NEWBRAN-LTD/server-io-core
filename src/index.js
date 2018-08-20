@@ -2,6 +2,7 @@
  * Top level interfaces (export all the require pacakge to use in other places)
  */
 const Koa = require('koa');
+const _ = require('lodash');
 const chalk = require('chalk');
 // Ours
 const { webserverGenerator, staticServe, socketServer } = require('./lib/server');
@@ -10,7 +11,7 @@ const { clientReload, serverReload } = require('./lib/reload');
 const openInBrowser = require('./lib/utils/open');
 // Debug
 const debug = require('debug')('server-io-core:main');
-const { logutil } = require('./lib/utils/helper');
+const { logutil } = require('./lib/utils/');
 
 const middlewaresHandler = require('./lib/middlewares');
 
@@ -32,6 +33,7 @@ exports.serverIoCore = function(config) {
     if (typeof cb === 'function') {
       Reflect.apply(cb, null, [config]);
     }
+    const displayHost = _.isArray(config.host) ? config.host[1] : config.host;
     // Notify
     logutil(
       chalk.white(`server-io-core (${config.version}) running at`),
@@ -40,7 +42,7 @@ exports.serverIoCore = function(config) {
           'http',
           config.https.enable ? 's' : '',
           '://',
-          config.host[1],
+          displayHost,
           ':',
           config.port
         ].join('')

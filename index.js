@@ -1,7 +1,7 @@
 const { createConfiguration } = require('./src/lib/options');
 const { serverIoCore } = require('./src');
 const { resolve } = require('path');
-const { toArray } = require('./src/lib/utils/helper');
+const { toArray } = require('./src/lib/utils/');
 const debug = require('debug')('server-io-core:main');
 /**
  * Main entry point for server-io-core

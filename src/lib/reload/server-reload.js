@@ -7,7 +7,7 @@ const chalk = require('chalk');
 // const { fork } = require('child_process');
 // const watcher = join(__dirname, '..', 'watcher');
 const watcher = require('../watcher');
-const { logutil } = require('../utils/helper');
+const { logutil } = require('../utils/');
 const debug = require('debug')('server-io-core:watchers');
 // Debug('path to external watcher', watcher);
 // Main

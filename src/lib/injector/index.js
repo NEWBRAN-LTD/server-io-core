@@ -14,7 +14,7 @@ const {
   headerParser,
   getDocLen,
   readDocument
-} = require('../utils/helper');
+} = require('../utils/');
 const debug = require('debug')('server-io-core:inject');
 
 /**
