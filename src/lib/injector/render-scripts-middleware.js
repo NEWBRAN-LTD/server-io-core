@@ -11,10 +11,12 @@ const {
   logutil,
   getSocketConnectionConfig,
   readDocument,
-  getDocLen
-} = require('../utils/');
+  getDocLen,
+  readAsync
+} = require('../utils');
 // @20171117 integration with stacktrace
-const { stacktraceName, contentType, dummyJs } = require('../utils/constants');
+const { stacktraceName, contentType, dummyJs, cordovaJs } = require('../utils/constants');
+// Debug options
 const debug = require('debug')('server-io-core:renderscript');
 /**
  * Get scripts paths
@@ -32,6 +34,7 @@ const getFeatureScripts = function(config) {
   const reloadPath = config.reload.namespace;
   const reloadEventName = config.reload.eventName;
   const reloadJs = [reloadPath, config.reload.js].join('/');
+
   // Return
   return {
     debuggerPath,
@@ -99,6 +102,34 @@ const getCacheVer = doc => {
   return doc;
 };
 
+/**
+ * Allow user supply overwrite files
+ * @param {object} ctx koa
+ * @param {object} config options
+ * @return {boolean} true has false not
+ */
+const hasExtraVirtualOverwrite = async function(ctx, config) {
+  // Fake cordova.js @alpha.12
+  if (config.cordova !== false) {
+    const match = config.cordova === true ? cordovaJs : config.cordova;
+    if (_.isString(match)) {
+      if (ctx.url === match) {
+        if (match === cordovaJs) {
+          success(ctx, await readAsync(join(__dirname, 'cordova.js.tpl')));
+          return true;
+        }
+
+        try {
+          success(ctx, await readAsync(config.cordova));
+          return true;
+        } catch (e) {
+          failed(ctx, e, config.cordova + ' Not found!');
+        }
+      }
+    }
+  }
+  return false;
+};
 /**
  * This become a standalone middleware and always going to inject to the app
  * @param {object} config the main config object
@@ -183,12 +214,14 @@ const renderScriptsMiddleware = function(config) {
               );
             });
             success(ctx, body);
+            return;
           } catch (e) {
             failed(ctx, e, 'Error reading io-debugger-client file');
           }
           break;
         default:
-        // Do nothing
+          // @2018-08-20 new feature in alpha.12
+          hasExtraVirtualOverwrite(ctx, config);
       }
     }
   };

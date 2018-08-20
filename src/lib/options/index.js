@@ -84,10 +84,10 @@ const defaultOptions = {
       console.log('server reload callback executed');
     }
   },
+  cordova: false, // @2018-08-20 add this option to fake a cordova.js file
   inject: {
     enable: false,
     insertBefore: true,
-    cordova: false, // @2018-08-20 add this option to fake a cordova.js file
     target: [], // List of files to inject
     source: [], // List of files to get inject
     options: {} // Reversed for future use

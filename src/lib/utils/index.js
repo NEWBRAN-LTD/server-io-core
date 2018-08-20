@@ -5,12 +5,22 @@
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-
+const { promisify } = require('util');
 const _ = require('lodash');
 const log = require('fancy-log');
 const { defaultHostIp } = require('./constants');
 
 const test = process.env.NODE_ENV === 'test';
+
+/**
+ * create a promisify version of read file also check before read
+ */
+const readAsync = file => {
+  if (fs.existsSync(file)) {
+    return promisify(fs.readFile)(file, {encoding: 'utf8'});
+  }
+  return Promise.reject(new Error(file + ' not found!'));
+};
 
 /**
  * @return {string} ip address
@@ -232,5 +242,6 @@ module.exports = {
   headerParser,
   getLocalIp,
   getServingIpforOS,
-  isWindoze
+  isWindoze,
+  readAsync
 };
