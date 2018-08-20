@@ -40,7 +40,7 @@ exports.serverIoCore = function(config) {
           'http',
           config.https.enable ? 's' : '',
           '://',
-          config.host,
+          config.host[1],
           ':',
           config.port
         ].join('')

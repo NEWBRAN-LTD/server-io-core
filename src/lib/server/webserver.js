@@ -58,7 +58,7 @@ module.exports = function(app, config) {
   return {
     webserver,
     start: () => {
-      webserver.listen(config.port, config.host, config.callback);
+      webserver.listen(config.port, config.host[0], config.callback);
     },
     stop: () => {
       webserver.close();

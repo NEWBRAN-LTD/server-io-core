@@ -8,7 +8,7 @@ const _ = require('lodash');
 const log = require('fancy-log');
 const test = process.env.NODE_ENV === 'test';
 const os = require('os');
-
+const defaultIp = '0.0.0.0';
 /**
  * @return {string} ip address
  */
@@ -26,15 +26,16 @@ const getLocalIp = () => (
 const isWindoze = () => (os.platform().indexOf('win') === 0);
 
 /**
- * If's it's windows then need to get the ip address of the network interface 
+ * If's it's windows then need to get the ip address of the network interface
  * otherwise we just need to use 0.0.0.0 to bind to all
  * @return {string} ip address
  */
 const getServingIpforOS = () => {
+  const ip = getLocalIp();
   if (isWindoze()) {
-    return getLocalIp();
+    return [ip, ip];
   }
-  return '0.0.0.0';
+  return [defaultIp, ip];
 };
 
 // Const debug = process.env.DEBUG;

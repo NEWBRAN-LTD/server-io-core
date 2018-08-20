@@ -87,6 +87,7 @@ const defaultOptions = {
   inject: {
     enable: false,
     insertBefore: true,
+    cordova: false, // @2018-08-20 add this option to fake a cordova.js file
     target: [], // List of files to inject
     source: [], // List of files to get inject
     options: {} // Reversed for future use
@@ -104,7 +105,7 @@ const defaultOptions = {
   // Client reload - default TRUE
   reload: {
     enable: true,
-    verbose: true,
+    verbose: false, // @2018-08-20 change to false as default
     interval: 500,
     namespace: '/reload-nsp',
     js: 'reload-client.js',
@@ -117,6 +118,7 @@ const defaultOptions = {
     eventName: 'debugging',
     enable: true, // Turn on by default otherwise they wouldn't be using this version anyway
     consoleDebug: true, // Overwrite the console.debug method
+    verbose: false, // Add verbose option
     namespace: '/debugger-nsp',
     js: 'debugger-client.js',
     hello: 'IO DEBUGGER is listening ...', // Allow the user to change this as well

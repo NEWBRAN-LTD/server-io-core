@@ -58,9 +58,11 @@ module.exports = function(config, io) {
       }
     });
     // Extra listener
-    socket.on('disconnect', () => {
-      logutil('Debugger client disconnected');
-    });
+    if (config.debugger.verbose) {
+      socket.on('disconnect', () => {
+        logutil('Debugger client disconnected');
+      });
+    }
   }); // End configurable name space
 
   // return a close method
