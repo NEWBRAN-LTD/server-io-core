@@ -31,16 +31,14 @@ module.exports = function(config, io) {
     // Listen
     socket.on(config.debugger.eventName, function(data) {
       try {
-        // @TODO Provide a logger
-        /*
-        if (logger && typeof logger === 'function') {
-          logger(data); // @TODO what to do with the logger
-        } */
         // Console log output
         let time = new Date().toString();
         // Output to console
         logutil(chalk.yellow('io debugger msg @ ' + time));
         let error = parseObj(data);
+        if (config.debugger.broadcast) {
+          nsp.emit('broadcast', { time, error });
+        }
         if (typeof error === 'string') {
           table([chalk.yellow('STRING TYPE ERROR'), chalk.red(error)]);
         } else if (typeof error === 'object') {

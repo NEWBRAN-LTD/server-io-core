@@ -120,6 +120,7 @@ const defaultOptions = {
     consoleDebug: true, // Overwrite the console.debug method
     verbose: false, // Add verbose option
     namespace: '/debugger-nsp',
+    broadcast: false,
     js: 'debugger-client.js',
     hello: 'IO DEBUGGER is listening ...', // Allow the user to change this as well
     client: true, // Allow passing a configuration to overwrite the client
