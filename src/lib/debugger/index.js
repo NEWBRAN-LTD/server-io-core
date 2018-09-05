@@ -20,7 +20,8 @@ module.exports = function(config, io) {
     chalk.white('[debugger] ') +
       chalk.yellow('server is running') +
       ' ' +
-      chalk.white(config.version)
+      chalk.white(config.version) +
+      (config.debugger.broadcast ? chalk.green('[broadcasting]') : '')
   );
   // Run
   const nsp = io.of(config.debugger.namespace);
@@ -37,7 +38,7 @@ module.exports = function(config, io) {
         logutil(chalk.yellow('io debugger msg @ ' + time));
         let error = parseObj(data);
         if (config.debugger.broadcast) {
-          nsp.emit('broadcast', { time, error });
+          nsp.emit('broadcastdebug', { time, error });
         }
         if (typeof error === 'string') {
           table([chalk.yellow('STRING TYPE ERROR'), chalk.red(error)]);
