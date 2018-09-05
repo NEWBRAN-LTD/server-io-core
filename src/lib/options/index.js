@@ -115,14 +115,14 @@ const defaultOptions = {
   // Create our socket.io debugger
   // using the socket.io instead of just normal post allow us to do this cross domain
   debugger: {
-    eventName: 'debugging',
     enable: true, // Turn on by default otherwise they wouldn't be using this version anyway
+    eventName: 'debugging',
     consoleDebug: true, // Overwrite the console.debug method
     verbose: false, // Add verbose option
     namespace: '/debugger-nsp',
-    broadcast: false,
     js: 'debugger-client.js',
     hello: 'IO DEBUGGER is listening ...', // Allow the user to change this as well
+    broadcast: false,
     client: true, // Allow passing a configuration to overwrite the client
     server: true // Allow passing configuration - see middleware.js for more detail
   }
