@@ -217,7 +217,7 @@ const renderScriptsMiddleware = function(config) {
         default:
           // @2018-08-20 new feature in alpha.12
           if ((await hasExtraVirtualOverwrite(ctx, config)) === true) {
-            return;
+            debug('catch hasExtraVirtualOverwrite');
           }
       }
     }
