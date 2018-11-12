@@ -8,7 +8,7 @@ const path = require('path');
 const chalk = require('chalk');
 const helmet = require('koa-helmet');
 const bodyparser = require('koa-bodyparser');
-const { proxy } = require('koa-nginx');
+const Proxy = require('koa-nginx');
 // Shorthands
 const join = path.join;
 const isarray = Array.isArray;
@@ -110,7 +110,7 @@ module.exports = function(app, config) {
 
   if (proxies.length) {
     middlewares.push(
-      proxy({
+      Proxy.proxy({
         proxies: proxies,
         proxyTimeout: config.proxyTimeout,
         logLevel: config.development ? 'debug' : 'error'

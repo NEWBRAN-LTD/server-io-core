@@ -1,5 +1,11 @@
 {
+  "defaultUrl": "http://localhost:8000",
   "proxy": {
     "port": 8999
+  },
+  "message": {
+    "send": "Hello",
+    "reply": "World",
+    "banner": "This is server-io-core"
   }
 }

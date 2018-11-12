@@ -61,6 +61,7 @@
     "nsp": "^3.2.1",
     "nyc": "^12.0.2",
     "prettier": "^1.13.7",
+    "socket.io-client": "^2.1.1",
     "superkoa": "^1.0.3"
   },
   "lint-staged": {
