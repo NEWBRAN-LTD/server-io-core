@@ -1,6 +1,7 @@
 // create a phoney socket server
 const Koa = require('koa');
 const IO = require('koa-socket-2');
+const options = require('./options.json');
 
 const app = new Koa();
 const io = new IO();
@@ -15,4 +16,4 @@ io.on('message', (ctx, data) => {
   console.log('client sent data to message endpoint', data);
 });
 
-app.listen( 8999 );
+app.listen( options.proxy.port );
