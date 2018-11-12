@@ -19,12 +19,9 @@ test.before(t => {
 
 test.after(t => {
   t.context.stop();
-  // process.exit();
 });
 
 test('It should start with no config option', async (t) => {
-  // t.plan(1);
   const res = await request(t.context.app).get('/');
   t.is(200, res.status);
-  // t.pass();
 });
