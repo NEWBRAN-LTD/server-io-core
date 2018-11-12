@@ -71,8 +71,8 @@ exports.scriptsInjectorMiddleware = function(config) {
           ctx.path === '/'
             ? searchIndexFile(config)
             : isHtmlFile(ctx.path)
-              ? ctx.path
-              : false;
+            ? ctx.path
+            : false;
         if (p) {
           try {
             debug('use overwrite', ctx.url, ctx.path);

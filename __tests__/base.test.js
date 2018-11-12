@@ -2,7 +2,7 @@
  * Base test to see if the server start up without any options
  */
 const test = require('ava');
-// const request = require('superkoa');
+const request = require('superkoa');
 const serverIoCore = require('./fixtures/server');
 
 test.before(t => {
