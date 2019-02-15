@@ -1,10 +1,10 @@
 {
   "name": "server-io-core",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.3",
   "description": "Developement server using Koa with Socket.io reload and Javascript remote debugger",
   "main": "index.js",
   "scripts": {
-    "test": "ava",
+    "test": "ava --verbose",
     "devtest": "DEBUG=server-io-core* ava --verbose",
     "cli": "DEBUG=server-io-core* node ./cli",
     "pretest": "eslint . --fix",

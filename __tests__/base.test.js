@@ -6,7 +6,9 @@ const request = require('superkoa');
 const serverIoCore = require('./fixtures/server');
 
 test.before(t => {
-  const { app, stop } = serverIoCore();
+  const { app, stop } = serverIoCore({
+    port: 8001
+  });
   t.context.app = app;
   t.context.stop = stop;
 });

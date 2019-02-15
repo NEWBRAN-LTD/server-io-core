@@ -24,7 +24,6 @@ test.before(async t => {
 
 test.after(t => {
   t.context.stop();
-  // debug(t.context.proxy);
   t.context.proxy.close();
 });
 
@@ -32,8 +31,6 @@ test(`It should able to connect to another proxy on ${port}`, async (t) => {
 
   try {
     const res = await request(t.context.app).get('/proxy');
-    // const data = await getViaProxy([options.defaultUrl, 'proxy'].join('/'));
-
     t.is(options.message.banner, res.text);
   } catch (e) {
     debug('wtf', e);
