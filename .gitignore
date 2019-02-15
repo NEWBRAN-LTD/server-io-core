@@ -3,3 +3,5 @@ node_modules
 /demo
 yarn-error.log
 .nyc_output
+package-lock.json
+yarn.lock

@@ -11,7 +11,11 @@ const { dummyJs } = require('../src/lib/utils/constants');
 const serverIoCore = require('../../../index');
 const { join } = require('path');
 const debug = require('debug')('server-io-core:dev');
-// Const Koa = require('koa');
+const proxySrv = require('../proxy');
+const port = 8999;
+// start the proxySrv
+const proxySrvApp = proxySrv();
+
 // options
 const config = {
   // Debugger: false,
@@ -25,32 +29,16 @@ const config = {
       'js/ie10-viewport-bug-workaround.js'
     ]
   },
-  cordova: true,
+  proxies: [{
+    host: `http://localhost:${port}`,
+    context: '/proxy'
+  },{
+    host: `http://localhost:${port}`,
+    ws: true
+  }],
   webroot: [join(__dirname, 'dist', 'assets'), join(__dirname, 'dist', 'base')]
 };
 
-debug('options', config);
+// debug('options', config);
 
-/*
-Config.callback = () => {
-  open(config);
-  console.log('server started');
-};
-*/
-// start
-/*
-const app = new Koa();
-app.on('error', err => {
-  debug('app level error', err);
-});
-
-const { webserver, start } = webserverGenerator(app, config);
-
-app.use(renderScriptsMiddleware(config));
-app.use(scriptsInjectorMiddleware(config));
-// static serve
-staticServe(config)(app);
-// start server
-start();
-*/
 serverIoCore(config);

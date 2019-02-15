@@ -18,6 +18,7 @@ module.exports = (server, config) => {
         ? config.socket.transportConfig
         : ['websocket'];
   }
+
   // Need to take this constructor out and re-use with the reload
   const io = socketIO(server, socketConfig);
   // Export it again

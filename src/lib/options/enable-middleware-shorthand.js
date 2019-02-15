@@ -17,6 +17,7 @@ const ensureArrayProps = (arraySource, options) => {
       if (options[key]) {
         return { [key]: toArray(options[key]) };
       }
+
       return { [key]: [] };
     })
     .reduce((next, last) => {
@@ -47,6 +48,7 @@ module.exports = function(defaults, props, arraySource, options) {
   if (Object.prototype.toString.call(props) === '[object String]') {
     props = [props];
   }
+
   for (let i = 0, len = props.length; i < len; ++i) {
     let prop = props[i];
     /**
@@ -67,6 +69,7 @@ module.exports = function(defaults, props, arraySource, options) {
       config[prop] = merge({}, originalDefaults[prop], { enable: false });
     }
   }
+
   // Here we add things that we don't want to get overwritten
   config.version = version;
   // Change from sessionId to timestamp, just for reference not in use anywhere

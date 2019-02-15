@@ -8,21 +8,20 @@ const path = require('path');
 const chalk = require('chalk');
 const helmet = require('koa-helmet');
 const bodyparser = require('koa-bodyparser');
-const { proxy } = require('koa-nginx');
+const Proxy = require('koa-nginx');
 // Shorthands
 const join = path.join;
 const isarray = Array.isArray;
 // Properties
 const { createConfiguration } = require('./options');
 // Modules
-const { toArray, logutil } = require('./utils/');
+const { toArray, logutil, stripFirstSlash } = require('./utils/');
 // Servers
 const { mockServer } = require('./server');
 // Injectors
 const { scriptsInjectorMiddleware, renderScriptsMiddleware } = require('./injector');
 /**
- * Export @TODO we also need to generate the socket server here, export the io
- * object for the other socket enable app to use
+ * Object for the other socket enable app to use
  * @param {object} app the koa instance
  * @param {object} config pass from config
  * @return {object} just the mockServerInstance
@@ -42,6 +41,7 @@ module.exports = function(app, config) {
   if (config.development) {
     middlewares.push(helmet.noCache());
   }
+
   // Make sure the namespace is correct first
   if (config.debugger.enable) {
     const namespace = config.debugger.namespace;
@@ -50,6 +50,7 @@ module.exports = function(app, config) {
     } else if (namespace.substr(0, 1) !== '/') {
       config.debugger.namespace = '/' + namespace;
     }
+
     addDebugger = config.debugger.client !== false;
   }
 
@@ -58,30 +59,42 @@ module.exports = function(app, config) {
   if (addReload || addDebugger) {
     middlewares.push(renderScriptsMiddleware(config));
   }
+
   if (addReload || addDebugger || config.inject.enable) {
     middlewares.push(scriptsInjectorMiddleware(config));
   }
+
   // Extra middlewares pass directly from config
   if (typeof config.middlewares === 'function') {
     middlewares.push(config.middlewares);
   } else if (isarray(config.middlewares)) {
     middlewares = middlewares.concat(config.middlewares);
   }
+
   // Config the proxies
-  const filtered = proxies.filter(proxyoptions => {
-    if (!proxyoptions.target || !proxyoptions.context) {
-      logutil(
-        chalk.red('Missing target or source property for proxy setting!'),
-        proxyoptions
-      );
-      return false; // ignore!
-    }
-    return true;
-  });
+  let filtered = proxies
+    .filter(proxyoptions => {
+      // When proxy socket we don't need the context
+      if (!proxyoptions.host || (proxyoptions.ws !== true && !proxyoptions.context)) {
+        logutil(
+          chalk.red('Missing target or source property for proxy setting!'),
+          proxyoptions
+        );
+        return false; // ignore!
+      }
+
+      return true;
+    })
+    .map(pc => {
+      if (pc.context) {
+        pc.context = stripFirstSlash(pc.context);
+      }
+
+      return pc;
+    });
 
   // First need to setup the mock json server
   // @2010-05-08 remove the development flag it could be confusing
-  // @TODO update the proxy defintion to work with koa-nginx
   if (config.mock.enable && config.mock.json) {
     // Here we overwrite the proxies so the proxy get to the mock server
     const _mock = mockServer(config);
@@ -89,7 +102,8 @@ module.exports = function(app, config) {
     unwatchMockFn = _mock.unwatchFn;
     // Need to double check the mockServer will crash with the proxies
     const _proxies = _mock.proxies;
-    const _mockProxiesKey = _proxies.map(p => p.context);
+    const _mockProxiesKey = _proxies.map(p => p.host);
+    // There is a problem here
     const _proxiesKey = filtered.map(p => p.context);
     const originalLen = _proxies.length + _proxiesKey.length;
     const newUnionProxies = _.union(_proxies, _proxiesKey);
@@ -107,23 +121,24 @@ module.exports = function(app, config) {
     }
   }
 
-  if (proxies.length) {
-    middlewares.push(
-      proxy({
-        proxies: proxies,
-        proxyTimeout: config.proxyTimeout,
-        logLevel: config.development ? 'debug' : 'error'
-      })
-    );
-  }
-
   // Now inject the middlewares
   if (middlewares.length) {
-    // @TODO at the moment, we only accept function middlewares
-    // but the problem with Koa is the ctx.state is not falling through all the way
+    // But the problem with Koa is the ctx.state is not falling through all the way
     // so we might need to add the middleware in stack
     // with app.use.apply(app, [middlewares_sub_array]);
-    middlewares.filter(m => typeof m === 'function').forEach(m => app.use(m));
+    middlewares.forEach(m => app.use(m));
+  }
+
+  // Last in the chain
+  if (filtered.length) {
+    // Logutil('filtered', filtered);
+    app.use(
+      Proxy.proxy({
+        proxies: filtered,
+        proxyTimeout: config.proxyTimeout,
+        logLevel: process.env.NODE_ENV === 'production' ? 'error' : 'debug' // Config.development ? 'debug' : 'error'
+      })
+    );
   }
 
   // This is the end - we continue in the next level to construct the server

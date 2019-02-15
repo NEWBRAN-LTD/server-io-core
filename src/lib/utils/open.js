@@ -50,10 +50,12 @@ module.exports = function(config) {
         });
       }
     }
+
     // Push this down for the nyc to do coverage deeper
     if (process.env.NODE_ENV === 'test' || config.open.enable === false) {
       return args;
     }
+
     if (multiple === false) {
       debug('[open]', args);
       Reflect.apply(open, open, args);
@@ -64,6 +66,7 @@ module.exports = function(config) {
         Reflect.apply(open, open, args.concat([browser]));
       });
     }
+
     return true;
   } catch (e) {
     return false;

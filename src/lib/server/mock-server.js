@@ -41,6 +41,7 @@ module.exports = function(options) {
   if (opt.middlewares && Array.isArray(opt.middlewares) && opt.middlewares.length > 0) {
     opt.middlewares.map(middleware => _server.use(middleware));
   }
+
   // This is the real server that we need to call exit
   const server = _server.listen(port, () => {
     logutil(chalk.white('Mock json Server is running @ ', port));
@@ -52,8 +53,10 @@ module.exports = function(options) {
       logutil('Kill the mock server');
       return;
     }
+
     logutil(chalk.white('Mock josn server restart'));
   };
+
   // Start the watcher here
   if (opt.watch !== false) {
     const evt = watcher({
@@ -66,6 +69,7 @@ module.exports = function(options) {
       evt.emit('exit');
     };
   }
+
   // 05032018 - also return a restart method, so whenever the file change
   // it will restart by itself
   // Return
