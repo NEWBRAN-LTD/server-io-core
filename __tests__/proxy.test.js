@@ -14,11 +14,8 @@ test.before(async t => {
   // start another server
   const { app, stop, io } = server({
     proxies: [{
-      target: `http://localhost:${port}`,
-      context: '/proxy'
-    },{
-      target: `http://localhost:${port}`,
-      ws: true
+      host: `http://localhost:${port}`,
+      context: 'proxy'
     }]
   });
   t.context.app = app;
@@ -27,16 +24,17 @@ test.before(async t => {
 
 test.after(t => {
   t.context.stop();
-  t.context.proxy.exit();
+  // debug(t.context.proxy);
+  t.context.proxy.close();
 });
 
 test(`It should able to connect to another proxy on ${port}`, async (t) => {
 
   try {
-    const data = await request(t.context.app).get('/proxy');
+    const res = await request(t.context.app).get('/proxy');
     // const data = await getViaProxy([options.defaultUrl, 'proxy'].join('/'));
 
-    t.is(options.message.banner, data);
+    t.is(options.message.banner, res.text);
   } catch (e) {
     debug('wtf', e);
   }
@@ -51,4 +49,4 @@ test(`It should able to connect to another proxy on ${port}`, async (t) => {
   */
 });
 
-test.todo('proxy socket test');
+// test.todo('proxy socket test');
