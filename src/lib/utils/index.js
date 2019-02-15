@@ -226,7 +226,16 @@ const isHtmlFile = file => {
   return ext === '.html' || ext === '.htm';
 };
 
-
+/**
+ * strip the root slash for the proxy context
+ */
+const stripFirstSlash = str => {
+  const first = str.substring(0,1);
+  if (first === '/') {
+    return str.substring(1);
+  }
+  return str;
+};
 // Export
 module.exports = {
   searchIndexFile,
@@ -243,5 +252,6 @@ module.exports = {
   getLocalIp,
   getServingIpforOS,
   isWindoze,
-  readAsync
+  readAsync,
+  stripFirstSlash
 };

@@ -69,19 +69,16 @@
     <script>window.jQuery || document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"><\/script>')</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
     <script type="text/javascript">
+      
       $(function() {
         $('#click').click(function() {
+          // test the socket proxy option
+
+          /*
           $.get('/proxy').then(function(result) {
             console.log('proxy result', result);
-          }).catch(function(err) {
-            /*
-            $gulpServerIo.debugger({
-              from: 'custom get /api',
-              msg: err,
-              color: 'debug'
-            });
-            */
           });
+          */
           return false;
         });
         $('#error').click(function() {

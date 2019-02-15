@@ -30,10 +30,10 @@ const config = {
     ]
   },
   proxies: [{
-    target: `http://localhost:${port}`,
+    host: `http://localhost:${port}`,
     context: '/proxy'
   },{
-    target: `http://localhost:${port}`,
+    host: `http://localhost:${port}`,
     ws: true
   }],
   webroot: [join(__dirname, 'dist', 'assets'), join(__dirname, 'dist', 'base')]
