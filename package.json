@@ -6,6 +6,8 @@
   "scripts": {
     "test": "ava",
     "devtest": "DEBUG=server-io-core* nyc ava --verbose --timeout=10s",
+    "proxy": "node ./__tests__/fixtures/proxy.js",
+    "client": "node ./__tests__/fixtures/client.js",
     "cli": "DEBUG=server-io-core* node ./cli",
     "prepublish-Only-x": "nsp check",
     "pretest": "eslint . --fix",
@@ -58,6 +60,7 @@
     "husky": "^1.3.1",
     "koa-socket-2": "^1.0.17",
     "lint-staged": "^8.1.4",
+    "node-fetch": "^2.3.0",
     "nyc": "^13.3.0",
     "prettier": "^1.13.7",
     "socket.io-client": "^2.1.1",

@@ -4,6 +4,7 @@ const IO = require('koa-socket-2');
 const options = require('./options.json');
 const app = new Koa();
 const io = new IO();
+const debug = require('debug')('server-io-core:proxy');
 // reuse for proxy for the http
 app.use(async (ctx, next) => {
   ctx.body = options.message.banner;
@@ -12,9 +13,9 @@ app.use(async (ctx, next) => {
 io.attach(app);
 // use the raw socket instead
 app._io.on('connection', sock => {
-  console.log('connection established');
+  debug('connection established');
   sock.on('message', (msg, fn) => {
-    console.log('client sent data to message endpoint', data);
+    debug('client sent data to message endpoint', data);
     fn(options.message.reply);
   });
 });
@@ -26,8 +27,10 @@ io.on('message', (ctx, data, fn) => {
   fn(options.message.reply);
 });
 */
-
+app.listen(options.proxy.port);
+/*
 module.exports = function() {
   app.listen( options.proxy.port );
   return app;
 }
+*/

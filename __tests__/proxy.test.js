@@ -5,6 +5,7 @@ const options = require('./fixtures/options.json');
 const server = require('./fixtures/server');
 const proxy = require('./fixtures/proxy');
 const port = options.proxy.port;
+const debug = require('debug')('server-io-core:proxy-test');
 
 test.before(t => {
   // start the server behind proxy
@@ -27,20 +28,29 @@ test.after(t => {
   t.context.stop();
 });
 
-test(`It should able to connect to another proxy on ${port}`, (t) => {
+test(`It should able to connect to another proxy on ${port}`, async (t) => {
 
-  http.get([options.defaultUrl, 'proxy'].join('/'), (resp) => {
-    let data = '';
-    // A chunk of data has been recieved.
-    resp.on('data', (chunk) => {
-      data += chunk;
+  const getViaProxy = () => {
+    return new Promise(resolver => {
+      debug('calling ', options.defaultUrl + '/proxy');
+      http.get([options.defaultUrl, 'proxy'].join('/'), (resp) => {
+        let data = '';
+        // A chunk of data has been recieved.
+        resp.on('data', (chunk) => {
+          data += chunk;
+        });
+        // The whole response has been received. Print out the result.
+        resp.on('end', () => {
+          debug('received data', data);
+          resolver(data);
+        });
+      });
     });
-    // The whole response has been received. Print out the result.
-    resp.on('end', () => {
-      debug('received data', data);
-      t.is(options.message.banner, data);
-    });
-  });
+  }
+
+  const data = await getViaProxy();
+
+  t.is(options.message.banner, data);
 
   /* koa-nginx throw error */
   /*
