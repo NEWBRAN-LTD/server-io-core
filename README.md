@@ -300,7 +300,7 @@ serverIoCore({
 
 The CSS files will be inject in the `head` and the JS files will be inject above the `body`.
 
-**@TODO this option will be available in the next release**
+**@TODO this option will be available in the future release**
 
 You can specify where you want the files get injected, using the following option:
 
@@ -329,11 +329,25 @@ serverIoCore({
 
 TBC
 
-### Mock Server
-
-TBC
-
 ### Proxy
+
+We are using the [koa-nginx](https://github.com/wedog/koa-nginx) as the proxy option. To create a proxy:
+
+```
+serverIoCore(
+  {
+    proxies: [{
+      host: `http://localhost:5678`,
+      context: 'proxy'
+    }]
+  }
+);
+```
+
+From your code, you just call `/proxy` and it will redirect to the http://localhost:5678
+
+
+### Mock Server
 
 TBC
 
@@ -353,4 +367,4 @@ If you like this, please give [server-io-core](https://gitlab.com/newbranltd/ser
 
 LICENSE: MIT
 
-Brought to you by [newbran.ch](https://newbranch) / [Joel Chu](https://joelchu.com)
+Brought to you by [newbran.ch](https://newbran.ch) / [Joel Chu](https://joelchu.com)
