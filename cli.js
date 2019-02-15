@@ -53,6 +53,7 @@ const serve = cli => {
       'Sorry the path to your file is required! Run `server-io-core` --help for more information'
     );
   }
+
   const argv = cli.flags;
   const dirs = cli.input[0].split(',');
   serverIoCore(
@@ -67,6 +68,7 @@ const serve = cli => {
         } else if (path.extname(configfile) === '.js') {
           config = require(configfile);
         }
+
         if (!config) {
           throw new Error(
             ['configuration file', configfile, ' is not supported or not found!'].join(
@@ -79,18 +81,22 @@ const serve = cli => {
         if (argv.port) {
           config.port = argv.port;
         }
+
         if (argv.host) {
           config.host = argv.host;
         }
+
         if (argv.https) {
           config.https = {
             enable: true
           };
         }
       }
+
       return config;
     })()
   );
 };
+
 // Run
 serve(cli);

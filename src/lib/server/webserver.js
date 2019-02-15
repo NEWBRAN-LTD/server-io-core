@@ -49,12 +49,14 @@ module.exports = function(app, config) {
         cert: fs.readFileSync(config.https.devCrtPem)
       };
     }
+
     // @2018-07-30 change to Koa style
     webserver = https.createServer(opts, app.callback());
   } else {
     // See last comment
     webserver = http.createServer(app.callback());
   }
+
   // @2018-08-20 add a new double ip options for serving and display
   const hostname = _.isArray(config.host) ? config.host[0] : config.host;
   // Return it

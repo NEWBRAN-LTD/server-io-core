@@ -116,6 +116,7 @@ const hasExtraVirtualOverwrite = async function(ctx, config) {
         success(ctx, doc);
         return true;
       }
+
       if (_.isString(config.cordova)) {
         try {
           success(ctx, await readDocument(config.cordova));
@@ -126,8 +127,10 @@ const hasExtraVirtualOverwrite = async function(ctx, config) {
       }
     }
   }
+
   return false;
 };
+
 /**
  * This become a standalone middleware and always going to inject to the app
  * @param {object} config the main config object
@@ -158,6 +161,7 @@ const renderScriptsMiddleware = function(config) {
           success(ctx, body);
           return;
         }
+
         case reloadJs:
           try {
             const body = await readDocument(
@@ -177,6 +181,7 @@ const renderScriptsMiddleware = function(config) {
           } catch (e) {
             failed(ctx, e, 'Error reading io-reload-client file');
           }
+
           return; // Terminate it
         case stacktraceJsFile:
           try {
@@ -185,6 +190,7 @@ const renderScriptsMiddleware = function(config) {
           } catch (e) {
             failed(ctx, e, 'Error reading stacktrace source file!');
           }
+
           return; // Terminate it
         case debuggerJs:
           try {
@@ -213,6 +219,7 @@ const renderScriptsMiddleware = function(config) {
           } catch (e) {
             failed(ctx, e, 'Error reading io-debugger-client file');
           }
+
           break;
         default:
           // @2018-08-20 new feature in alpha.12

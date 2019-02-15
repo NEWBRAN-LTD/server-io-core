@@ -21,6 +21,7 @@ module.exports = config => {
   if (config.index) {
     opts.index = config.index;
   }
+
   return app => {
     dirs.forEach(dir => {
       app.use(serve(dir, opts, config));
@@ -54,11 +55,13 @@ function serve(root, opts) {
           }
         }
       }
+
       if (!done) {
         await next();
       }
     };
   }
+
   return async function(ctx, next) {
     await next();
     // Check certain method
@@ -69,6 +72,7 @@ function serve(root, opts) {
       debug('skip serveStatic', ctx.body);
       return; // eslint-disable-line
     }
+
     try {
       await send(ctx, ctx.path, opts);
     } catch (err) {

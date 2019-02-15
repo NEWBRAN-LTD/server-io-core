@@ -33,6 +33,7 @@ exports.serverIoCore = function(config) {
     if (typeof cb === 'function') {
       Reflect.apply(cb, null, [config]);
     }
+
     const displayHost = _.isArray(config.host) ? config.host[1] : config.host;
     // Notify
     logutil(
@@ -50,6 +51,7 @@ exports.serverIoCore = function(config) {
     );
     openInBrowser(config);
   };
+
   // 2018-08-17 unless specify the socket will always be enable
   if (
     config.socket.enable ||
@@ -68,14 +70,17 @@ exports.serverIoCore = function(config) {
     // Limiting the config options
     unwatchFn.push(clientReload(config.webroot, io, config.reload));
   }
+
   // Debugger server start
   if (config.debugger.enable && config.debugger.server === true) {
     unwatchFn.push(debuggerServer(config, io));
   }
+
   // Add watching server side file
   if (config.serverReload.enable) {
     unwatchFn.push(serverReload(config.serverReload));
   }
+
   // Enable the injectors here, if socket server is enable that means
   // The injector related function need to be activated
   const { unwatchMockFn } = middlewaresHandler(app, config);
@@ -85,6 +90,7 @@ exports.serverIoCore = function(config) {
   if (config.autoStart === true) {
     start();
   }
+
   // Call back on close
   webserver.on('close', () => {
     debug('server on close');
@@ -93,6 +99,7 @@ exports.serverIoCore = function(config) {
     if (io && io.server && io.server.close) {
       io.server.close();
     }
+
     unwatchFn.forEach(fn => fn());
   });
   // Finally return the instance

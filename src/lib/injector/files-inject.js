@@ -68,10 +68,12 @@ const tagCss = (files, ignorePath) => {
       if (ignorePath) {
         file = file.replace(ignorePath, '');
       }
+
       return `<link rel="stylesheet" href="${file}" />`;
     })
     .join('\r\n');
 };
+
 /**
  * @param {array} files to wrap with tag
  * @param {string} ignorePath to strip out
@@ -83,6 +85,7 @@ const tagJs = (files, ignorePath) => {
       if (ignorePath) {
         file = file.replace(ignorePath, '');
       }
+
       return `<script type="text/javascript" src="${file}" defer></script>`;
     })
     .join('\r\n');
@@ -99,6 +102,7 @@ const processFiles = source => {
   } else {
     files = files.concat([source]);
   }
+
   return files;
 };
 
@@ -142,6 +146,7 @@ const getSource = source => {
 
     } */
   }
+
   return {
     js: js.length ? js : false,
     css: css.length ? css : false
@@ -165,8 +170,10 @@ exports.getFilesToInject = function(config) {
       debug('injector error', msg);
       logutil(chalk.red(msg), config);
     }
+
     return { js: [], css: [] };
   }
+
   return {
     js: tagJs(js, config.ignorePath),
     css: tagCss(css, config.ignorePath)
@@ -196,8 +203,10 @@ exports.injectToHtml = (body, js, css, before = true) => {
   } else {
     $('body').append(js);
   }
+
   $('head').append(css);
   return $.html();
 };
+
 // Re-export for re-use
 exports.tagJs = tagJs;

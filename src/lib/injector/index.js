@@ -50,15 +50,18 @@ exports.scriptsInjectorMiddleware = function(config) {
   if (features.debugger || features.reload) {
     scripts.push(socketIoJs);
   }
+
   if (features.debugger) {
     // @TODO if they change the debugger config
     // we might have to do additional checks here just in case
     scripts = scripts.concat([stacktraceJsFile, debuggerJs]);
   }
+
   if (features.reload) {
     // @2018-05-14 using our new reload method
     scripts.push(reloadJs);
   }
+
   const files = tagJs(scripts);
   // Next we add the fileInjector function here
   const { js, css } = getFilesToInject(config.inject);
@@ -85,10 +88,12 @@ exports.scriptsInjectorMiddleware = function(config) {
             debug('get document error', err);
             ctx.throw(404, `Html file ${p} not found!`);
           }
+
           return;
         }
       }
     }
+
     await next();
   };
 };

@@ -19,6 +19,7 @@ const getColor = function(data) {
   if (str === dc) {
     return str; // Default
   }
+
   switch (str) {
     case 'debug':
       return 'red';
@@ -30,6 +31,7 @@ const getColor = function(data) {
       if (chalk[str]) {
         return str;
       }
+
       return dc;
   }
 };
@@ -42,6 +44,7 @@ const table = rows => {
     logutil(rows);
   }
 };
+
 const parseObj = data => {
   try {
     return JSON.parse(data);
@@ -49,6 +52,7 @@ const parseObj = data => {
     return data;
   }
 };
+
 // Encap to one func
 const displayError = e => {
   // This is required so we just do a simple test here
@@ -58,6 +62,7 @@ const displayError = e => {
   if (e.from && e.color) {
     rows.push(chalk.white(`FROM: ${e.from}`));
   }
+
   keys.forEach(function(key) {
     if (e[key]) {
       rows.push([chalk.white(key + ':'), chalk.cyan(e[key])].join(' '));
@@ -98,7 +103,9 @@ const displayError = e => {
       );
     }
   }
+
   table(rows);
 };
+
 // Export
 module.exports = { table, parseObj, displayError };

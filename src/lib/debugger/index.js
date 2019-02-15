@@ -40,6 +40,7 @@ module.exports = function(config, io) {
         if (config.debugger.broadcast) {
           nsp.emit('broadcastdebug', { time, error });
         }
+
         if (typeof error === 'string') {
           table([chalk.yellow('STRING TYPE ERROR'), chalk.red(error)]);
         } else if (typeof error === 'object') {

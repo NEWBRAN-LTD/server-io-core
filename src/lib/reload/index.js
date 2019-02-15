@@ -34,6 +34,7 @@ exports.clientReload = function(filePaths, io, config) {
     if (config.verbose) {
       logutil(chalk.yellow('[reload][exit]'));
     }
+
     props.emit('exit');
     // Exit the namespace
     const connectedNameSpaceSockets = Object.keys(nsp.connected); // Get Object with Connected SocketIds as properties
@@ -44,5 +45,6 @@ exports.clientReload = function(filePaths, io, config) {
     delete io.nsps[config.namespace];
   };
 };
+
 // Re-export it
 exports.serverReload = serverReload;

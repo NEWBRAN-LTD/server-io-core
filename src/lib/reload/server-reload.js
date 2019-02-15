@@ -36,6 +36,7 @@ module.exports = function(config) {
       }
     };
   }
+
   debug('Error: config didnt pass', config);
   // Return an empty method
   return () => {};

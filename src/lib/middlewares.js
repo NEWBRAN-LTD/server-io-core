@@ -42,6 +42,7 @@ module.exports = function(app, config) {
   if (config.development) {
     middlewares.push(helmet.noCache());
   }
+
   // Make sure the namespace is correct first
   if (config.debugger.enable) {
     const namespace = config.debugger.namespace;
@@ -50,6 +51,7 @@ module.exports = function(app, config) {
     } else if (namespace.substr(0, 1) !== '/') {
       config.debugger.namespace = '/' + namespace;
     }
+
     addDebugger = config.debugger.client !== false;
   }
 
@@ -58,15 +60,18 @@ module.exports = function(app, config) {
   if (addReload || addDebugger) {
     middlewares.push(renderScriptsMiddleware(config));
   }
+
   if (addReload || addDebugger || config.inject.enable) {
     middlewares.push(scriptsInjectorMiddleware(config));
   }
+
   // Extra middlewares pass directly from config
   if (typeof config.middlewares === 'function') {
     middlewares.push(config.middlewares);
   } else if (isarray(config.middlewares)) {
     middlewares = middlewares.concat(config.middlewares);
   }
+
   // Config the proxies
   const filtered = proxies.filter(proxyoptions => {
     // When proxy socket we don't need the context
@@ -77,6 +82,7 @@ module.exports = function(app, config) {
       );
       return false; // ignore!
     }
+
     return true;
   });
 
