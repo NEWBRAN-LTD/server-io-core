@@ -27,10 +27,9 @@ io.on('message', (ctx, data, fn) => {
   fn(options.message.reply);
 });
 */
-app.listen(options.proxy.port);
-/*
+// app.listen(options.proxy.port);
+
 module.exports = function() {
   app.listen( options.proxy.port );
   return app;
 }
-*/

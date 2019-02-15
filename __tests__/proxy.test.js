@@ -6,51 +6,40 @@ const server = require('./fixtures/server');
 const proxy = require('./fixtures/proxy');
 const port = options.proxy.port;
 const debug = require('debug')('server-io-core:proxy-test');
+const request = require('superkoa');
 
-test.before(t => {
+test.before(async t => {
   // start the server behind proxy
-  proxy();
+  t.context.proxy = proxy();
   // start another server
   const { app, stop, io } = server({
     proxies: [{
       target: `http://localhost:${port}`,
       context: '/proxy'
     },{
-      target: 'http://localhost:${port}',
+      target: `http://localhost:${port}`,
       ws: true
     }]
-  })
+  });
   t.context.app = app;
   t.context.stop = stop;
 });
 
 test.after(t => {
   t.context.stop();
+  t.context.proxy.exit();
 });
 
 test(`It should able to connect to another proxy on ${port}`, async (t) => {
 
-  const getViaProxy = () => {
-    return new Promise(resolver => {
-      debug('calling ', options.defaultUrl + '/proxy');
-      http.get([options.defaultUrl, 'proxy'].join('/'), (resp) => {
-        let data = '';
-        // A chunk of data has been recieved.
-        resp.on('data', (chunk) => {
-          data += chunk;
-        });
-        // The whole response has been received. Print out the result.
-        resp.on('end', () => {
-          debug('received data', data);
-          resolver(data);
-        });
-      });
-    });
+  try {
+    const data = await request(t.context.app).get('/proxy');
+    // const data = await getViaProxy([options.defaultUrl, 'proxy'].join('/'));
+
+    t.is(options.message.banner, data);
+  } catch (e) {
+    debug('wtf', e);
   }
-
-  const data = await getViaProxy();
-
-  t.is(options.message.banner, data);
 
   /* koa-nginx throw error */
   /*
@@ -61,3 +50,5 @@ test(`It should able to connect to another proxy on ${port}`, async (t) => {
   });
   */
 });
+
+test.todo('proxy socket test');
