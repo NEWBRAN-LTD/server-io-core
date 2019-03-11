@@ -32,9 +32,7 @@ module.exports = function(app, config) {
   // Fixed on 1.4.0-beta.3
   let proxies = toArray(config.proxies);
   // Default callbacks
-  const closeFn = { close: () => {} };
-  // Let mockServerInstance = closeFn;
-  let unwatchMockFn = () => {};
+  // const closeFn = { close: () => {} };
   // Properties
   let middlewares = [bodyparser()];
   // Start adding middlewares
@@ -114,7 +112,8 @@ module.exports = function(app, config) {
   }
 
   // This is the end - we continue in the next level to construct the server
+  // @TODO this return is just an empty placeholder function so we should remove it
   return {
-    unwatchMockFn
+    // UnwatchMockFn
   };
 };

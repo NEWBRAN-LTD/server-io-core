@@ -2,9 +2,7 @@
 
 > A development server based on Koa, with built-it reload, watcher, debugger, mock server, proxy server and a few more features
 
-This is a spin off from my [gulp-server-io](https://gitlab.com/newbranltd/gulp-server-io) (If you like it, please do a star, thanks)
-
-rollup version coming soon.
+This is a spin off from my [gulp-server-io](https://gitlab.com/newbranltd/gulp-server-io) (If you find it useful, please give it a star, thanks)
 
 ## Installation
 
@@ -327,7 +325,18 @@ serverIoCore({
 
 ### Https
 
-TBC
+```js
+serverIoCore(
+  {
+    https: true
+  }
+);
+```
+
+This will use the included snake oil certificate for testing purpose. This is particular useful if you are
+developing [AMP](https://www.ampproject.org/) or [PWA](https://developers.google.com/web/progressive-web-apps/) apps.
+
+
 
 ### Proxy
 
