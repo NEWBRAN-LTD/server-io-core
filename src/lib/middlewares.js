@@ -17,7 +17,7 @@ const { createConfiguration } = require('./options');
 // Modules
 const { toArray, logutil, stripFirstSlash } = require('./utils/');
 // Servers
-const { mockServer } = require('./server');
+// const { mockServer } = require('./server');
 // Injectors
 const { scriptsInjectorMiddleware, renderScriptsMiddleware } = require('./injector');
 /**
@@ -32,9 +32,7 @@ module.exports = function(app, config) {
   // Fixed on 1.4.0-beta.3
   let proxies = toArray(config.proxies);
   // Default callbacks
-  const closeFn = { close: () => {} };
-  let mockServerInstance = closeFn;
-  let unwatchMockFn = () => {};
+  // const closeFn = { close: () => {} };
   // Properties
   let middlewares = [bodyparser()];
   // Start adding middlewares
@@ -93,34 +91,6 @@ module.exports = function(app, config) {
       return pc;
     });
 
-  // First need to setup the mock json server
-  // @2010-05-08 remove the development flag it could be confusing
-  if (config.mock.enable && config.mock.json) {
-    // Here we overwrite the proxies so the proxy get to the mock server
-    const _mock = mockServer(config);
-    mockServerInstance = _mock.server;
-    unwatchMockFn = _mock.unwatchFn;
-    // Need to double check the mockServer will crash with the proxies
-    const _proxies = _mock.proxies;
-    const _mockProxiesKey = _proxies.map(p => p.host);
-    // There is a problem here
-    const _proxiesKey = filtered.map(p => p.context);
-    const originalLen = _proxies.length + _proxiesKey.length;
-    const newUnionProxies = _.union(_proxies, _proxiesKey);
-    if (originalLen === newUnionProxies.length) {
-      proxies = filtered.concat(_proxies);
-    } else {
-      logutil(
-        chalk.red('The proxies and mock server option crashed! Please double check both.')
-      );
-      // Reset the proxies
-      proxies = [];
-      // Stop the mock server
-      unwatchMockFn();
-      mockServerInstance.close();
-    }
-  }
-
   // Now inject the middlewares
   if (middlewares.length) {
     // But the problem with Koa is the ctx.state is not falling through all the way
@@ -142,8 +112,8 @@ module.exports = function(app, config) {
   }
 
   // This is the end - we continue in the next level to construct the server
+  // @TODO this return is just an empty placeholder function so we should remove it
   return {
-    mockServerInstance,
-    unwatchMockFn
+    // UnwatchMockFn
   };
 };

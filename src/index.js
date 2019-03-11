@@ -7,7 +7,7 @@ const chalk = require('chalk');
 // Ours
 const { webserverGenerator, staticServe, socketServer } = require('./lib/server');
 const debuggerServer = require('./lib/debugger');
-const { clientReload, serverReload } = require('./lib/reload');
+const { clientReload } = require('./lib/reload');
 const openInBrowser = require('./lib/utils/open');
 // Debug
 const debug = require('debug')('server-io-core:main');
@@ -76,14 +76,11 @@ exports.serverIoCore = function(config) {
     unwatchFn.push(debuggerServer(config, io));
   }
 
-  // Add watching server side file
-  if (config.serverReload.enable) {
-    unwatchFn.push(serverReload(config.serverReload));
-  }
-
   // Enable the injectors here, if socket server is enable that means
   // The injector related function need to be activated
-  const { unwatchMockFn } = middlewaresHandler(app, config);
+  middlewaresHandler(app, config);
+  // @TODO should this return a promise so we know if it works or not?
+
   // Keep the init of the static serve until the last call
   staticServe(config)(app);
   // Start server @2018-08-13
@@ -94,7 +91,6 @@ exports.serverIoCore = function(config) {
   // Call back on close
   webserver.on('close', () => {
     debug('server on close');
-    unwatchMockFn();
     // MockServerInstance.close();
     if (io && io.server && io.server.close) {
       io.server.close();

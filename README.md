@@ -2,9 +2,7 @@
 
 > A development server based on Koa, with built-it reload, watcher, debugger, mock server, proxy server and a few more features
 
-This is a spin off from my [gulp-server-io](https://gitlab.com/newbranltd/gulp-server-io) (If you like it, please do a star, thanks)
-
-rollup version coming soon.
+This is a spin off from my [gulp-server-io](https://gitlab.com/newbranltd/gulp-server-io) (If you find it useful, please give it a star, thanks)
 
 ## Installation
 
@@ -128,7 +126,7 @@ By default the host is `localhost` and port is `8000`. You can change them easil
 serverIoCore({
   webroot: '/path/to/webroot',
   port: 34567,
-  host: '0.0.0.0'
+  host: '0.0.0.0' // if you don't provide this param, it will calculate it based on your platform
 });
 ```
 
@@ -175,7 +173,7 @@ serverIoCore({
 
 ```
 
-_Please note, the name of browser is different in different platform. So you need to check the names.
+_Please note, the name of browser is different on different platform. So you need to check the names.
 Also use the core `os` package to determine where you are running_
 
 The `browser` option will only accept `string` or `array`. And the browser (Array) option can accept
@@ -327,7 +325,18 @@ serverIoCore({
 
 ### Https
 
-TBC
+```js
+serverIoCore(
+  {
+    https: true
+  }
+);
+```
+
+This will use the included snake oil certificate for testing purpose. This is particular useful if you are
+developing [AMP](https://www.ampproject.org/) or [PWA](https://developers.google.com/web/progressive-web-apps/) apps.
+
+
 
 ### Proxy
 
@@ -349,11 +358,11 @@ From your code, you just call `/proxy` and it will redirect to the http://localh
 
 ### Mock Server
 
-TBC
+**This is remove and no longer support, you can easily add this as a middleware.**
 
 ### Server Reload
 
-TBC
+**This is removed and no longer support, you can use nodemon instead.**
 
 ### Debug
 
@@ -367,4 +376,4 @@ If you like this, please give [server-io-core](https://gitlab.com/newbranltd/ser
 
 LICENSE: MIT
 
-Brought to you by [newbran.ch](https://newbran.ch) / [Joel Chu](https://joelchu.com)
+Brought to you by [NEWBRAN.CH](https://newbran.ch) / [Joel Chu](https://joelchu.com)

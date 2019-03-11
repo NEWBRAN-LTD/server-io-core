@@ -3,7 +3,7 @@ const chalk = require('chalk');
 const watcher = require('../watcher');
 const { logutil } = require('../utils/');
 const debug = require('debug')('server-io-core:watchers');
-const serverReload = require('./server-reload');
+// Const serverReload = require('./server-reload');
 /**
  * @v1.5.0 we create our own reload script and remove the old reload.js
  * because it keeps breaking down
@@ -47,4 +47,4 @@ exports.clientReload = function(filePaths, io, config) {
 };
 
 // Re-export it
-exports.serverReload = serverReload;
+// exports.serverReload = serverReload;

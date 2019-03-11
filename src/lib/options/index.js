@@ -72,18 +72,6 @@ const defaultOptions = {
    *      reload: true
    *    });
    */
-  // @TODO help the user to track their server reload method
-  serverReload: {
-    enable: false,
-    dir: '/srv',
-    config: {
-      verbose: true,
-      debounce: 500
-    },
-    callback: () => {
-      console.log('server reload callback executed');
-    }
-  },
   cordova: false, // @2018-08-20 add this option to fake a cordova.js file
   inject: {
     enable: false,
@@ -91,16 +79,6 @@ const defaultOptions = {
     target: [], // List of files to inject
     source: [], // List of files to get inject
     options: {} // Reversed for future use
-  },
-  // New mock server using json-server, please note if this is enable then
-  // The proxy will be disable
-  mock: {
-    enable: false,
-    json: false,
-    port: 3838,
-    path: 'localhost',
-    watch: true,
-    interval: 500 // Listener interval to restart the server, false then don't restart
   },
   // Client reload - default TRUE
   reload: {
@@ -125,6 +103,13 @@ const defaultOptions = {
     broadcast: false,
     client: true, // Allow passing a configuration to overwrite the client
     server: true // Allow passing configuration - see middleware.js for more detail
+  },
+  // @TODO remove later no longer support
+  mock: {
+    enable: false
+  },
+  serverReload: {
+    enable: false
   }
 };
 const arraySource = ['middlewares', 'proxies'];
