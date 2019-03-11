@@ -17,7 +17,7 @@ const { createConfiguration } = require('./options');
 // Modules
 const { toArray, logutil, stripFirstSlash } = require('./utils/');
 // Servers
-const { mockServer } = require('./server');
+// const { mockServer } = require('./server');
 // Injectors
 const { scriptsInjectorMiddleware, renderScriptsMiddleware } = require('./injector');
 /**
