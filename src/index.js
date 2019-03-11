@@ -7,7 +7,7 @@ const chalk = require('chalk');
 // Ours
 const { webserverGenerator, staticServe, socketServer } = require('./lib/server');
 const debuggerServer = require('./lib/debugger');
-const { clientReload, serverReload } = require('./lib/reload');
+const { clientReload } = require('./lib/reload');
 const openInBrowser = require('./lib/utils/open');
 // Debug
 const debug = require('debug')('server-io-core:main');
@@ -74,11 +74,6 @@ exports.serverIoCore = function(config) {
   // Debugger server start
   if (config.debugger.enable && config.debugger.server === true) {
     unwatchFn.push(debuggerServer(config, io));
-  }
-
-  // Add watching server side file
-  if (config.serverReload.enable) {
-    unwatchFn.push(serverReload(config.serverReload));
   }
 
   // Enable the injectors here, if socket server is enable that means

@@ -128,7 +128,7 @@ By default the host is `localhost` and port is `8000`. You can change them easil
 serverIoCore({
   webroot: '/path/to/webroot',
   port: 34567,
-  host: '0.0.0.0'
+  host: '0.0.0.0' // if you don't provide this param, it will calculate it based on your platform
 });
 ```
 
@@ -175,7 +175,7 @@ serverIoCore({
 
 ```
 
-_Please note, the name of browser is different in different platform. So you need to check the names.
+_Please note, the name of browser is different on different platform. So you need to check the names.
 Also use the core `os` package to determine where you are running_
 
 The `browser` option will only accept `string` or `array`. And the browser (Array) option can accept
@@ -349,11 +349,11 @@ From your code, you just call `/proxy` and it will redirect to the http://localh
 
 ### Mock Server
 
-TBC
+**This is remove and no longer support, you can easily add this as a middleware.**
 
 ### Server Reload
 
-TBC
+**This is removed and no longer support, you can use nodemon instead.**
 
 ### Debug
 
@@ -367,4 +367,4 @@ If you like this, please give [server-io-core](https://gitlab.com/newbranltd/ser
 
 LICENSE: MIT
 
-Brought to you by [newbran.ch](https://newbran.ch) / [Joel Chu](https://joelchu.com)
+Brought to you by [NEWBRAN.CH](https://newbran.ch) / [Joel Chu](https://joelchu.com)

@@ -5,11 +5,11 @@
  */
 const webserver = require('./webserver');
 const socketServer = require('./socket');
-const mockServer = require('./mock-server');
+// Const mockServer = require('./mock-server');
 const staticServe = require('./static-serve');
 
 // Exports
 exports.staticServe = staticServe;
 exports.webserverGenerator = webserver;
 exports.socketServer = socketServer;
-exports.mockServer = mockServer;
+// Exports.mockServer = mockServer;
