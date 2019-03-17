@@ -201,6 +201,18 @@ const readDocument = p => {
 };
 
 /**
+ * @param {array} files to search
+ * @return false on not found
+ */
+const searchFileFromFiles = files => {
+  return files
+  .filter(fs.existsSync)
+  .reduce((last, next) => {
+    return next;
+  }, null);
+}
+
+/**
  * Search for the default index file
  * @param {object} config the serveStatic options
  * @return {string} path to the index file
@@ -238,6 +250,7 @@ const stripFirstSlash = str => {
 };
 // Export
 module.exports = {
+  searchFileFromFiles,
   searchIndexFile,
   isHtmlFile,
   readDocument,

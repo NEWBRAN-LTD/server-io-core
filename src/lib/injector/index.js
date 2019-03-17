@@ -14,7 +14,8 @@ const {
   isHtmlFile,
   headerParser,
   getDocLen,
-  readDocument
+  readDocument,
+  searchFileFromFiles
 } = require('../utils/');
 const debug = require('debug')('server-io-core:inject');
 
@@ -43,7 +44,12 @@ const getHtmlDocument = (p, js, css) => {
  * @return {object} throw on not found
  */
 const searchHtmlDocuments = (webroot, p, js, css) => {
-  return Promise.race(webroot.map(dir => getHtmlDocument(join(dir, p), js, css)));
+  const file = searchFileFromFiles([p].concat(webroot.map(dir => join(dir, p))));
+  if (file) {
+    return getHtmlDocument(file, js, css);
+  }
+
+  throw Promise.reject(new Error(`File ${p} not found from ${webroot}`));
 };
 
 /**
@@ -106,7 +112,7 @@ exports.scriptsInjectorMiddleware = function(config) {
             ctx.body = doc;
           } catch (err) {
             debug('get document error', err);
-            ctx.throw(404, `Html file ${p} not found!`);
+            ctx.throw(404, `[injector] Html file ${p} not found!`);
           }
 
           return;
