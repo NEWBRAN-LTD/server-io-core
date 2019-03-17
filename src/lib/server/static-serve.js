@@ -41,7 +41,9 @@ function serve(root, opts) {
   // Options
   debug('static "%s" %j', root, opts);
   opts.root = root;
-  if (opts.index !== false) opts.index = opts.index || 'index.html';
+  if (opts.index !== false) {
+    opts.index = opts.index || 'index.html';
+  }
 
   if (!opts.defer) {
     return async function(ctx, next) {

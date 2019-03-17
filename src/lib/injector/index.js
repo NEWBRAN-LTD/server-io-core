@@ -3,6 +3,7 @@
  * the debugger scripts
  */
 const _ = require('lodash');
+const { join } = require('path');
 const { getFilesToInject, injectToHtml, tagJs } = require('./files-inject');
 const {
   getFeatureScripts,
@@ -33,6 +34,19 @@ const getHtmlDocument = (p, js, css) => {
 };
 
 /**
+ * Search the array of documents until it find the right one otherwise just
+ * throw it
+ * @param {array} webroot dir
+ * @param {string} p html
+ * @param {string} js tags
+ * @param {string} css tags
+ * @return {object} throw on not found
+ */
+const searchHtmlDocuments = (webroot, p, js, css) => {
+  return Promise.race(webroot.map(dir => getHtmlDocument(join(dir, p), js, css)));
+};
+
+/**
  * @param {object} config the main config
  * @return {function} middleware
  * @api public
@@ -47,6 +61,7 @@ exports.scriptsInjectorMiddleware = function(config) {
   const { socketIoJs, debuggerJs, stacktraceJsFile, reloadJs } = getFeatureScripts(
     config
   );
+
   if (features.debugger || features.reload) {
     scripts.push(socketIoJs);
   }
@@ -79,7 +94,12 @@ exports.scriptsInjectorMiddleware = function(config) {
         if (p) {
           try {
             debug('use overwrite', ctx.url, ctx.path);
-            const doc = await getHtmlDocument(p, _.compact([files, js]).join(''), css);
+            const doc = await searchHtmlDocuments(
+              config.webroot,
+              p,
+              _.compact([files, js]).join(''),
+              css
+            );
             ctx.status = 200;
             ctx.type = contentType + '; charset=utf8';
             ctx.length = getDocLen(doc);

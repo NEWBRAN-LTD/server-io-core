@@ -58,6 +58,7 @@ module.exports = function(app, config) {
     middlewares.push(renderScriptsMiddleware(config));
   }
 
+  // @BUG the injector interfere with the normal operation
   if (addReload || addDebugger || config.inject.enable) {
     middlewares.push(scriptsInjectorMiddleware(config));
   }
