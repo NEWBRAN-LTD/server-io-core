@@ -220,9 +220,10 @@ exports.getFilesToInject = function(config) {
     return { js: '', css: '' };
   }
 
+  const br = '\r\n';
   return {
-    js: js.map(j => checkAndTagFile(j, config.ignorePath)).join('\r\n'),
-    css: css.map(c => checkAndTagFile(c, config.ignorePath)).join('\r\n')
+    js: js.map(j => checkAndTagFile(j, config.ignorePath)).join(br) + br,
+    css: css.map(c => checkAndTagFile(c, config.ignorePath)).join(br) + br
   };
 };
 
@@ -236,8 +237,6 @@ exports.getFilesToInject = function(config) {
  * @return {string} overwritten HTML
  */
 exports.injectToHtml = (body, jsTags, cssTags, before = true) => {
-  debug('js tags', jsTags);
-  debug('css tags', cssTags);
   const html = _.isString(body) ? body : body.toString('utf8');
   const $ = cheerio.load(html);
   // @2018-08-13 add check if there is existing javascript tags
