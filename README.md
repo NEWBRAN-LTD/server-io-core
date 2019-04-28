@@ -355,6 +355,26 @@ serverIoCore(
 
 From your code, you just call `/proxy` and it will redirect to the http://localhost:5678
 
+### Middlewares 
+
+You can add any third parties middlewares (as long as it's Koa 2 compatible). 
+
+```js
+
+const server = require('server-io-core');
+const jsonql = require('jsonql-koa'); // this is our other cool tool under development
+
+server({
+  ...options,
+  middlewares: [
+    jsonql(configForJsonql)
+  ]
+});
+
+```
+
+And you can add as many as you want. 
+
 
 ### Mock Server
 
