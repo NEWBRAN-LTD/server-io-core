@@ -298,7 +298,7 @@ serverIoCore({
 
 The CSS files will be inject in the `head` and the JS files will be inject above the `body`.
 
-**@TODO this option will be available in the future release**
+---
 
 You can specify where you want the files get injected, using the following option:
 
@@ -322,6 +322,8 @@ serverIoCore({
   }
 });
 ```
+
+Please note, the `body` option is always inject before the closing tag of `body`.
 
 ### Https
 

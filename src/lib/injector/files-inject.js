@@ -123,6 +123,21 @@ const isJs = name => {
 };
 
 /**
+ *
+ * @param {object} source from config
+ * @param {string} key head or body
+ * @return {array} always array even empty
+ */
+const extractFromSource = (source, key) => {
+  if (source[key]) {
+    let s = source[key];
+    return Array.isArray(s) ? s : [s];
+  }
+
+  return [];
+};
+
+/**
  * @param {mixed} source array or object
  * @return {object} js / css
  */
@@ -130,21 +145,24 @@ const getSource = source => {
   let js = [];
   let css = [];
   if (source) {
-    source = Array.isArray(source) ? source : [source];
-    // Processing the object
-    for (let i = 0, len = source.length; i < len; ++i) {
-      let s = source[i];
-      if (isCss(s)) {
-        css = css.concat(processFiles(s));
-      } else if (isJs(s)) {
-        js = js.concat(processFiles(s));
+    if (typeof source === 'object') {
+      // Expect head of bottom!
+      // it's pretty simple actually those with head in css
+      // those with body in js and that's it
+      css = extractFromSource(source, 'head');
+      js = extractFromSource(source, 'body');
+    } else {
+      source = Array.isArray(source) ? source : [source];
+      // Processing the object
+      for (let i = 0, len = source.length; i < len; ++i) {
+        let s = source[i];
+        if (isCss(s)) {
+          css = css.concat(processFiles(s));
+        } else if (isJs(s)) {
+          js = js.concat(processFiles(s));
+        }
       }
     }
-    /*
-    @TODO
-    else if (typeof source === 'object') { // expect head of bottom!
-
-    } */
   }
 
   return {
@@ -166,7 +184,7 @@ exports.getFilesToInject = function(config) {
   if (!js || !css) {
     if (config.enable) {
       // Display an error inline here
-      const msg = '[inject] Configuration is incorrect for inject to work!';
+      const msg = '[inject] Configuration is incorrect for injector to work!';
       debug('injector error', msg);
       logutil(chalk.red(msg), config);
     }

@@ -36,6 +36,11 @@ test(`It should able to connect to another proxy on ${port}`, async (t) => {
     debug('wtf', e);
   }
 
+});
+
+test.todo('proxy socket test');
+
+
   /* koa-nginx throw error */
   /*
   const ioClient = client(server.defaultUrl);
@@ -44,6 +49,3 @@ test(`It should able to connect to another proxy on ${port}`, async (t) => {
     t.is(options.message.reply, reply);
   });
   */
-});
-
-// test.todo('proxy socket test');
