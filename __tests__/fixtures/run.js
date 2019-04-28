@@ -10,6 +10,14 @@ const config = {
   socket: false,
   port: 8002,
   inject: {
+    /*
+    source: [
+      'css/bootstrap.min.css',
+      'css/starter-template.css',
+      'js/dummy-test.js'
+    ]
+    */
+    
     target: {
       head: [
         'css/bootstrap.min.css',

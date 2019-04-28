@@ -17,7 +17,7 @@ test.before(t => {
     socket: false,
     port: 8002,
     inject: {
-      source: {
+      target: {
         head: [
           'css/bootstrap.min.css',
           'css/starter-template.css'
@@ -37,14 +37,14 @@ test.after(t => {
   t.context.stop();
 });
 
-test.skip('It should able to read html apart from index', async (t) => {
+test('It should able to read html apart from index', async (t) => {
   const res = await request(t.context.app).get('/dummy.html');
   t.is(200, res.status);
 });
 
 test('It should able to inject files according to the inject object', async t => {
   const res = await request(t.context.app).get('/');
-  
+  // This always return a {} @TODO
   debug('return body', res.body);
   t.pass();
   

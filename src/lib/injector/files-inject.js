@@ -82,13 +82,13 @@ const tagFile = (type, file, ignorePath) => {
     if (ignorePath) {
       file = file.replace(ignorePath, '');
     }
-
-    if (type === 'css') {
-      return `<link rel="stylesheet" href="${file}" />`;
-    }
-
-    return `<script type="text/javascript" src="${file}" defer></script>`;
   }
+
+  if (type === 'css') {
+    return `<link rel="stylesheet" href="${file}" />`;
+  }
+
+  return `<script type="text/javascript" src="${file}" defer></script>`;
 };
 
 /**
@@ -183,8 +183,9 @@ const getSource = config => {
 
 /**
  * Combine function
- * @param {string} file
- * @param {string} ignorePath
+ * @param {string} file to target
+ * @param {string} ignorePath path to ignore and strip out
+ * @return {string} tagged file
  */
 function checkAndTagFile(file, ignorePath) {
   if (isJs(file)) {
@@ -208,7 +209,7 @@ exports.getFilesToInject = function(config) {
   // const target = getTarget(config.target);
   const { js, css } = getSource(config);
   // Const check = target && (js || css);
-  if (!js || !css) {
+  if (!js.length || !css.length) {
     if (config.enable) {
       // Display an error inline here
       const msg = '[inject] Configuration is incorrect for injector to work!';
