@@ -307,7 +307,7 @@ You can specify where you want the files get injected, using the following optio
 serverIoCore({
   webroot: '/path/to/webroot',
   inject: {
-    source: {
+    target: {
       // DummyJs,
       head: [
         'css/bootstrap.min.css',
@@ -324,6 +324,8 @@ serverIoCore({
 ```
 
 Please note, the `body` option is always inject before the closing tag of `body`.
+
+__Also very import, to pass an array of files use `source` and if you want to inject into specific places than use `target` as shown in the examples above__
 
 ### Https
 
@@ -378,6 +380,10 @@ server({
 And you can add as many as you want. 
 
 
+### Debug
+
+We use debug internally, so you can pass `DEBUG=server-io-core*` during start up in to your node environment to check out what is going inside the package.
+
 ### Mock Server
 
 **This is remove and no longer support, you can easily add this as a middleware.**
@@ -385,10 +391,6 @@ And you can add as many as you want.
 ### Server Reload
 
 **This is removed and no longer support, you can use nodemon instead.**
-
-### Debug
-
-We use debug internally, so you can pass `DEBUG=server-io-core*` during start up in to your node environment to check out what is going inside the package.
 
 ---
 
