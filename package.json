@@ -10,7 +10,8 @@
     "pretest": "eslint . --fix",
     "precommit": "lint-staged",
     "demo": "DEBUG=server-io-core* node ./__tests__/fixtures/demo",
-    "test:demo": "DEBUG=server-io-core* ava ./__tests__/inject.test.js"
+    "test:demo": "DEBUG=server-io-core* ava ./__tests__/inject.test.js",
+    "test:inject": "DEBUG=server-io-core* node ./__tests__/fixtures/run.js"
   },
   "repository": {
     "type": "git",

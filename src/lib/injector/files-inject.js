@@ -58,20 +58,37 @@ const chalk = require('chalk');
 const debug = require('debug')('server-io-core:inject');
 
 /**
+ * NOT IN USE
  * @param {array} files to wrap with tag
  * @param {string} ignorePath to strip out
  * @return {string} conccat them all
  */
+/*
 const tagCss = (files, ignorePath) => {
   return files
-    .map(file => {
-      if (ignorePath) {
-        file = file.replace(ignorePath, '');
-      }
-
-      return `<link rel="stylesheet" href="${file}" />`;
-    })
+    .map(file => tagFile('css', file, ignorePath))
     .join('\r\n');
+};
+*/
+/**
+ * combine the two tagging method together
+ * @param {string} type css / js
+ * @param {string} file file to insert
+ * @param {string} [ignorePath=''] optional to ignore the path
+ * @return {string} tagged version
+ */
+const tagFile = (type, file, ignorePath) => {
+  if (ignorePath) {
+    if (ignorePath) {
+      file = file.replace(ignorePath, '');
+    }
+
+    if (type === 'css') {
+      return `<link rel="stylesheet" href="${file}" />`;
+    }
+
+    return `<script type="text/javascript" src="${file}" defer></script>`;
+  }
 };
 
 /**
@@ -80,15 +97,7 @@ const tagCss = (files, ignorePath) => {
  * @return {string} conccat them all
  */
 const tagJs = (files, ignorePath) => {
-  return files
-    .map(file => {
-      if (ignorePath) {
-        file = file.replace(ignorePath, '');
-      }
-
-      return `<script type="text/javascript" src="${file}" defer></script>`;
-    })
-    .join('\r\n');
+  return files.map(file => tagFile('js', file, ignorePath)).join('\r\n');
 };
 
 /**
@@ -138,48 +147,66 @@ const extractFromSource = (source, key) => {
 };
 
 /**
- * @param {mixed} source array or object
- * @return {object} js / css
+ * @param {object} config the inject configuration object
+ * @return {object} js<Array> css<Array>
  */
-const getSource = source => {
+const getSource = config => {
   let js = [];
   let css = [];
-  if (source) {
-    if (typeof source === 'object') {
-      // Expect head of bottom!
-      // it's pretty simple actually those with head in css
-      // those with body in js and that's it
-      css = extractFromSource(source, 'head');
-      js = extractFromSource(source, 'body');
-    } else {
-      source = Array.isArray(source) ? source : [source];
-      // Processing the object
-      for (let i = 0, len = source.length; i < len; ++i) {
-        let s = source[i];
-        if (isCss(s)) {
-          css = css.concat(processFiles(s));
-        } else if (isJs(s)) {
-          js = js.concat(processFiles(s));
-        }
+  const { target, source } = config;
+  // If they pass a non array then it will get ignore!
+  if (source && Array.isArray(source) && source.length) {
+    // Processing the object
+    for (let i = 0, len = source.length; i < len; ++i) {
+      let s = source[i];
+      if (isCss(s)) {
+        css = css.concat(processFiles(s));
+      } else if (isJs(s)) {
+        js = js.concat(processFiles(s));
       }
     }
   }
 
-  return {
-    js: js.length ? js : false,
-    css: css.length ? css : false
-  };
+  if (
+    (target.head && Array.isArray(target.head) && target.head.length) ||
+    (target.body && Array.isArray(target.body) && target.body.length)
+  ) {
+    // Expect head of bottom!
+    // it's pretty simple actually those with head in css
+    // those with body in js and that's it
+    css = css.concat(extractFromSource(target, 'head'));
+    js = js.concat(extractFromSource(target, 'body'));
+  }
+
+  return { js, css };
 };
+
+/**
+ * Combine function
+ * @param {string} file
+ * @param {string} ignorePath
+ */
+function checkAndTagFile(file, ignorePath) {
+  if (isJs(file)) {
+    return tagFile('js', file, ignorePath);
+  }
+
+  if (isCss(file)) {
+    return tagFile('css', file, ignorePath);
+  }
+
+  throw new Error('It must be js or css file!');
+}
 
 /**
  * Prepare the css / js array to inject
  * @param {object} config the config.inject properties
- * @return {object} for use
+ * @return {object} js<string> css<string>
  */
 exports.getFilesToInject = function(config) {
   // @2018-05-07 disbale this check because we couldn't get the fileanme from the middleware
   // const target = getTarget(config.target);
-  const { js, css } = getSource(config.source);
+  const { js, css } = getSource(config);
   // Const check = target && (js || css);
   if (!js || !css) {
     if (config.enable) {
@@ -189,12 +216,12 @@ exports.getFilesToInject = function(config) {
       logutil(chalk.red(msg), config);
     }
 
-    return { js: [], css: [] };
+    return { js: '', css: '' };
   }
 
   return {
-    js: tagJs(js, config.ignorePath),
-    css: tagCss(css, config.ignorePath)
+    js: js.map(j => checkAndTagFile(j, config.ignorePath)).join('\r\n'),
+    css: css.map(c => checkAndTagFile(c, config.ignorePath)).join('\r\n')
   };
 };
 
@@ -202,27 +229,34 @@ exports.getFilesToInject = function(config) {
  * @TODO add the before / after parameter
  * @TODO add insertBefore / insertAfter in to config
  * @param {string} body rendered html
- * @param {array} js of tag javascripts
- * @param {array} css of tag CSS
+ * @param {array} jsTags of tag javascripts
+ * @param {array} cssTags of tag CSS
  * @param {boolean} before true new configuration option
  * @return {string} overwritten HTML
  */
-exports.injectToHtml = (body, js, css, before = true) => {
+exports.injectToHtml = (body, jsTags, cssTags, before = true) => {
+  debug('js tags', jsTags);
+  debug('css tags', cssTags);
   const html = _.isString(body) ? body : body.toString('utf8');
   const $ = cheerio.load(html);
   // @2018-08-13 add check if there is existing javascript tags
   const $scripts = $('body script').toArray();
-  if ($scripts.length) {
-    if (before) {
-      $($scripts[0]).before(js);
+  if (jsTags) {
+    if ($scripts.length) {
+      if (before) {
+        $($scripts[0]).before(jsTags);
+      } else {
+        $($scripts[$scripts.length - 1]).after(jsTags);
+      }
     } else {
-      $($scripts[$scripts.length - 1]).after(js);
+      $('body').append(jsTags);
     }
-  } else {
-    $('body').append(js);
   }
 
-  $('head').append(css);
+  if (cssTags) {
+    $('head').append(cssTags);
+  }
+
   return $.html();
 };
 

@@ -76,7 +76,7 @@ const defaultOptions = {
   inject: {
     enable: false,
     insertBefore: true,
-    target: [], // List of files to inject
+    target: {}, // List of files to inject with head or body
     source: [], // List of files to get inject
     options: {} // Reversed for future use
   },

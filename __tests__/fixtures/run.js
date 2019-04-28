@@ -10,7 +10,7 @@ const config = {
   socket: false,
   port: 8002,
   inject: {
-    source: {
+    target: {
       head: [
         'css/bootstrap.min.css',
         'css/starter-template.css',
@@ -20,7 +20,7 @@ const config = {
         'js/bootstrap.min.js',
         'js/ie10-viewport-bug-workaround.js'
       ]
-    }
+    } 
   }
 };
 const server = require('./server');
