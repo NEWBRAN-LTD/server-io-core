@@ -5,6 +5,7 @@
 const { merge, extend } = require('lodash');
 const { toArray } = require('../utils/');
 const { version } = require('../../../package.json');
+const { WS_PROXY } = require('../utils/constants');
 /**
  * Make sure the incoming parameter to be array when it's coming out
  * @param {array} arraySource list of keys to process
@@ -33,7 +34,7 @@ const ensureArrayProps = (arraySource, options) => {
  * @return {object} the corrected config object
  */
 const handleSpecialCase = (key, config) => {
-  if (key === 'wsProxy') {
+  if (key === WS_PROXY) {
     if (typeof config === 'string' && config.trim() !== '') {
       return {
         enable: true,

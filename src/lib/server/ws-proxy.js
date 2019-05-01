@@ -1,5 +1,5 @@
-// proxy the web socket this is tricky
-const httpProxy = require('http-proxy');
+// Proxy the web socket this is tricky
+const HttpProxy = require('http-proxy');
 const chalk = require('chalk');
 const { WS_PROXY } = require('../utils/constants');
 const { logutil } = require('../utils');
@@ -13,19 +13,25 @@ module.exports = function(config, webserver, socketIsEnabled) {
   const opt = config[WS_PROXY];
   if (opt.enable === true) {
     if (socketIsEnabled) {
-      logutil(chalk.yellow(`[${WS_PROXY} warning] The socket is enabled, so your proxy will affect your normal socket operation`));
+      logutil(
+        chalk.yellow(
+          `[${WS_PROXY} warning] The socket is enabled, so your proxy will affect your normal socket operation`
+        )
+      );
     }
+
     const proxyUrl = new URL(opt.target);
-    const proxyServer = new httpProxy.createProxyServer({
+    const proxyServer = new HttpProxy.createProxyServer({
       target: proxyUrl
     });
     webserver.on('upgrade', function(req, socket, head) {
       // @TODO if there is more options in the future to overwrite something, this will be the place
       proxyServer.ws(req, socket, head);
     });
-    // return it
+    // Return it
     return proxyServer;
   }
-  // return a dummy
-  return {close: () => {}};
-}
+
+  // Return a dummy
+  return { close: () => {} };
+};

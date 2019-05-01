@@ -5,7 +5,12 @@ const Koa = require('koa');
 const _ = require('lodash');
 const chalk = require('chalk');
 // Ours
-const { webserverGenerator, staticServe, socketServer, wsProxyServer } = require('./lib/server');
+const {
+  webserverGenerator,
+  staticServe,
+  socketServer,
+  wsProxyServer
+} = require('./lib/server');
 const debuggerServer = require('./lib/debugger');
 const { clientReload } = require('./lib/reload');
 const openInBrowser = require('./lib/utils/open');
@@ -91,7 +96,8 @@ exports.serverIoCore = function(config) {
   if (config.autoStart === true) {
     start();
   }
-  // now pass to the ws proxy at the very end
+
+  // Now pass to the ws proxy at the very end
   const proxyServer = wsProxyServer(config, webserver, socketIsEnabled);
   // Call back on close
   webserver.on('close', () => {
@@ -100,8 +106,9 @@ exports.serverIoCore = function(config) {
     if (io && io.server && io.server.close) {
       io.server.close();
     }
+
     unwatchFn.forEach(fn => fn());
-    // closing the proxyServer
+    // Closing the proxyServer
     proxyServer.close();
   });
 
