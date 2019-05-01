@@ -5,7 +5,6 @@
  */
 const webserverGenerator = require('./webserver');
 const socketServer = require('./socket');
-// Const mockServer = require('./mock-server');
 const staticServe = require('./static-serve');
 const wsProxyServer = require('./ws-proxy');
 

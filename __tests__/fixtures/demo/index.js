@@ -29,9 +29,9 @@ const config = {
       'css/bootstrap.min.css',
       'css/starter-template.css',
       'js/bootstrap.min.js',
-      'js/ie10-viewport-bug-workaround.js',
-      'socket.io-client/dist/socket.io.js',
-      'js/socket-client.js'
+      'js/ie10-viewport-bug-workaround.js'
+      // 'socket.io-client/dist/socket.io.js',
+      // 'js/socket-client.js'
     ]
   },
   /*
