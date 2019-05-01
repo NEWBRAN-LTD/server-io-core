@@ -92,13 +92,15 @@ exports.serverIoCore = function(config) {
 
   // Keep the init of the static serve until the last call
   staticServe(config)(app);
+
+  // Now pass to the ws proxy at the very end
+  const proxyServer = wsProxyServer(config, webserver, socketIsEnabled);
+
   // Start server @2018-08-13
   if (config.autoStart === true) {
     start();
   }
 
-  // Now pass to the ws proxy at the very end
-  const proxyServer = wsProxyServer(config, webserver, socketIsEnabled);
   // Call back on close
   webserver.on('close', () => {
     debug('server on close');

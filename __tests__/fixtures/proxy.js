@@ -1,7 +1,7 @@
 // create a phoney socket server
 const http = require('http');
 const Koa = require('koa');
-// const IO = require('koa-socket-2');
+const IO = require('koa-socket-2');
 const options = require('./options.json');
 const app = new Koa();
 // const io = new IO();

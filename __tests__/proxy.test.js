@@ -1,5 +1,5 @@
+// this one will only test the proxy web
 const test = require('ava');
-const client = require('socket.io-client');
 const http = require('http');
 const options = require('./fixtures/options.json');
 const server = require('./fixtures/server');
@@ -37,15 +37,3 @@ test(`It should able to connect to another proxy on ${port}`, async (t) => {
   }
 
 });
-
-test.todo('proxy socket test');
-
-
-  /* koa-nginx throw error */
-  /*
-  const ioClient = client(server.defaultUrl);
-
-  ioClient.emit('message', options.message.send, reply => {
-    t.is(options.message.reply, reply);
-  });
-  */

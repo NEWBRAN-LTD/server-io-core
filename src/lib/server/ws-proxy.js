@@ -5,6 +5,7 @@ const HttpProxy = require('http-proxy');
 const chalk = require('chalk');
 const { WS_PROXY } = require('../utils/constants');
 const { logutil } = require('../utils');
+const debug = require('debug')('server-io-core:ws-proxy');
 /**
  * @param {object} config the full configuration object
  * @param {object} webserver the server instance
@@ -23,17 +24,22 @@ module.exports = function(config, webserver, socketIsEnabled) {
     }
 
     const proxyUrl = new URL(opt.target);
+    // debug('wsProxy url', proxyUrl);
     const proxyServer = new HttpProxy.createProxyServer({
-      target: proxyUrl
+      target:  {
+        host: proxyUrl.hostname,
+        port: proxyUrl.port
+      }
     });
     webserver.on('upgrade', function(req, socket, head) {
+      debug('listening on upgrade event');
       // @TODO if there is more options in the future to overwrite something, this will be the place
       proxyServer.ws(req, socket, head);
     });
     // Return it
     return proxyServer;
   }
-
+  debug('Proxy socket server is not enabled');
   // Return a dummy
   return { close: () => {} };
 };
