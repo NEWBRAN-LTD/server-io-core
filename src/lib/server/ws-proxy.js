@@ -1,4 +1,6 @@
+/* eslint-disable */
 // Proxy the web socket this is tricky
+
 const HttpProxy = require('http-proxy');
 const chalk = require('chalk');
 const { WS_PROXY } = require('../utils/constants');
