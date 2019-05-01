@@ -7,9 +7,12 @@ const webserver = require('./webserver');
 const socketServer = require('./socket');
 // Const mockServer = require('./mock-server');
 const staticServe = require('./static-serve');
+const wsProxyServer = require('./ws-proxy');
 
 // Exports
-exports.staticServe = staticServe;
-exports.webserverGenerator = webserver;
-exports.socketServer = socketServer;
-// Exports.mockServer = mockServer;
+module.exports = {
+  webserver,
+  staticServe,
+  socketServer,
+  wsProxyServer
+};

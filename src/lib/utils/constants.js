@@ -7,3 +7,4 @@ exports.contentType = 'application/javascript; charset=utf-8';
 exports.dummyJs = '/server-io-core-dummy.js';
 exports.defaultHostIp = '0.0.0.0';
 exports.cordovaJs = 'cordova.js';
+exports.WS_PROXY = 'wsProxy';

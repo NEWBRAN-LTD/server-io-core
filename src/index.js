@@ -5,7 +5,7 @@ const Koa = require('koa');
 const _ = require('lodash');
 const chalk = require('chalk');
 // Ours
-const { webserverGenerator, staticServe, socketServer } = require('./lib/server');
+const { webserverGenerator, staticServe, socketServer, wsProxyServer } = require('./lib/server');
 const debuggerServer = require('./lib/debugger');
 const { clientReload } = require('./lib/reload');
 const openInBrowser = require('./lib/utils/open');
@@ -24,6 +24,7 @@ exports.serverIoCore = function(config) {
   const app = new Koa();
   let io = null;
   let unwatchFn = [];
+  let socketIsEnabled = false;
   // Init web server
   const { webserver, start, stop } = webserverGenerator(app, config);
   // Setup the callback
@@ -60,6 +61,7 @@ exports.serverIoCore = function(config) {
     config.reload.enable ||
     (config.debugger.enable && config.debugger.server === true)
   ) {
+    socketIsEnabled = true;
     io = socketServer(webserver, config);
   }
   // @TODO we need to combine the two socket server into one
@@ -89,7 +91,8 @@ exports.serverIoCore = function(config) {
   if (config.autoStart === true) {
     start();
   }
-
+  // now pass to the ws proxy at the very end
+  const proxyServer = wsProxyServer(config, webserver, socketIsEnabled);
   // Call back on close
   webserver.on('close', () => {
     debug('server on close');
@@ -97,12 +100,9 @@ exports.serverIoCore = function(config) {
     if (io && io.server && io.server.close) {
       io.server.close();
     }
-
     unwatchFn.forEach(fn => fn());
-  });
-
-  webserver.on('upgrade', (req, socket, head) => {
-    console.log('catch the upgrade event');
+    // closing the proxyServer
+    proxyServer.close();
   });
 
   // Finally return the instance
