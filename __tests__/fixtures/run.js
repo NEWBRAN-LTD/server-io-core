@@ -17,7 +17,6 @@ const config = {
       'js/dummy-test.js'
     ]
     */
-    
     target: {
       head: [
         'css/bootstrap.min.css',
@@ -28,7 +27,7 @@ const config = {
         'js/bootstrap.min.js',
         'js/ie10-viewport-bug-workaround.js'
       ]
-    } 
+    }
   }
 };
 const server = require('./server');
