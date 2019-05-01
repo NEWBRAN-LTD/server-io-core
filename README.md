@@ -342,9 +342,12 @@ developing [AMP](https://www.ampproject.org/) or [PWA](https://developers.google
 
 
 
-### Proxy
+### Proxy for web
 
-We are using the [koa-nginx](https://github.com/wedog/koa-nginx) as the proxy option. To create a proxy:
+We are using the [koa-nginx](https://github.com/wedog/koa-nginx) as the proxy option, it can only proxy http.
+If you need to proxy web socket, see the next option.
+
+Example:
 
 ```
 serverIoCore(
@@ -357,11 +360,37 @@ serverIoCore(
 );
 ```
 
+
 From your code, you just call `/proxy` and it will redirect to the http://localhost:5678
 
-### Middlewares 
+### Proxy for socket (Experimental)
 
-You can add any third parties middlewares (as long as it's Koa 2 compatible). 
+Due to the architecture of Koa, we can not simply use a middleware to handle such function.
+Therefore, we need to hijack the `upgrade` event after the server is started. And this lead to another problem.
+Our internal socket.io will not able to work once the socket proxy is activate, because the way how [node-http-proxy](https://github.com/nodejitsu/node-http-proxy#proxying-websockets) works. We can only proxy out every `upgrade` connection to the other server.
+
+Example:
+
+```js
+serverIoCore({
+  wsProxy: 'http://another-server-running-socket.io:34567'
+});
+```
+Now whatever you connect to your server via socket will route to the `wsProxies`
+
+**More Options**
+
+More options coming in later release.
+
+---
+
+*There is another dummy way to do this, which is always running our own socket.io interface, and track the event or namespace that
+need to proxy to another server, and pass through via the socket.io-client. But that will be a performance hit, as well as a very messy
+setup. Therefore, we are not going to do that for the time being. Since server-io-core is not design just for development. Its also a full feature setup for production as well.*
+
+### Middlewares
+
+You can add any third parties middlewares (as long as it's Koa 2 compatible).
 
 ```js
 
@@ -377,7 +406,7 @@ server({
 
 ```
 
-And you can add as many as you want. 
+And you can add as many as you want.
 
 
 ### Debug

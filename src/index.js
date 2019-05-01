@@ -53,6 +53,8 @@ exports.serverIoCore = function(config) {
   };
 
   // 2018-08-17 unless specify the socket will always be enable
+  // 2019-05-01 if we need to proxy out the ws then this socket can not start
+  // because we have to hijack it at the higher server.on.upgrade event
   if (
     config.socket.enable ||
     config.reload.enable ||
@@ -98,6 +100,11 @@ exports.serverIoCore = function(config) {
 
     unwatchFn.forEach(fn => fn());
   });
+
+  webserver.on('upgrade', (req, socket, head) => {
+    console.log('catch the upgrade event');
+  });
+
   // Finally return the instance
   return { webserver, app, start, stop, io };
 };

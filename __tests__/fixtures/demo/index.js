@@ -32,10 +32,8 @@ const config = {
   proxies: [{
     host: `http://localhost:${port}`,
     context: '/proxy'
-  },{
-    host: `http://localhost:${port}`,
-    ws: true
   }],
+  wsProxy: `http://localhost:${port}`,
   webroot: [join(__dirname, 'dist', 'assets'), join(__dirname, 'dist', 'base')]
 };
 

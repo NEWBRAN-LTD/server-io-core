@@ -26,10 +26,31 @@ const ensureArrayProps = (arraySource, options) => {
 };
 
 /**
+ * A bit of sideway hack to correct the configuration for a special case
+ * wsProxy
+ * @param {string} key looking for particular key to work with
+ * @param {object} config the config object for that key
+ * @return {object} the corrected config object
+ */
+const handleSpecialCase = (key, config) => {
+  if (key === 'wsProxy') {
+    if (typeof config === 'string' && config.trim() !== '') {
+      return {
+        enable: true,
+        target: config
+        // @TODO there will be more options in the future release
+      };
+    }
+  }
+
+  return false;
+};
+
+/**
  * @param {object} defaults the stock options
  * @param {array} props special properties need preserved
  * @param {array} arraySource list of keys that is using array as default
- * @param {object} options configuration params pass the end user
+ * @param {object} options configuration params pass by the developer
  * @return {object} configuration
  */
 module.exports = function(defaults, props, arraySource, options) {
@@ -58,7 +79,10 @@ module.exports = function(defaults, props, arraySource, options) {
      * enable: true
      * then the feature is not enable
      */
-    if (config[prop] === true) {
+    let specialCase = handleSpecialCase(prop, config[prop]);
+    if (specialCase !== false) {
+      config[prop] = specialCase;
+    } else if (config[prop] === true) {
       config[prop] = merge({}, originalDefaults[prop]);
       config[prop].enable = true;
     } else if (originalOptions[prop] && Object.keys(originalOptions[prop]).length) {

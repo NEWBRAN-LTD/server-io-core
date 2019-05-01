@@ -14,7 +14,8 @@ const defaultProperties = [
   'serverReload',
   'inject',
   'open',
-  'https'
+  'https',
+  'wsProxy'
 ];
 // Rename to the key defaultOptions
 const defaultOptions = {
@@ -40,6 +41,11 @@ const defaultOptions = {
   // @2018-03-19 it was just an array but some how the lodash.merge turns an
   // object into an array so when we call it, it couldn't tell
   proxies: [],
+  // We have to seperate them, see README about reason why
+  wsProxy: {
+    enable: false,
+    target: ''
+  },
   proxyTimeout: 5000,
   // Stock certicates @TODO combine this together
   open: {
@@ -72,6 +78,7 @@ const defaultOptions = {
    *      reload: true
    *    });
    */
+  // @TODO remove cordova option later, there is no use anymore
   cordova: false, // @2018-08-20 add this option to fake a cordova.js file
   inject: {
     enable: false,
