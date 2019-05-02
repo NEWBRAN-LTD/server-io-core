@@ -9,28 +9,33 @@ const { join } = require('path');
 const debug = require('debug')('server-io-core:proxy-test');
 const {
   frontServer,
-  server,
-  frontPort
+  standAlone,
+  frontPort,
+  proxyConfig
 } = require('./fixtures/socket');
 
 test.before(t => {
-
+  const { stop } = serverIoCore({
+    open: false,
+    wsProxy: proxyConfig,
+    port: frontPort
+  });
+  t.context.stop = stop;
 });
 
 test.after(t => {
 
-  frontServer.close();
-  server.close();
-  
-  // t.context.app.close();
-  // t.context.stop();
+  t.context.stop();
+  standaloneServer.close();
+
 });
 
-test.cb("It should able proxy over the socket", t => {
+test.skip("It should able proxy over the socket", t => {
   const client = socketClient(`http://localhost:${frontPort}`);
   t.plan(1);
   client.on('connect', function() {
     debug('socket server is connected');
+
     client.on('msg', function(data) {
       debug('got a msg', data);
       client.emit('reply', 'Just say hi back!');

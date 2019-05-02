@@ -6,10 +6,10 @@ const { join } = require('path');
 const { inspect } = require('util');
 const debug = require('debug')('server-io-core:socket-setup');
 // init
-const server = http.createServer(handler);
-const io = socketIo(server);
+const standaloneServer = http.createServer(handler);
+const io = socketIo(standaloneServer);
 
-server.listen(9015);
+standaloneServer.listen(9015);
 
 function handler(req, res) {
   fs.readFile(join(__dirname, '..', 'proxy', 'index.html'),
@@ -31,15 +31,17 @@ io.on('connection', function(socket) {
   });
 });
 
-//
-// Setup our server to proxy standard HTTP requests
-//
-var proxy = new httpProxy.createProxyServer({
+const proxyConfig = {
   target: {
     host: 'localhost',
     port: 9015
   }
-});
+};
+
+//
+// Setup our server to proxy standard HTTP requests
+//
+var proxy = new httpProxy.createProxyServer(proxyConfig);
 var frontServer = http.createServer(function (req, res) {
   proxy.web(req, res);
 });
@@ -50,7 +52,6 @@ var frontServer = http.createServer(function (req, res) {
 //
 frontServer.on('upgrade', function (req, socket, head) {
   console.log('head', inspect(head.toString(), false, null));
-
   proxy.ws(req, socket, head);
 });
 
@@ -59,6 +60,7 @@ const frontPort = 8015;
 
 module.exports = {
   frontServer,
-  server,
-  frontPort
+  standaloneServer,
+  frontPort,
+  proxyConfig
 };

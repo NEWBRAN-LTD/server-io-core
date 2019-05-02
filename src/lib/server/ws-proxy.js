@@ -6,6 +6,7 @@ const chalk = require('chalk');
 const { WS_PROXY } = require('../utils/constants');
 const { logutil } = require('../utils');
 const debug = require('debug')('server-io-core:ws-proxy');
+const { inspect } = require('util');
 /**
  * @param {object} config the full configuration object
  * @param {object} webserver the server instance
@@ -22,17 +23,11 @@ module.exports = function(config, webserver, socketIsEnabled) {
         )
       );
     }
-
-    const proxyUrl = new URL(opt.target);
-    const proxyServerOpt = {
-      target:  {
-        host: proxyUrl.hostname,
-        port: proxyUrl.port
-      }
-    };
-    debug('start proxy server with', proxyServerOpt);
+    debug('start proxy server with', opt);
     // debug('wsProxy url', proxyUrl);
-    const proxyServer = new HttpProxy.createProxyServer(proxyServerOpt);
+    const proxyServer = new HttpProxy.createProxyServer({
+      target: opt.target
+    });
     webserver.on('upgrade', function(req, socket, head) {
       debug('listening on upgrade event');
       // @TODO if there is more options in the future to overwrite something, this will be the place

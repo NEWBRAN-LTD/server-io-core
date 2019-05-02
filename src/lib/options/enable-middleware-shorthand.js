@@ -6,6 +6,7 @@ const { merge, extend } = require('lodash');
 const { toArray } = require('../utils/');
 const { version } = require('../../../package.json');
 const { WS_PROXY } = require('../utils/constants');
+// Const debug = require('debug')('server-io-core:enable-middleware-shorthand');
 /**
  * Make sure the incoming parameter to be array when it's coming out
  * @param {array} arraySource list of keys to process
@@ -36,10 +37,21 @@ const ensureArrayProps = (arraySource, options) => {
 const handleSpecialCase = (key, config) => {
   if (key === WS_PROXY) {
     if (typeof config === 'string' && config.trim() !== '') {
+      const proxyUrl = new URL(config);
       return {
         enable: true,
-        target: config
+        target: {
+          host: proxyUrl.hostname,
+          port: proxyUrl.port
+        }
         // @TODO there will be more options in the future release
+      };
+    }
+
+    if (config.target && typeof config.target === 'object') {
+      return {
+        enable: true,
+        target: config.target
       };
     }
   }
@@ -73,6 +85,7 @@ module.exports = function(defaults, props, arraySource, options) {
 
   for (let i = 0, len = props.length; i < len; ++i) {
     let prop = props[i];
+    // Debug('prop', prop);
     /**
      * The problem is when someone pass optionName: true
      * it just using the default options

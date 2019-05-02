@@ -16,7 +16,8 @@ const defaultProperties = [
   'inject',
   'open',
   'https',
-  'wsProxy'
+  'wsProxy',
+  'socket'
 ];
 // Rename to the key defaultOptions
 const defaultOptions = {
