@@ -17,6 +17,7 @@ test.before(t => {
     socket: false,
     port: 8002,
     inject: {
+      insertBefore: false,
       target: {
         head: [
           // 'css/bootstrap.min.css',
