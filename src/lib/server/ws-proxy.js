@@ -34,7 +34,9 @@ const ensureEvents = evt => {
 const constructDummyProxy = (io, config) => {
   const client = socketIoClient(config.host);
   const server = io.of(config.namespace);
-  client.on('connect', socket => {
+  // client to server
+  client.on('connect', () => {
+    debug(`[wsProxy] connection to ${config.host} established`);
     _.forEach(config.events, evt => {
       debug('[wsProxy] hooking up ', evt);
       // client to server
@@ -42,8 +44,13 @@ const constructDummyProxy = (io, config) => {
         debug('[wsProxy] client.on', evt, args);
         server.emit(evt, args);
       });
+    });
+  });
+  // server to client
+  server.on('connection', function(socket) {
+    _.forEach(config.events, evt => {
       // server to client
-      server.on(evt, function(...args) {
+      socket.on(evt, function(...args) {
         debug('[wsProxy] server.on', evt, args);
         client.emit(evt, args);
       });
