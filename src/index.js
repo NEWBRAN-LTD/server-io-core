@@ -30,6 +30,7 @@ exports.serverIoCore = function(config) {
   let io = null;
   let unwatchFn = [];
   let socketIsEnabled = false;
+  let namespaceInUsed = [];
   // Init web server
   const { webserver, start, stop } = webserverGenerator(app, config);
   // Setup the callback
@@ -78,11 +79,13 @@ exports.serverIoCore = function(config) {
   if (config.reload.enable) {
     // Limiting the config options
     unwatchFn.push(clientReload(config.webroot, io, config.reload));
+    namespaceInUsed.push(config.reload.namespace);
   }
 
   // Debugger server start
   if (config.debugger.enable && config.debugger.server === true) {
     unwatchFn.push(debuggerServer(config, io));
+    namespaceInUsed.push(config.debugger.namespace);
   }
 
   // Enable the injectors here, if socket server is enable that means
@@ -94,7 +97,7 @@ exports.serverIoCore = function(config) {
   staticServe(config)(app);
 
   // Now pass to the ws proxy at the very end
-  const proxyServer = wsProxyServer(config, io, socketIsEnabled);
+  const proxyServer = wsProxyServer(config, io, socketIsEnabled, namespaceInUsed);
 
   // Start server @2018-08-13
   if (config.autoStart === true) {

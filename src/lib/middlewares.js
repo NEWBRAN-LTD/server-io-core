@@ -74,7 +74,7 @@ module.exports = function(app, config) {
   let filtered = proxies
     .filter(proxyoptions => {
       // When proxy socket we don't need the context
-      if (!proxyoptions.host || (proxyoptions.ws !== true && !proxyoptions.context)) {
+      if (!proxyoptions.host || !proxyoptions.context) {
         logutil(
           chalk.red('Missing target or source property for proxy setting!'),
           proxyoptions
