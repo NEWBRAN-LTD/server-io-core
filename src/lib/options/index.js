@@ -121,7 +121,7 @@ const defaultOptions = {
     enable: false
   }
 };
-const arraySource = ['middlewares', 'proxies'];
+const arraySource = ['middlewares', 'proxies', 'wsProxy.target'];
 // Export just one function
 module.exports = {
   defaultOptions,

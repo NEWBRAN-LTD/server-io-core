@@ -6,6 +6,9 @@ const { merge, extend } = require('lodash');
 const { toArray } = require('../utils/');
 const { version } = require('../../../package.json');
 const { WS_PROXY } = require('../utils/constants');
+const _ = require('lodash');
+// Const debug = require('debug')('server-io-core:enable-middleware-shorthand');
+
 // Const debug = require('debug')('server-io-core:enable-middleware-shorthand');
 /**
  * Make sure the incoming parameter to be array when it's coming out
@@ -18,7 +21,14 @@ const ensureArrayProps = (arraySource, options) => {
     .map(key => {
       // @2019-05-07 if we pass it as a path
       if (key.indexOf('.') > -1) {
-        let parts = key.split('.');
+        const value = _.get(options, key);
+        const parts = key.split('.');
+        const objKey = parts[0];
+        const propKey = parts[1];
+        // Here could be a problem if the level is deeper than one
+        return {
+          [objKey]: merge({}, options[objKey], { [propKey]: toArray(value) })
+        };
       }
 
       if (options[key]) {
@@ -91,7 +101,8 @@ module.exports = function(defaults, props, arraySource, options) {
     again another problem with the prop inside an object that is not array but
     we need it to be an array
   */
-  let config = merge({}, defaults, ensureArrayProps(arraySource, options));
+  const tmpProp = ensureArrayProps(arraySource, options);
+  let config = merge({}, defaults, tmpProp);
   // This just make sure it's an array
   if (Object.prototype.toString.call(props) === '[object String]') {
     props = [props];
