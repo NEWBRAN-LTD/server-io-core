@@ -27,7 +27,7 @@ const debug = require('debug')('server-io-core:inject');
  * @param {boolean} insertBefore from config
  * @return {object} promise resolve string
  */
-const getHtmlDocument = (p, js, css, insertBefore) => {
+const getHtmlDocument = function(p, js, css, insertBefore) {
   return readDocument(p).then(data => {
     if (data) {
       return injectToHtml(data, js, css, insertBefore);
@@ -45,7 +45,7 @@ const getHtmlDocument = (p, js, css, insertBefore) => {
  * @param {boolean} insertBefore from config
  * @return {object} throw on not found
  */
-const searchHtmlDocuments = (webroot, p, js, css, insertBefore) => {
+const searchHtmlDocuments = function(webroot, p, js, css, insertBefore) {
   const file = searchFileFromFiles([p].concat(webroot.map(dir => join(dir, p))));
   if (file) {
     return getHtmlDocument(file, js, css, insertBefore);
