@@ -240,6 +240,8 @@ const isHtmlFile = file => {
 
 /**
  * strip the root slash for the proxy context
+ * @param {string} str input
+ * @return {string} output without first slash
  */
 const stripFirstSlash = str => {
   const first = str.substring(0,1);
@@ -248,6 +250,14 @@ const stripFirstSlash = str => {
   }
   return str;
 };
+
+/**
+ * make sure there is a slash before the namespace
+ * @param {string} str input
+ * @return {string} output with slash at the beginning
+ */
+const ensureFirstSlash = str => "/" + stripFirstSlash(str);
+
 // Export
 module.exports = {
   searchFileFromFiles,
@@ -266,5 +276,6 @@ module.exports = {
   getServingIpforOS,
   isWindoze,
   readAsync,
-  stripFirstSlash
+  stripFirstSlash,
+  ensureFirstSlash
 };

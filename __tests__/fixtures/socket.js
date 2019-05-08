@@ -8,8 +8,10 @@ const debug = require('debug')('server-io-core:socket-setup');
 // init
 const standaloneServer = http.createServer(handler);
 const io = socketIo(standaloneServer);
-
-standaloneServer.listen(9015);
+const portNum = 9015
+standaloneServer.listen(portNum, () => {
+  debug('stand alone server start at ', portNum);
+});
 
 function handler(req, res) {
   fs.readFile(join(__dirname, '..', 'proxy', 'index.html'),
@@ -25,6 +27,7 @@ function handler(req, res) {
 }
 
 io.on('connection', function(socket) {
+  debug('proxy behind socket server connection establish');
   socket.emit('msg', {hello: 'world'});
   socket.on('reply', function(data) {
     debug('receive reply: ', data);
@@ -34,7 +37,7 @@ io.on('connection', function(socket) {
 const proxyConfig = {
   target: {
     host: 'localhost',
-    port: 9015
+    port: portNum
   }
 };
 

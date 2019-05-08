@@ -12,7 +12,9 @@
     "demo": "DEBUG=server-io-core* node ./__tests__/fixtures/demo",
     "test:demo": "DEBUG=server-io-core* ava ./__tests__/inject.test.js",
     "test:inject": "DEBUG=server-io-core* node ./__tests__/fixtures/run.js",
-    "test:socket": "DEBUG=server-io-core* ava ./__tests__/proxy-socket.test.js"
+    "test:socket": "DEBUG=server-io-core* ava ./__tests__/proxy-socket.test.js",
+    "start:server": "DEBUG=server-io-core* node ./__tests__/fixtures/test-proxy.js",
+    "start:client": "DEBUG=server-io-core* node ./__tests__/fixtures/test-client.js"
   },
   "repository": {
     "type": "git",

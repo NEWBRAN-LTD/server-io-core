@@ -6,7 +6,7 @@
 const HttpProxy = require('http-proxy');
 const chalk = require('chalk');
 const { WS_PROXY } = require('../utils/constants');
-const { logutil } = require('../utils');
+const { logutil, ensureFirstSlash } = require('../utils');
 const debug = require('debug')('server-io-core:ws-proxy');
 const { inspect } = require('util');
 const socketIoClient = require('socket.io-client');
@@ -26,6 +26,8 @@ const ensureEvents = evt => {
   return false;
 }
 
+
+
 /**
  * generate the dummy pass around proxy
  * @param {object} config clean one
@@ -33,7 +35,7 @@ const ensureEvents = evt => {
  */
 const constructDummyProxy = (io, config) => {
   const client = socketIoClient(config.host);
-  const server = io.of(config.namespace);
+  const server = io.of(ensureFirstSlash(config.namespace));
   // client to server
   client.on('connect', () => {
     debug(`[wsProxy] connection to ${config.host} established`);
@@ -59,6 +61,49 @@ const constructDummyProxy = (io, config) => {
 }
 
 /**
+ * Run the config to check and setup proxy
+ * @param {object} config of the wsProxy
+ * @param {object} io socket.io instance
+ * @param {array} namespaceInUsed for checking
+ * @return {object} servser and clients
+ */
+const setupProxy = (config, io, namespaceInUsed) => {
+  let clients = {};
+  let servers = {};
+  let msg = '';
+  debug('setupProxy', config.target);
+  _.forEach(config.target, target => {
+    debug('[wsProxy]', target);
+    if (target.namespace && target.host) {
+      const check = namespaceInUsed.filter(n => n === ensureFirstSlash(target.namespace));
+      if (check.length) {
+        msg = `[wsProxy] The namespace "${target.name}" is already in use!`;
+        logutil(chalk.red(msg));
+        debug(msg);
+      } else {
+        const evts = ensureEvents(target.events);
+        if (evts === false) {
+          msg = '[wsProxy] Missing events property';
+          debug(msg);
+          logutil(chalk.red(msg), chalk.yellow(target));
+        } else {
+          debug('[wsProxy] start proxy server with', opt);
+          logutil(chalk.yellow('[wsProxy] starting ...'));
+          const { c, s } = constructDummyProxy(io, target);
+          clients[target.namespace] = c;
+          servers[target.namespace] = s;
+        }
+      }
+    } else {
+      msg = '[wsProxy] Missing namespace or host in your proxy property!';
+      debug(msg);
+      logutil(chalk.red(msg), chalk.yellow(target));
+    }
+  });
+  return { clients, servers };
+}
+
+/**
  * @param {object} config the full configuration object
  * @param {object} io the socket.io server instance
  * @param {boolean} socketIsEnabled for checking other options than decided what to do
@@ -68,36 +113,8 @@ const constructDummyProxy = (io, config) => {
 module.exports = function(config, io, socketIsEnabled, namespaceInUsed) {
   const opt = config[WS_PROXY];
   if (opt.enable === true && socketIsEnabled) {
-    let clients = {};
-    let servers = {};
-    let msg = '';
-    _.forEach(config.target, target => {
-      if (target.namespace && target.host) {
-        const check = namespaceInUsed.filter(n => n === target.namespace);
-        if (check.length) {
-          msg = `[wsProxy] The namespace "${target.name}" is already in use!`;
-          logutil(chalk.red(msg));
-          debug(msg);
-        } else {
-          const evts = ensureEvents(target.events);
-          if (evts === false) {
-            msg = '[wsProxy] Missing events property';
-            debug(msg);
-            logutil(chalk.red(msg), chalk.yellow(target));
-          } else {
-            debug('[wsProxy] start proxy server with', opt);
-            logutil(chalk.yellow('[wsProxy] starting ...'));
-            const { c, s } = constructDummyProxy(io, target);
-            clients[target.namespace] = c;
-            servers[target.namespace] = s;
-          }
-        }
-      } else {
-        msg = '[wsProxy] Missing namespace or host in your proxy property!';
-        debug(msg);
-        logutil(chalk.red(msg), chalk.yellow(target));
-      }
-    });
+    debug('[wsProxy]', opt, socketIsEnabled, namespaceInUsed);
+    const { clients, servers } = setupProxy(opt, io, namespaceInUsed);
     return {
       close: () => {
         _.forEach(clients, (value, key) => {

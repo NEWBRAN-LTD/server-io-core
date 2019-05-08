@@ -16,6 +16,11 @@ const { WS_PROXY } = require('../utils/constants');
 const ensureArrayProps = (arraySource, options) => {
   return arraySource
     .map(key => {
+      // @2019-05-07 if we pass it as a path
+      if (key.indexOf('.') > -1) {
+        let parts = key.split('.');
+      }
+
       if (options[key]) {
         return { [key]: toArray(options[key]) };
       }
@@ -81,7 +86,10 @@ module.exports = function(defaults, props, arraySource, options) {
     lodash.merge merge object into array source turns it into
     a key / value array instead of numeric
     so for the special case `middleware` `proxies`
-    we need to double check here before calling the merge function
+    we need to double check here before calling the merge function,
+
+    again another problem with the prop inside an object that is not array but
+    we need it to be an array
   */
   let config = merge({}, defaults, ensureArrayProps(arraySource, options));
   // This just make sure it's an array

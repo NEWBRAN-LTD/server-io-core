@@ -71,7 +71,7 @@ exports.scriptsInjectorMiddleware = function(config) {
     config
   );
 
-  debug('inject config %O', config.inject);
+  // Debug('inject config %O', config.inject);
 
   if (features.debugger || features.reload) {
     scripts.push(socketIoJs);
@@ -91,7 +91,10 @@ exports.scriptsInjectorMiddleware = function(config) {
   const files = tagJs(scripts);
   // Next we add the fileInjector function here
   const { js, css } = getFilesToInject(config.inject);
-  debug('getFilesToInject', js, css);
+  if (config.inject.enable) {
+    debug('getFilesToInject', js, css);
+  }
+
   const contentType = 'text/html';
   // Export the middleware
   return async function(ctx, next) {
