@@ -28,7 +28,10 @@ function handler(req, res) {
 
 io.on('connection', function(socket) {
   debug('proxy behind socket server connection establish');
-  socket.emit('msg', {hello: 'world'});
+  setTimeout(() => {
+    socket.emit('msg', {hello: 'world'});
+  },5000);
+
   socket.on('reply', function(data) {
     debug('receive reply: ', data);
   });
@@ -40,6 +43,8 @@ const proxyConfig = {
     port: portNum
   }
 };
+
+const namespace = 'behind-the-proxy';
 
 //
 // Setup our server to proxy standard HTTP requests
@@ -70,5 +75,6 @@ module.exports = {
   // frontServer,
   standaloneServer,
   frontPort,
-  proxyConfig
+  proxyConfig,
+  namespace
 };

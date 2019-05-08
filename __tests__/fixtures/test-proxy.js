@@ -4,9 +4,10 @@ const {
   // frontServer,
   standaloneServer,
   frontPort,
-  proxyConfig
+  proxyConfig,
+  namespace
 } = require('./socket');
-const namespace = 'behind-the-proxy';
+
 
 const proxyPort = proxyConfig.target.port;
 
