@@ -46,7 +46,7 @@ const defaultOptions = {
   // We have to seperate them, see README about reason why
   wsProxy: {
     enable: false,
-    target: ''
+    target: []
   },
   proxyTimeout: 5000,
   // Stock certicates @TODO combine this together

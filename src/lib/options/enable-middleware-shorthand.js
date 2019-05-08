@@ -28,6 +28,23 @@ const ensureArrayProps = (arraySource, options) => {
 };
 
 /**
+ * Make sure we get the config in an array
+ * @param {object} config for wsProxy
+ * @return {mixed} false on failed!
+ */
+const extractArrayProps = config => {
+  if (typeof config === 'object' && config.target && config.enable !== false) {
+    return toArray(config.target);
+  }
+
+  if (Array.isArray(config)) {
+    return config;
+  }
+
+  return false;
+};
+
+/**
  * A bit of sideway hack to correct the configuration for a special case
  * wsProxy
  * @param {string} key looking for particular key to work with
@@ -36,22 +53,11 @@ const ensureArrayProps = (arraySource, options) => {
  */
 const handleSpecialCase = (key, config) => {
   if (key === WS_PROXY) {
-    if (typeof config === 'string' && config.trim() !== '') {
-      const proxyUrl = new URL(config);
+    const target = extractArrayProps(config);
+    if (target !== false) {
       return {
         enable: true,
-        target: {
-          host: proxyUrl.hostname,
-          port: proxyUrl.port
-        }
-        // @TODO there will be more options in the future release
-      };
-    }
-
-    if (config.target && typeof config.target === 'object') {
-      return {
-        enable: true,
-        target: config.target
+        target: target
       };
     }
   }
