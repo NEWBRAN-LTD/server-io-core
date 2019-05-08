@@ -11,7 +11,7 @@ test.before(t => {
       join(__dirname, 'fixtures', 'demo', 'dist', 'base'),
       join(__dirname, 'fixtures', 'demo', 'dist', 'assets')
     ],
-    open: true,
+    open: false,
     debugger: false,
     reload: false,
     socket: false,
@@ -19,8 +19,8 @@ test.before(t => {
     inject: {
       target: {
         head: [
-          'css/bootstrap.min.css',
-          'css/starter-template.css'
+          // 'css/bootstrap.min.css',
+          // 'css/starter-template.css'
         ],
         body: [
           'js/bootstrap.min.js',
@@ -47,5 +47,5 @@ test('It should able to inject files according to the inject object', async t =>
   // This always return a {} @TODO
   debug('return body', res.body);
   t.pass();
-  
+
 });

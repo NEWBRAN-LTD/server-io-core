@@ -209,7 +209,8 @@ exports.getFilesToInject = function(config) {
   // const target = getTarget(config.target);
   const { js, css } = getSource(config);
   // Const check = target && (js || css);
-  if (!js.length || !css.length) {
+  if (!js.length && !css.length) {
+    // Both should have at least one have properties!
     if (config.enable) {
       // Display an error inline here
       const msg = '[inject] Configuration is incorrect for injector to work!';

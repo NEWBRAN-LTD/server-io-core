@@ -39,7 +39,7 @@ function serve(root, opts) {
   opts = Object.assign({}, opts);
   // Assert(root, 'root directory is required to serve files');
   // Options
-  debug('static "%s" %j', root, opts);
+  // debug('static "%s" %j', root, opts);
   opts.root = root;
   if (opts.index !== false) {
     opts.index = opts.index || 'index.html';
@@ -53,6 +53,7 @@ function serve(root, opts) {
           done = await send(ctx, ctx.path, opts);
         } catch (err) {
           if (err.status !== 404) {
+            debug('Unknown error', err);
             throw err;
           }
         }
@@ -71,7 +72,7 @@ function serve(root, opts) {
     // Response is already handled
     // @bug from Koa ctx.body is undefined not null
     if ((ctx.body !== undefined && ctx.body !== null) || ctx.status !== 404) {
-      debug('skip serveStatic', ctx.body);
+      // Debug('skip serveStatic', ctx.body);
       return; // eslint-disable-line
     }
 

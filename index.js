@@ -1,3 +1,4 @@
+// Server-io-core main
 const { createConfiguration } = require('./src/lib/options');
 const { serverIoCore } = require('./src');
 const { resolve } = require('path');

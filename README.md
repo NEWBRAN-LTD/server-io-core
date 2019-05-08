@@ -382,12 +382,6 @@ Now whatever you connect to your server via socket will route to the `wsProxies`
 
 More options coming in later release.
 
----
-
-*There is another dummy way to do this, which is always running our own socket.io interface, and track the event or namespace that
-need to proxy to another server, and pass through via the socket.io-client. But that will be a performance hit, as well as a very messy
-setup. Therefore, we are not going to do that for the time being. Since server-io-core is not design just for development. Its also a full feature setup for production as well.*
-
 ### Middlewares
 
 You can add any third parties middlewares (as long as it's Koa 2 compatible).
@@ -416,6 +410,12 @@ We use debug internally, so you can pass `DEBUG=server-io-core*` during start up
 ### Mock Server
 
 **This is remove and no longer support, you can easily add this as a middleware.**
+
+---
+
+*There is another dummy way to do this, which is always running our own socket.io interface, and track the event or namespace that
+need to proxy to another server, and pass through via the socket.io-client. But that will be a performance hit, as well as a very messy
+setup. Therefore, we are not going to do that for the time being. Since server-io-core is not design just for development. Its also a full feature setup for production as well.*
 
 ### Server Reload
 
