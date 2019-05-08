@@ -86,6 +86,7 @@ exports.scriptsInjectorMiddleware = function(config) {
   const files = tagJs(scripts);
   // Next we add the fileInjector function here
   const { js, css } = getFilesToInject(config.inject);
+  debug('getFilesToInject', js, css);
   const contentType = 'text/html';
   // Export the middleware
   return async function(ctx, next) {

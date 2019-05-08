@@ -36,11 +36,10 @@
  ```js
   const config = {
     inject: {
-      source: {
+      target: {
         head: ['list/of/files.js', '/list/of/*.css'],
         body: ['list/of/other/files.js']
-      },
-      target: ['index.html', 'other.html']
+      }
     }
   }
  ```
