@@ -24,12 +24,13 @@ const debug = require('debug')('server-io-core:inject');
  * @param {string} p path to file
  * @param {string} js tags
  * @param {string} css tags
+ * @param {boolean} insertBefore from config
  * @return {object} promise resolve string
  */
-const getHtmlDocument = (p, js, css) => {
+const getHtmlDocument = (p, js, css, insertBefore) => {
   return readDocument(p).then(data => {
     if (data) {
-      return injectToHtml(data, js, css);
+      return injectToHtml(data, js, css, insertBefore);
     }
   });
 };
@@ -41,12 +42,13 @@ const getHtmlDocument = (p, js, css) => {
  * @param {string} p html
  * @param {string} js tags
  * @param {string} css tags
+ * @param {boolean} insertBefore from config
  * @return {object} throw on not found
  */
-const searchHtmlDocuments = (webroot, p, js, css) => {
+const searchHtmlDocuments = (webroot, p, js, css, insertBefore) => {
   const file = searchFileFromFiles([p].concat(webroot.map(dir => join(dir, p))));
   if (file) {
-    return getHtmlDocument(file, js, css);
+    return getHtmlDocument(file, js, css, insertBefore);
   }
 
   throw Promise.reject(new Error(`File ${p} not found from ${webroot}`));
@@ -67,6 +69,8 @@ exports.scriptsInjectorMiddleware = function(config) {
   const { socketIoJs, debuggerJs, stacktraceJsFile, reloadJs } = getFeatureScripts(
     config
   );
+
+  debug('inject config %O', config.inject);
 
   if (features.debugger || features.reload) {
     scripts.push(socketIoJs);
@@ -105,7 +109,8 @@ exports.scriptsInjectorMiddleware = function(config) {
               config.webroot,
               p,
               _.compact([files, js]).join(''),
-              css
+              css,
+              config.inject.insertBefore
             );
             ctx.status = 200;
             ctx.type = contentType + '; charset=utf8';
