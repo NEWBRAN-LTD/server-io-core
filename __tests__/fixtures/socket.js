@@ -30,7 +30,7 @@ io.on('connection', function(socket) {
   debug('proxy behind socket server connection establish');
   setTimeout(() => {
     socket.emit('msg', {hello: 'world'});
-  },5000);
+  },500);
 
   socket.on('reply', function(data) {
     debug('receive reply: ', data);

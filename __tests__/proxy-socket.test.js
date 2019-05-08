@@ -40,12 +40,13 @@ test.after(t => {
   }, 10*1000);
 });
 
-test("server-io-core should able proxy over the socket", t => {
+test.cb("server-io-core should able proxy over the socket", t => {
   const client = socketClient(`http://localhost:${frontPort}/${namespace}`);
   t.plan(1);
   client.on('connect', function() {
     debug('socket server is connected');
-
+    // t.pass();
+    // t.end();
     client.on('msg', function(data) {
       debug('got a msg', data);
       client.emit('reply', 'Just say hi back!');
