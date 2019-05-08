@@ -39,7 +39,7 @@ const config = {
     host: `http://localhost:${port}`,
     context: '/proxy'
   }], */
-  wsProxy: `http://localhost:${port}`,
+  // wsProxy: `http://localhost:${port}`,
   webroot: [
     join(__dirname, 'dist', 'assets'),
     join(__dirname, 'dist', 'base'),

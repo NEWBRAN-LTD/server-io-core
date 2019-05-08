@@ -2,7 +2,7 @@
  * Open in browser during development
  */
 const _ = require('lodash');
-const open = require('opn');
+const open = require('open');
 const debug = require('debug')('server-io-core:open');
 const { isWindoze } = require('./index');
 const { defaultHostIp } = require('./constants');
@@ -37,7 +37,7 @@ const constructUrl = config => {
  */
 module.exports = function(config) {
   try {
-    debug('config.open', config.open);
+    debug('[open configuration]', config.open);
     let multiple = false;
     let args = [constructUrl(config)];
     // If there is just the true option then we need to construct the link
