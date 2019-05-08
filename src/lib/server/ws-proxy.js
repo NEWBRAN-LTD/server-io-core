@@ -26,23 +26,22 @@ const ensureEvents = evt => {
   return false;
 }
 
-
-
 /**
  * generate the dummy pass around proxy
  * @param {object} config clean one
  * @return {object} passing back the object for destroy later
  */
 const constructDummyProxy = (io, config) => {
+  const nsp = config.namespace;
   const client = socketIoClient(config.host);
-  const server = io.of(ensureFirstSlash(config.namespace));
+  const server = io.of(ensureFirstSlash(nsp));
   // client to server
   client.on('connect', () => {
     debug(`[wsProxy] connection to ${config.host} established`);
     _.forEach(config.events, evt => {
       debug('[wsProxy] hooking up ', evt);
       // client to server
-      client.on(evt, function(...args) {
+      client.on(evt, function(args) {
         debug('[wsProxy] client.on', evt, args);
         server.emit(evt, args);
       });
@@ -50,14 +49,23 @@ const constructDummyProxy = (io, config) => {
   });
   // server to client
   server.on('connection', function(socket) {
+    debug(`[wsProxy] nsp ${nsp} is listening ...`);
     _.forEach(config.events, evt => {
       // server to client
-      socket.on(evt, function(...args) {
+      socket.on(evt, function(args) {
         debug('[wsProxy] server.on', evt, args);
         client.emit(evt, args);
       });
     });
   });
+  return {
+    servers: {
+      [nsp]: server
+    },
+    clients: {
+      [nsp]: client
+    }
+  };
 }
 
 /**
@@ -72,8 +80,7 @@ const setupProxy = (config, io, namespaceInUsed) => {
   let servers = {};
   let msg = '';
   debug('setupProxy', config.target);
-  _.forEach(config.target, target => {
-    debug('[wsProxy]', target);
+  return config.target.map(target => {
     if (target.namespace && target.host) {
       const check = namespaceInUsed.filter(n => n === ensureFirstSlash(target.namespace));
       if (check.length) {
@@ -87,11 +94,9 @@ const setupProxy = (config, io, namespaceInUsed) => {
           debug(msg);
           logutil(chalk.red(msg), chalk.yellow(target));
         } else {
-          debug('[wsProxy] start proxy server with', opt);
+          debug('[wsProxy] start proxy server with', config);
           logutil(chalk.yellow('[wsProxy] starting ...'));
-          const { c, s } = constructDummyProxy(io, target);
-          clients[target.namespace] = c;
-          servers[target.namespace] = s;
+          return constructDummyProxy(io, target);
         }
       }
     } else {
@@ -99,8 +104,8 @@ const setupProxy = (config, io, namespaceInUsed) => {
       debug(msg);
       logutil(chalk.red(msg), chalk.yellow(target));
     }
-  });
-  return { clients, servers };
+    return {};
+  }).reduce(_.merge, {clients: {}, servers: []})
 }
 
 /**
