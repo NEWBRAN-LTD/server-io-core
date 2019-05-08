@@ -63,15 +63,20 @@ module.exports = function(config, io, socketIsEnabled, namespaceInUsed) {
   if (opt.enable === true && socketIsEnabled) {
     let clients = {};
     let servers = {};
+    let msg = '';
     _.forEach(config.target, target => {
       if (target.namespace && target.host) {
         const check = namespaceInUsed.filter(n => n === target.namespace);
         if (check.length) {
-          logutil(chalk.red(`[wsProxy] The namespace "${target.name}" is already in use!`));
+          msg = `[wsProxy] The namespace "${target.name}" is already in use!`;
+          logutil(chalk.red(msg));
+          debug(msg);
         } else {
           const evts = ensureEvents(target.events);
           if (evts === false) {
-            logutil(chalk.red('[wsProxy] Missing events property'), chalk.yellow(target));
+            msg = '[wsProxy] Missing events property';
+            debug(msg);
+            logutil(chalk.red(msg), chalk.yellow(target));
           } else {
             debug('[wsProxy] start proxy server with', opt);
             logutil(chalk.yellow('[wsProxy] starting ...'));
@@ -81,7 +86,9 @@ module.exports = function(config, io, socketIsEnabled, namespaceInUsed) {
           }
         }
       } else {
-        logutil(chalk.red('[wsProxy] Missing namespace or host in your proxy property!'), chalk.yellow(target));
+        msg = '[wsProxy] Missing namespace or host in your proxy property!';
+        debug(msg);
+        logutil(chalk.red(msg), chalk.yellow(target));
       }
     });
     return {
