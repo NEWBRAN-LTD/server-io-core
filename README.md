@@ -366,17 +366,40 @@ From your code, you just call `/proxy` and it will redirect to the http://localh
 ### Proxy for socket (Experimental)
 
 Due to the architecture of Koa, we can not simply use a middleware to handle such function.
-Therefore, we need to hijack the `upgrade` event after the server is started. And this lead to another problem.
-Our internal socket.io will not able to work once the socket proxy is activate, because the way how [node-http-proxy](https://github.com/nodejitsu/node-http-proxy#proxying-websockets) works. We can only proxy out every `upgrade` connection to the other server.
+~~Therefore, we need to hijack the `upgrade` event after the server is started. And this lead to another problem.
+Our internal socket.io will not able to work once the socket proxy is activate, because the way how [node-http-proxy](https://github.com/nodejitsu/node-http-proxy#proxying-websockets) works. We can only proxy out every `upgrade` connection to the other server.~~
+
+We create our own pass over solution. So our socket server listen your request, then pass it over to another `socket.io-client`.
+This way, it won't affect our other operation.  
 
 Example:
 
 ```js
 serverIoCore({
-  wsProxy: 'http://another-server-running-socket.io:34567'
+  wsProxy: {
+    enable: true, // REQUIRED!
+    target: {
+      host: 'http://somewhereelse.com:3456', // REQUIRED
+      namespace: 'your-name-space-client-connect-to', // REQUIRED
+      events: ['message', 'whatever'] // REQUIRED
+    }
+  }
 });
 ```
-Now whatever you connect to your server via socket will route to the `wsProxies`
+
+Now your client:
+
+```js
+var client = io.connect('http://localhost:8000/your-name-space-client-connect-to');
+client.on('connect', function() {
+  client.on('message', function(arg) {
+    // do your thing
+  });
+  client.emit('whatever', 'some stuff you just need to send over');s
+});
+```
+The **target** field can be an object with just one or you can pass an array of objects.
+And MAKE SURE all required fields are present!
 
 **More Options**
 

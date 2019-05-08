@@ -8,30 +8,40 @@ const fs = require('fs');
 const { join } = require('path');
 const debug = require('debug')('server-io-core:proxy-test');
 const {
-  frontServer,
-  standAlone,
+  // frontServer,
+  standaloneServer,
   frontPort,
   proxyConfig
 } = require('./fixtures/socket');
+const namespace = 'behind-the-proxy';
 
 test.before(t => {
+  const proxyPort = proxyConfig.target.port;
   const { stop } = serverIoCore({
     open: false,
-    wsProxy: proxyConfig,
+    wsProxy: {
+      enable: true,
+      target: {
+        namespace: namespace,
+        target: ['http://localhost', proxyPort].join(':'),
+        events: ['msg', 'reply']
+      }
+    },
     port: frontPort
   });
   t.context.stop = stop;
 });
 
 test.after(t => {
-
-  t.context.stop();
-  standaloneServer.close();
-
+  setTimeout(function() {
+    debug('execute after call');
+    t.context.stop();
+    standaloneServer.close();
+  }, 10*1000);
 });
 
-test.skip("It should able proxy over the socket", t => {
-  const client = socketClient(`http://localhost:${frontPort}`);
+test("server-io-core should able proxy over the socket", t => {
+  const client = socketClient(`http://localhost:${frontPort}/${namespace}`);
   t.plan(1);
   client.on('connect', function() {
     debug('socket server is connected');

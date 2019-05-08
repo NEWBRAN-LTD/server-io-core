@@ -36,8 +36,16 @@ const constructDummyProxy = (io, config) => {
   const server = io.of(config.namespace);
   client.on('connect', socket => {
     _.forEach(config.events, evt => {
+      debug('[wsProxy] hooking up ', evt);
+      // client to server
       client.on(evt, function(...args) {
+        debug('[wsProxy] client.on', evt, args);
         server.emit(evt, args);
+      });
+      // server to client
+      server.on(evt, function(...args) {
+        debug('[wsProxy] server.on', evt, args);
+        client.emit(evt, args);
       });
     });
   });
@@ -53,7 +61,6 @@ const constructDummyProxy = (io, config) => {
 module.exports = function(config, io, socketIsEnabled, namespaceInUsed) {
   const opt = config[WS_PROXY];
   if (opt.enable === true && socketIsEnabled) {
-    debug('start proxy server with', opt);
     let clients = {};
     let servers = {};
     _.forEach(config.target, target => {
@@ -66,6 +73,8 @@ module.exports = function(config, io, socketIsEnabled, namespaceInUsed) {
           if (evts === false) {
             logutil(chalk.red('[wsProxy] Missing events property'), chalk.yellow(target));
           } else {
+            debug('[wsProxy] start proxy server with', opt);
+            logutil(chalk.yellow('[wsProxy] starting ...'));
             const { c, s } = constructDummyProxy(io, target);
             clients[target.namespace] = c;
             servers[target.namespace] = s;

@@ -41,25 +41,30 @@ const proxyConfig = {
 //
 // Setup our server to proxy standard HTTP requests
 //
+
+/*
 var proxy = new httpProxy.createProxyServer(proxyConfig);
 var frontServer = http.createServer(function (req, res) {
   proxy.web(req, res);
 });
+*/
 
 //
 // Listen to the `upgrade` event and proxy the
 // WebSocket requests as well.
 //
+/*
 frontServer.on('upgrade', function (req, socket, head) {
   console.log('head', inspect(head.toString(), false, null));
   proxy.ws(req, socket, head);
 });
+*/
 
 const frontPort = 8015;
 // frontServer.listen(frontPort);
 
 module.exports = {
-  frontServer,
+  // frontServer,
   standaloneServer,
   frontPort,
   proxyConfig
