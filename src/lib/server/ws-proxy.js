@@ -39,7 +39,7 @@ const constructDummyProxy = (io, config) => {
   client.on('connect', () => {
     debug(`[wsProxy] connection to ${config.host} established`);
     _.forEach(config.events, evt => {
-      debug('[wsProxy] hooking up ', evt);
+      // debug('[wsProxy] hooking up ', evt);
       // client to server
       client.on(evt, function(args) {
         debug('[wsProxy] client.on', evt, args);
@@ -118,7 +118,7 @@ const setupProxy = (config, io, namespaceInUsed) => {
 module.exports = function(config, io, socketIsEnabled, namespaceInUsed) {
   const opt = config[WS_PROXY];
   if (opt.enable === true && socketIsEnabled) {
-    debug('[wsProxy]', opt, socketIsEnabled, namespaceInUsed);
+    // debug('[wsProxy]', opt, socketIsEnabled, namespaceInUsed);
     const { clients, servers } = setupProxy(opt, io, namespaceInUsed);
     return {
       close: () => {

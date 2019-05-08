@@ -23,7 +23,7 @@ test.before(t => {
       enable: true,
       target: {
         namespace: namespace,
-        target: ['http://localhost', proxyPort].join(':'),
+        host: ['http://localhost', proxyPort].join(':'),
         events: ['msg', 'reply']
       }
     },
@@ -40,7 +40,7 @@ test.after(t => {
   }, 10*1000);
 });
 
-test.skip("server-io-core should able proxy over the socket", t => {
+test("server-io-core should able proxy over the socket", t => {
   const client = socketClient(`http://localhost:${frontPort}/${namespace}`);
   t.plan(1);
   client.on('connect', function() {
