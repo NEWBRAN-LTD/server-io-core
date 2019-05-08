@@ -14,7 +14,7 @@ const debug = require('debug')('server-io-core:watchers');
  * @param {object} config the config.reload object
  * @return {function} unwatch callback
  */
-exports.clientReload = function(filePaths, io, config) {
+module.exports = function(filePaths, io, config) {
   const props = watcher(_.extend({ filePaths }, config));
   // First setup the socket io namespace
   // debug('[reload][setup]', 'setup namespace', config.namespace);

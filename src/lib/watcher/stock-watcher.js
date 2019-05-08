@@ -6,7 +6,7 @@ const _ = require('lodash');
 const chokidar = require('chokidar');
 const { ensureIsDir } = require('../utils/');
 const debug = require('debug')('server-io-core:watchers');
-const DEFAULT_DELAY = 500;
+const DEFAULT_DELAY = 1000;
 /**
  * Create a much simplify one without bacon using callback
  * @param {object} config parameters
@@ -14,7 +14,7 @@ const DEFAULT_DELAY = 500;
  * @return {object} event instance
  */
 module.exports = function(config, callback) {
-  debug('watcher is enabled');
+  debug('[ watcher is enabled ]');
   const delay = config.debounce || config.interval || DEFAULT_DELAY;
   const directories = ensureIsDir(config.filePaths);
   const options = config.watcherOption || {};

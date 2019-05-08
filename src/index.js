@@ -12,7 +12,7 @@ const {
   wsProxyServer
 } = require('./lib/server');
 const debuggerServer = require('./lib/debugger');
-const { clientReload } = require('./lib/reload');
+const clientReload = require('./lib/reload');
 const openInBrowser = require('./lib/utils/open');
 // Debug
 const debug = require('debug')('server-io-core:main');
