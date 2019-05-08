@@ -38,14 +38,15 @@ const getHtmlDocument = function(p, js, css, insertBefore) {
 /**
  * Search the array of documents until it find the right one otherwise just
  * throw it
- * @param {array} webroot dir
- * @param {string} p html
- * @param {string} js tags
- * @param {string} css tags
- * @param {boolean} insertBefore from config
+ * @param {object} params group together to get around the linting crap
+ * @param {array} params.webroot dir
+ * @param {string} params.p html
+ * @param {string} params.js tags
+ * @param {string} params.css tags
+ * @param {boolean} params.insertBefore from config
  * @return {object} throw on not found
  */
-const searchHtmlDocuments = function(webroot, p, js, css, insertBefore) {
+const searchHtmlDocuments = function({ webroot, p, js, css, insertBefore }) {
   const file = searchFileFromFiles([p].concat(webroot.map(dir => join(dir, p))));
   if (file) {
     return getHtmlDocument(file, js, css, insertBefore);
@@ -105,13 +106,13 @@ exports.scriptsInjectorMiddleware = function(config) {
         if (p) {
           try {
             debug('use overwrite', ctx.url, ctx.path);
-            const doc = await searchHtmlDocuments(
-              config.webroot,
-              p,
-              _.compact([files, js]).join(''),
-              css,
-              config.inject.insertBefore
-            );
+            const doc = await searchHtmlDocuments({
+              webroot: config.webroot,
+              p: p,
+              js: _.compact([files, js]).join(''),
+              css: css,
+              insertBefore: config.inject.insertBefore
+            });
             ctx.status = 200;
             ctx.type = contentType + '; charset=utf8';
             ctx.length = getDocLen(doc);

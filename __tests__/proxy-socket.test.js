@@ -40,7 +40,7 @@ test.after(t => {
   }, 10*1000);
 });
 
-test("server-io-core should able proxy over the socket", t => {
+test.skip("server-io-core should able proxy over the socket", t => {
   const client = socketClient(`http://localhost:${frontPort}/${namespace}`);
   t.plan(1);
   client.on('connect', function() {
