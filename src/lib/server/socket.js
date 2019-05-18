@@ -2,7 +2,7 @@
  * Socket server generator
  */
 const socketIO = require('socket.io');
-const socketCallback = require('callback');
+const socketCallback = require('./socket-cb');
 // Export
 /**
  * @param {object} server http server instance
