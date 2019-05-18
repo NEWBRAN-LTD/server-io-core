@@ -69,7 +69,8 @@ const defaultOptions = {
     enable: true,
     socketOnly: true,
     transportConfig: ['websocket'],
-    proxy: false
+    proxy: false,
+    namespace: [] // New on v1.0.2
   },
   /**
    * MIDDLEWARE DEFAULTS

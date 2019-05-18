@@ -2,6 +2,7 @@
  * Socket server generator
  */
 const socketIO = require('socket.io');
+const socketCallback = require('callback');
 // Export
 /**
  * @param {object} server http server instance
@@ -21,6 +22,10 @@ module.exports = (server, config) => {
 
   // Need to take this constructor out and re-use with the reload
   const io = socketIO(server, socketConfig);
+  if (Array.isArray(config.namespace) && config.namespace.length) {
+    socketCallback(io, config.namespace);
+  }
+
   // Export it again
   return io;
 };
