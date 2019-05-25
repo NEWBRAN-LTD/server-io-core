@@ -3,6 +3,7 @@ const chalk = require('chalk');
 const watcher = require('../watcher');
 const { logutil } = require('../utils/');
 const debug = require('debug')('server-io-core:watchers');
+const { EVENT_NAME } = require('./constants');
 // Const serverReload = require('./server-reload');
 /**
  * @v1.5.0 we create our own reload script and remove the old reload.js
@@ -15,7 +16,8 @@ const debug = require('debug')('server-io-core:watchers');
  * @return {function} unwatch callback
  */
 module.exports = function(filePaths, io, config) {
-  const props = watcher(_.extend({ filePaths }, config));
+  const watcherCb = watcher(_.extend({ filePaths }, config));
+  const props = watcherCb(true);
   // First setup the socket io namespace
   // debug('[reload][setup]', 'setup namespace', config.namespace);
   const nsp = io.of(config.namespace);
@@ -24,7 +26,7 @@ module.exports = function(filePaths, io, config) {
     socket.emit('hello', config.hello);
   });
 
-  props.on('change', files => {
+  props.on(EVENT_NAME, files => {
     debug('[reload][change]', config.eventName, files);
     nsp.emit(config.eventName, files);
   });
@@ -35,7 +37,7 @@ module.exports = function(filePaths, io, config) {
       logutil(chalk.yellow('[reload][exit]'));
     }
 
-    props.emit('exit');
+    watcherCb(false);
     // Exit the namespace
     const connectedNameSpaceSockets = Object.keys(nsp.connected); // Get Object with Connected SocketIds as properties
     connectedNameSpaceSockets.forEach(socketId => {

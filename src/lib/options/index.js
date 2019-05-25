@@ -95,6 +95,7 @@ const defaultOptions = {
     enable: true,
     verbose: false, // @2018-08-20 change to false as default
     interval: 1000,
+    wait: 5000,
     namespace: '/reload-nsp',
     js: 'reload-client.js',
     eventName: 'filesChange',
