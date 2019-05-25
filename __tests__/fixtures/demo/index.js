@@ -21,7 +21,9 @@ const proxySrvApp = proxySrv();
 // options
 const config = {
   // debugger: true,
-  // reload: true,
+  reload: {
+    displayLog: true
+  },
   // socket: true,
   inject: {
     source: [
