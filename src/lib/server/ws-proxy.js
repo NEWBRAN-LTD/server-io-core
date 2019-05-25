@@ -128,7 +128,8 @@ module.exports = function(config, io, socketIsEnabled, namespaceInUsed) {
         });
       }
     }
-  } else {
+  }
+  if (!socketIsEnabled) {
     logutil(
       chalk.yellow(
         `[${WS_PROXY} warning] The socket is NOT enabled. Proxy will not work!`
@@ -138,16 +139,3 @@ module.exports = function(config, io, socketIsEnabled, namespaceInUsed) {
   // Return a dummy
   return { close: () => {} };
 };
-
-/*
-const proxyServer = new HttpProxy.createProxyServer({
-  target: opt.target
-});
-webserver.on('upgrade', function(req, socket, head) {
-  debug('listening on upgrade event');
-  // @TODO if there is more options in the future to overwrite something, this will be the place
-  proxyServer.ws(req, socket, head);
-});
-// Return it
-return proxyServer;
-*/
