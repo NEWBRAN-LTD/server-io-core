@@ -20,9 +20,9 @@ const proxySrvApp = proxySrv();
 
 // options
 const config = {
-  debugger: false,
-  reload: false,
-  socket: false,
+  // debugger: true,
+  // reload: true,
+  // socket: true,
   inject: {
     source: [
       // DummyJs,
