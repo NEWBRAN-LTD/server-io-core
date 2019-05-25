@@ -13,6 +13,9 @@
 
   nsp.on('<%= eventName %>', function(payload) {
     // js 1.2 (latest)
+    <% if (displayLog) { %>
+      console.info('reload payload', payload);
+    <% } %>
     window.location.reload(true);
   });
 

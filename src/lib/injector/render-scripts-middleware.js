@@ -173,6 +173,7 @@ const renderScriptsMiddleware = function(config) {
                 clientFileFn({
                   reloadNamespace: reloadPath,
                   eventName: reloadEventName,
+                  displayLog: config.reload.displayLog,
                   connectionOptions
                 })
               );
@@ -222,7 +223,7 @@ const renderScriptsMiddleware = function(config) {
 
           break;
         default:
-          // @2018-08-20 new feature in alpha.12
+          // @2018-08-20 new feature in alpha.12 @TODO
           if ((await hasExtraVirtualOverwrite(ctx, config)) === true) {
             debug('catch hasExtraVirtualOverwrite');
           }
