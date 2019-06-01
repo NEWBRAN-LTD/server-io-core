@@ -28,19 +28,23 @@
         send({msg: data, from: 'error', color: 'warning'});
       })
       .catch(function(err) {
+        console.error('onerror', err);
         send({msg: err, from: 'catch onerror', color: 'debug'});
       });
   };
 
   /**
    * added on V1.4.0
+   * 
    */
   window.onunhandledrejection = function(e) {
-    StackTrace.fromError(e)
+    // console.error(e);
+    StackTrace.fromError(e.reason || e)
       .then(function(data) {
         send({msg: data, from: 'onunhandledrejection', color: 'warning'});
       })
       .catch(function(err) {
+        console.error('onunhandledrejection', err);
         send({msg: err, from: 'catch onunhandledrejection', color: 'debug'});
       });
   }
