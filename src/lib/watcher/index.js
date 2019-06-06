@@ -63,8 +63,13 @@ module.exports = function(config) {
       return evt;
     }
 
-    evt.emit('exit');
-    props.send('exit');
-    stream();
+    try {
+      evt.emit('exit');
+      props.send('exit');
+      stream();
+    } catch (e) {
+      // Don't let this break the exit call
+      console.error(e);
+    }
   };
 };
