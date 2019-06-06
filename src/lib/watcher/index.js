@@ -66,7 +66,9 @@ module.exports = function(config) {
     try {
       evt.emit('exit');
       props.send('exit');
-      stream();
+      if (typeof stream === 'function') {
+        stream();
+      }
     } catch (e) {
       // Don't let this break the exit call
       console.error(e);
