@@ -28,8 +28,9 @@
         send({msg: data, from: 'error', color: 'warning'});
       })
       .catch(function(err) {
-        console.error('onerror', err);
-        send({msg: err, from: 'catch onerror', color: 'debug'});
+        console.info('onerror', err);
+        var _msg = {msg: msg, file: file, line: line, col: col};
+        send({msg: _msg, from: 'catch onerror', color: 'debug'});
       });
   };
 
