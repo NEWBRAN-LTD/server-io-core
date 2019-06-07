@@ -34,11 +34,11 @@
   };
 
   /**
-   * added on V1.4.0
-   * 
+   * handle the unhandled ajax rejection 
+   * @param {object} e Error
    */
   window.onunhandledrejection = function(e) {
-    // console.error(e);
+    console.info('onunhandledrejection', e);
     StackTrace.fromError(e.reason || e)
       .then(function(data) {
         send({msg: data, from: 'onunhandledrejection', color: 'warning'});
