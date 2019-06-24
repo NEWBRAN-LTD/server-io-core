@@ -1,8 +1,6 @@
-'use strict';
 /**
  * The socket.io server and reporting
  */
-// const _ = require('lodash');
 const util = require('util');
 const chalk = require('chalk');
 const { logutil } = require('../utils/');
