@@ -49,7 +49,7 @@
  files to.
 
  */
-const { logutil } = require('../utils/');
+const { logutil } = require('../utils');
 const _ = require('lodash');
 const cheerio = require('cheerio');
 const glob = require('glob');
@@ -199,6 +199,27 @@ function checkAndTagFile(file, ignorePath) {
 }
 
 /**
+ * New option in 1.0.10 pass the processor function
+ * to run through the js before we pass to the tagging
+ * @param {object} config configuration
+ * @param {array} js the list of js files
+ * @return {array} the list of js files
+ */
+function getProcessor(config, js) {
+  const { processor } = config;
+  if (processor && typeof processor === 'function') {
+    let result = Reflect.apply(processor, null, [js]);
+    if (!Array.isArray(result)) {
+      throw new Error(`Expect your processor to return an array of javascript files!`);
+    }
+
+    return result;
+  }
+
+  return js;
+}
+
+/**
  * Prepare the css / js array to inject
  * @param {object} config the config.inject properties
  * @return {object} js<string> css<string>
@@ -221,8 +242,12 @@ exports.getFilesToInject = function(config) {
   }
 
   const br = '\r\n';
+
   return {
-    js: js.map(j => checkAndTagFile(j, config.ignorePath)).join(br) + br,
+    js:
+      getProcessor(config, js)
+        .map(j => checkAndTagFile(j, config.ignorePath))
+        .join(br) + br,
     css: css.map(c => checkAndTagFile(c, config.ignorePath)).join(br) + br
   };
 };

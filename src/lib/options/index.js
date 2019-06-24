@@ -88,7 +88,8 @@ const defaultOptions = {
     insertBefore: true,
     target: {}, // List of files to inject with head or body
     source: [], // List of files to get inject
-    options: {} // Reversed for future use
+    options: {}, // Reversed for future use
+    processor: args => args
   },
   // Client reload - default TRUE
   reload: {
