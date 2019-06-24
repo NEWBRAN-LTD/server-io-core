@@ -1,8 +1,13 @@
 {
   "name": "server-io-core",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Developement server using Koa with Socket.io reload and Javascript remote debugger",
   "main": "index.js",
+  "files": [
+    "src",
+    "index.js",
+    "cli.js"
+  ],
   "scripts": {
     "test": "ava --verbose",
     "devtest": "DEBUG=server-io-core:test* ava --verbose",
@@ -27,7 +32,7 @@
     "development",
     "server"
   ],
-  "author": "Joel Chu",
+  "author": "Joel Chu <joelckchu@gmail.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://gitlab.com/newbranltd/server-io-core/issues"
