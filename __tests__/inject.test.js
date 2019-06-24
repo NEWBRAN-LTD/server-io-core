@@ -1,10 +1,10 @@
 // testing the multiple file serve up scenario
-const test = require('ava');
-const request = require('superkoa');
-const serverIoCore = require('./fixtures/server');
-const debug = require('debug')('server-io-core:test:inect');
-const { join } = require('path');
-// const cheerio = require('cheerio');
+const test = require('ava')
+const request = require('superkoa')
+const serverIoCore = require('./fixtures/server')
+const debug = require('debug')('server-io-core:test:inect')
+const { join } = require('path')
+
 test.before(t => {
   const { app, stop } = serverIoCore({
     webroot: [
@@ -32,21 +32,21 @@ test.before(t => {
   });
   t.context.app = app;
   t.context.stop = stop;
-});
+})
 
 test.after(t => {
-  t.context.stop();
-});
+  t.context.stop()
+})
 
 test('It should able to read html apart from index', async (t) => {
   const res = await request(t.context.app).get('/dummy.html');
-  t.is(200, res.status);
-});
+  t.is(200, res.status)
+})
 
 test('It should able to inject files according to the inject object', async t => {
-  const res = await request(t.context.app).get('/');
+  const res = await request(t.context.app).get('/')
   // This always return a {} @TODO
-  debug('return body', res.body);
+  debug('return body', res.body)
   t.pass();
 
-});
+})

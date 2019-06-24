@@ -17,6 +17,10 @@ const config = {
       'js/dummy-test.js'
     ]
     */
+    processor: (js) => {
+      console.info('inside the processor', js)
+      return js;
+    },
     target: {
       head: [
         'css/bootstrap.min.css',
