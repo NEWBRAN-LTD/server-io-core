@@ -6,7 +6,6 @@ const fs = require('fs');
 const _ = require('lodash');
 const chalk = require('chalk');
 const { join } = require('path');
-// Const gutil = require('gulp-util');
 const {
   logutil,
   getSocketConnectionConfig,
