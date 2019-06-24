@@ -38,15 +38,15 @@ test.after(t => {
   t.context.stop()
 })
 
-test('It should able to read html apart from index', async (t) => {
+test.serial('It should able to read html apart from index', async (t) => {
   const res = await request(t.context.app).get('/dummy.html');
   t.is(200, res.status)
 })
 
-test('It should able to inject files according to the inject object', async t => {
+test.serial('It should able to inject files according to the inject object', async t => {
   const res = await request(t.context.app).get('/')
   // This always return a {} @TODO
   debug('return body', res.body)
-  t.pass();
+  t.pass()
 
 })

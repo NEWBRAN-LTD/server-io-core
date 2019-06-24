@@ -116,6 +116,7 @@ exports.scriptsInjectorMiddleware = function(config) {
               css: css,
               insertBefore: config.inject.insertBefore
             });
+            /* eslint require-atomic-updates: off */
             ctx.status = 200;
             ctx.type = contentType + '; charset=utf8';
             ctx.length = getDocLen(doc);
