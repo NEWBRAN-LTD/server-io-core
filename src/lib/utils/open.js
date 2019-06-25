@@ -69,6 +69,7 @@ module.exports = function(config) {
 
     return true;
   } catch (e) {
+    debug('[open] error:', e);
     return false;
   }
 };

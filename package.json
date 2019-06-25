@@ -1,6 +1,6 @@
 {
   "name": "server-io-core",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "Developement server using Koa with Socket.io reload and Javascript remote debugger",
   "main": "index.js",
   "files": [
@@ -62,7 +62,7 @@
   "devDependencies": {
     "ava": "^2.1.0",
     "debug": "^4.1.1",
-    "eslint": "^6.0.0",
+    "eslint": "^6.0.1",
     "eslint-config-prettier": "^5.0.0",
     "eslint-config-xo": "^0.26.0",
     "eslint-plugin-prettier": "^3.1.0",
