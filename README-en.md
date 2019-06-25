@@ -425,6 +425,11 @@ server({
 
 And you can add as many as you want.
 
+### favicon
+
+This is a built-in middleware that serve up a stock favicon.ico (The pic is me and my cat :p)
+You can pass `favicon: path_to_where_your_favicon.ico` in the config to use yours. Or `favicon:false` to disable
+this middleware all together.
 
 ### Debug
 
