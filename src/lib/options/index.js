@@ -36,6 +36,7 @@ const defaultOptions = {
   staticOptions: {},
   headers: {},
   middlewares: [],
+  favicon: false,
   // Middleware: Proxy
   // For possible options, see:
   // https://github.com/chimurai/http-proxy-middleware
