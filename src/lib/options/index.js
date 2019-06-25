@@ -36,7 +36,7 @@ const defaultOptions = {
   staticOptions: {},
   headers: {},
   middlewares: [],
-  favicon: false,
+  favicon: null, // Pass a string path then we search for favicon, false disable it
   // Middleware: Proxy
   // For possible options, see:
   // https://github.com/chimurai/http-proxy-middleware

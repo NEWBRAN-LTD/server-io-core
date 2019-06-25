@@ -20,6 +20,8 @@ const { toArray, logutil, stripFirstSlash } = require('./utils/');
 // const { mockServer } = require('./server');
 // Injectors
 const { scriptsInjectorMiddleware, renderScriptsMiddleware } = require('./injector');
+// Add in v1.1.0
+const faviconMiddleware = require('./favicon');
 /**
  * Object for the other socket enable app to use
  * @param {object} app the koa instance
@@ -38,6 +40,11 @@ module.exports = function(app, config) {
   // Start adding middlewares
   if (config.development) {
     middlewares.push(helmet.noCache());
+  }
+
+  // Adding the favicon middleware
+  if (config.favicon !== false) {
+    middlewares.push(faviconMiddleware(config));
   }
 
   // Make sure the namespace is correct first

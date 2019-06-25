@@ -1,6 +1,6 @@
 {
   "name": "server-io-core",
-  "version": "1.0.12",
+  "version": "1.1.0",
   "description": "Developement server using Koa with Socket.io reload and Javascript remote debugger",
   "main": "index.js",
   "files": [
@@ -15,6 +15,7 @@
     "pretest": "eslint . --fix",
     "precommit": "lint-staged",
     "demo": "DEBUG=server-io-core* node ./__tests__/fixtures/demo",
+    "test:favicon": "ava ./__tests__/favicon.test.js",
     "test:demo": "DEBUG=server-io-core* ava ./__tests__/inject.test.js",
     "test:socket": "DEBUG=server-io-core* ava ./__tests__/proxy-socket.test.js",
     "test:inject": "DEBUG=server-io-core* node ./__tests__/fixtures/run.js",
