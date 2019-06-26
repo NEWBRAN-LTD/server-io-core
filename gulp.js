@@ -2,12 +2,15 @@
 // const serverIoCoreGulp = require('server-io-core/gulp')
 const through = require('through2');
 const serverIoCore = require('./');
+const debug = require('debug')('server-io-core:gulp');
 // @TODO
 module.exports = function(options = {}) {
+  // Need to get the correct config at this point
+  let filePaths = [];
   const stream = through
     .obj((file, enc, callback) => {
       // Serve up the files
-      app.use(config.path, serveStatic(file.path, config));
+      // app.use(config.path, serveStatic(file.path, config));
       filePaths.push(file.path);
       callback();
       debug('[main][add file]', filePaths);
@@ -19,18 +22,9 @@ module.exports = function(options = {}) {
     .on('end', () => {
       debug('[main][on end]', filePaths);
     });
+
   stream.on('kill', () => {
-    // @1.4.0-beta.11 change to array
-    unwatchFn.forEach(fn => fn());
-    // Explicitly close the express server
-    server.close(() => {
-      if (io && io.server && io.server.close) {
-        // Close the socket.io server
-        io.server.close();
-      }
-    });
-    // Close the mock server
-    mockServerInstance.close();
+    // Call the stop method here
   });
 
   // Return
