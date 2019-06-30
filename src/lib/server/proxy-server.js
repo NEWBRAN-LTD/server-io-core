@@ -2,3 +2,4 @@
 // The idea is actually very simple
 // we start up the proxy server when we start our website and hijack the call before
 // it reaches Koa
+const httpProxy = require('http-proxy');
