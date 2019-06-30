@@ -35,11 +35,18 @@
   };
 
   /**
-   * handle the unhandled ajax rejection 
+   * handle the unhandled ajax rejection
    * @param {object} e Error
    */
   window.onunhandledrejection = function(e) {
-    console.info('onunhandledrejection', e);
+    // console.info('onunhandledrejection', e);
+    send({
+      msg: e,
+      from: 'onunhandledrejection',
+      color: 'warning'
+    })
+    /*
+    stack trace never able to parse the unhandle rejection 
     StackTrace.fromError(e.reason || e)
       .then(function(data) {
         send({msg: data, from: 'onunhandledrejection', color: 'warning'});
@@ -48,6 +55,7 @@
         console.error('onunhandledrejection', err);
         send({msg: err, from: 'catch onunhandledrejection', color: 'debug'});
       });
+    */
   }
 <% if (consoleDebug) { %>
 
