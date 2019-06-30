@@ -18,24 +18,33 @@ module.exports = function(config, callback) {
   const delay = config.interval || DEFAULT_DELAY;
   const directories = ensureIsDir(config.filePaths);
   const options = config.watcherOption || {};
+  let w;
   // Debug('watching directories', directories);
-  const w = chokidar.watch(
-    directories,
-    _.extend(
-      {
-        // ignored: /(^|[\/\\])\../,
-        ignoreInitial: true,
-        interval: delay
-      },
-      options
-    )
-  );
-  w.on('all', (e, p) => {
-    debug('files change', e, p);
-    callback({ event: e, path: p });
-  });
+  try {
+    w = chokidar.watch(
+      directories,
+      _.extend(
+        {
+          ignoreInitial: true,
+          interval: delay
+        },
+        options
+      )
+    );
+    w.on('all', (e, p) => {
+      debug('files change', e, p);
+      callback({ event: e, path: p });
+    });
+  } catch (e) {
+    // Whenever adding new files or what not this keep crashing
+    // but its continue to run so no idea what the hack is that
+    debug('chokidar.watch crashed again', e);
+  }
+
   // Return a close method
   return () => {
-    w.close();
+    if (w) {
+      w.close();
+    }
   };
 };
