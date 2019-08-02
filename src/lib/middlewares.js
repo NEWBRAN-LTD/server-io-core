@@ -24,7 +24,7 @@ const { scriptsInjectorMiddleware, renderScriptsMiddleware } = require('./inject
 const faviconMiddleware = require('./favicon');
 const debug = require('debug')('server-io-core:middlewares');
 
-const { httpProxy } = require('./lib/server');
+const { httpProxy } = require('./server');
 
 /**
  * Object for the other socket enable app to use

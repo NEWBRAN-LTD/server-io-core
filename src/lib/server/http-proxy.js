@@ -13,7 +13,7 @@ const debug = require('debug')('server-io-core:http-proxy');
 const cleanProxiesConfig = proxies =>
   proxies
     .filter(proxyoptions => {
-      if (!proxyoptions.target || !proxyoptions.context) {
+      if (!proxyoptions.host || !proxyoptions.context) {
         logutil(
           chalk.red('Missing target or source property for proxy setting!'),
           proxyoptions
