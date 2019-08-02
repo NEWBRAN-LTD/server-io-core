@@ -22,6 +22,7 @@ const { toArray, logutil, stripFirstSlash } = require('./utils/');
 const { scriptsInjectorMiddleware, renderScriptsMiddleware } = require('./injector');
 // Add in v1.1.0
 const faviconMiddleware = require('./favicon');
+const debug = require('debug')('server-io-core:middlewares');
 /**
  * Object for the other socket enable app to use
  * @param {object} app the koa instance
@@ -109,6 +110,7 @@ module.exports = function(app, config) {
 
   // Last in the chain
   if (filtered.length) {
+    debug('proxies', filtered);
     // Logutil('filtered', filtered);
     app.use(
       Proxy.proxy({

@@ -1,41 +1,48 @@
-// create a phoney socket server
+// Create a phoney socket server
 const http = require('http');
+
+const options = require('./options.json');
+
+const debug = require('debug')('server-io-core:fixtures:proxy');
+
 const Koa = require('koa');
 const KoaSocket = require('koa-socket-2');
-const options = require('./options.json');
 const app = new Koa();
 const io = new KoaSocket();
-const debug = require('debug')('server-io-core:fixtures:proxy');
-// reuse for proxy for the http
+
+// Reuse for proxy for the http
 app.use(async (ctx, next) => {
+  await next();
   ctx.body = options.message.banner;
 });
 
 io.attach(app);
-// use the raw socket instead
+// Use the raw socket instead
 app._io.on('connection', sock => {
   debug('connection established');
   sock.emit('news', 'Hello world!');
   sock.on('message', (msg, fn) => {
-    debug('client sent data to message endpoint', data);
+    debug('client sent data to message endpoint', msg);
     fn(options.message.reply);
   });
 });
-
 /*
-io.on('message', (ctx, data, fn) => {
-  console.log('client sent data to message endpoint', data);
-  // not sure if they send back the fn
-  fn(options.message.reply);
-});
-*/
-// app.listen(options.proxy.port);
-const webserver = http.createServer(app.callback());
-module.exports = function(port) {
-  try {
-    webserver.listen( port || options.proxy.port );
-    return webserver;
-  } catch(e) {
-    debug(e)
-  }
+Const handler = function(req, res) {
+  res.writeHead(200, { 'Content-Type': 'text/plain' });
+  res.write('request successfully proxied!' + '\n' + JSON.stringify(req.headers, true, 2));
+  res.end();
 }
+*/
+const { port } = options.proxy;
+debug(port);
+const webserver = http.createServer(app.callback(), () => {
+  debug('proxied server started on', port);
+});
+
+module.exports = () => {
+  webserver.listen(port);
+  return {
+    webserver,
+    proxyApp: app
+  };
+};
