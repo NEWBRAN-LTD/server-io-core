@@ -97,7 +97,7 @@ exports.serverIoCore = function(config) {
   staticServe(config)(app);
 
   // Now pass to the ws proxy at the very end
-  const proxyServer = wsProxyServer(config, io, socketIsEnabled, namespaceInUsed);
+  const proxyServer = wsProxyServer(webserver, config, socketIsEnabled, namespaceInUsed);
 
   // Start server @2018-08-13
   if (config.autoStart === true) {
