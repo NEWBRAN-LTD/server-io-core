@@ -14,15 +14,15 @@
     "cli": "DEBUG=server-io-core* node ./cli",
     "pretest": "eslint . --fix",
     "precommit": "lint-staged",
-    "demo": "DEBUG=server-io-core* node ./__tests__/fixtures/demo",
-    "test:favicon": "ava ./__tests__/favicon.test.js",
-    "test:demo": "DEBUG=server-io-core* ava ./__tests__/inject.test.js",
-    "test:socket": "DEBUG=server-io-core* ava ./__tests__/proxy-socket.test.js",
-    "test:proxy": "DEBUG=server-io-core* ava ./__tests__/proxy.test.js",
-    "run:proxied": "DEBUG=server-io-core* node ./__tests__/fixtures/proxy.js",
-    "test:inject": "DEBUG=server-io-core* node ./__tests__/fixtures/run.js",
-    "start:server": "DEBUG=server-io-core* node ./__tests__/fixtures/test-proxy.js",
-    "start:client": "DEBUG=server-io-core* node ./__tests__/fixtures/test-client.js"
+    "demo": "DEBUG=server-io-core* node ./tests/fixtures/demo",
+    "test:favicon": "ava ./tests/favicon.test.js",
+    "test:demo": "DEBUG=server-io-core* ava ./tests/inject.test.js",
+    "test:socket": "DEBUG=server-io-core* ava ./tests/proxy-socket.test.js",
+    "test:proxy": "DEBUG=server-io-core* ava ./tests/proxy.test.js",
+    "run:proxied": "DEBUG=server-io-core* node ./tests/fixtures/proxy.js",
+    "test:inject": "DEBUG=server-io-core* node ./tests/fixtures/run.js",
+    "start:server": "DEBUG=server-io-core* node ./tests/fixtures/test-proxy.js",
+    "start:client": "DEBUG=server-io-core* node ./tests/fixtures/test-client.js"
   },
   "repository": {
     "type": "git",
@@ -117,8 +117,8 @@
   },
   "ava": {
     "files": [
-      "__tests__/**/*.test.js",
-      "!__tests__/fixtures/**/*",
+      "tests/**/*.test.js",
+      "!tests/fixtures/**/*",
       "!demo/**/*",
       "!src/**/*"
     ],
