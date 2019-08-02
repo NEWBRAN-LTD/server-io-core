@@ -1,10 +1,11 @@
 // This will be the gulp interface
 // const serverIoCoreGulp = require('server-io-core/gulp')
 const through = require('through2');
-const serverIoCore = require('./');
+// Const serverIoCore = require('./');
 const debug = require('debug')('server-io-core:gulp');
 // @TODO
 module.exports = function(options = {}) {
+  debug(options);
   // Need to get the correct config at this point
   let filePaths = [];
   const stream = through

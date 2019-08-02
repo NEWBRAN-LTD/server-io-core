@@ -18,6 +18,8 @@
     "test:favicon": "ava ./__tests__/favicon.test.js",
     "test:demo": "DEBUG=server-io-core* ava ./__tests__/inject.test.js",
     "test:socket": "DEBUG=server-io-core* ava ./__tests__/proxy-socket.test.js",
+    "test:proxy": "DEBUG=server-io-core* ava ./__tests__/proxy.test.js",
+    "run:proxied": "DEBUG=server-io-core* node ./__tests__/fixtures/proxy.js",
     "test:inject": "DEBUG=server-io-core* node ./__tests__/fixtures/run.js",
     "start:server": "DEBUG=server-io-core* node ./__tests__/fixtures/test-proxy.js",
     "start:client": "DEBUG=server-io-core* node ./__tests__/fixtures/test-client.js"
@@ -58,7 +60,8 @@
     "open": "^6.3.0",
     "socket.io": "^2.2.0",
     "socket.io-client": "^2.2.0",
-    "stacktrace-js": "^2.0.0"
+    "stacktrace-js": "^2.0.0",
+    "koa-socket-2": "^1.1.0"
   },
   "devDependencies": {
     "ava": "^2.1.0",
@@ -69,7 +72,6 @@
     "eslint-plugin-prettier": "^3.1.0",
     "gulp": "^4.0.2",
     "husky": "^2.5.0",
-    "koa-socket-2": "^1.1.0",
     "lint-staged": "^8.2.1",
     "nyc": "^14.1.1",
     "prettier": "^1.18.2",

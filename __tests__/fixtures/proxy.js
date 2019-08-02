@@ -5,12 +5,11 @@ const KoaSocket = require('koa-socket-2');
 const options = require('./options.json');
 const app = new Koa();
 const io = new KoaSocket();
-const debug = require('debug')('server-io-core:proxy');
+const debug = require('debug')('server-io-core:fixtures:proxy');
 // reuse for proxy for the http
 app.use(async (ctx, next) => {
   ctx.body = options.message.banner;
 });
-
 
 io.attach(app);
 // use the raw socket instead
@@ -32,8 +31,11 @@ io.on('message', (ctx, data, fn) => {
 */
 // app.listen(options.proxy.port);
 const webserver = http.createServer(app.callback());
-module.exports = function() {
-
-  webserver.listen( options.proxy.port );
-  return webserver;
+module.exports = function(port) {
+  try {
+    webserver.listen( port || options.proxy.port );
+    return webserver;
+  } catch(e) {
+    debug(e)
+  }
 }
