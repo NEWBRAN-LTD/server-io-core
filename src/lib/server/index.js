@@ -6,6 +6,8 @@
 const webserverGenerator = require('./webserver');
 const socketServer = require('./socket');
 const staticServe = require('./static-serve');
+const httpProxy = require('./http-proxy');
+// @TODO replace the internal
 const wsProxyServer = require('./ws-proxy');
 
 // Exports
@@ -13,5 +15,6 @@ module.exports = {
   webserverGenerator,
   staticServe,
   socketServer,
+  httpProxy,
   wsProxyServer
 };

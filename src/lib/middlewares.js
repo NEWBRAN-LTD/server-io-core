@@ -8,14 +8,14 @@ const path = require('path');
 const chalk = require('chalk');
 const helmet = require('koa-helmet');
 const bodyparser = require('koa-bodyparser');
-const Proxy = require('koa-nginx');
+
 // Shorthands
 const join = path.join;
 const isarray = Array.isArray;
 // Properties
 const { createConfiguration } = require('./options');
 // Modules
-const { toArray, logutil, stripFirstSlash } = require('./utils/');
+const { logutil, stripFirstSlash } = require('./utils/');
 // Servers
 // const { mockServer } = require('./server');
 // Injectors
@@ -23,6 +23,9 @@ const { scriptsInjectorMiddleware, renderScriptsMiddleware } = require('./inject
 // Add in v1.1.0
 const faviconMiddleware = require('./favicon');
 const debug = require('debug')('server-io-core:middlewares');
+
+const { httpProxy } = require('./lib/server');
+
 /**
  * Object for the other socket enable app to use
  * @param {object} app the koa instance
@@ -32,8 +35,7 @@ const debug = require('debug')('server-io-core:middlewares');
 module.exports = function(app, config) {
   const addReload = config.reload.enable;
   let addDebugger = false;
-  // Fixed on 1.4.0-beta.3
-  let proxies = toArray(config.proxies);
+
   // Default callbacks
   // const closeFn = { close: () => {} };
   // Properties
@@ -78,28 +80,6 @@ module.exports = function(app, config) {
     middlewares = middlewares.concat(config.middlewares);
   }
 
-  // Config the proxies
-  let filtered = proxies
-    .filter(proxyoptions => {
-      // When proxy socket we don't need the context
-      if (!proxyoptions.host || !proxyoptions.context) {
-        logutil(
-          chalk.red('Missing target or source property for proxy setting!'),
-          proxyoptions
-        );
-        return false; // ignore!
-      }
-
-      return true;
-    })
-    .map(pc => {
-      if (pc.context) {
-        pc.context = stripFirstSlash(pc.context);
-      }
-
-      return pc;
-    });
-
   // Now inject the middlewares
   if (middlewares.length) {
     // But the problem with Koa is the ctx.state is not falling through all the way
@@ -108,18 +88,7 @@ module.exports = function(app, config) {
     middlewares.forEach(m => app.use(m));
   }
 
-  // Last in the chain
-  if (filtered.length) {
-    debug('proxies', filtered);
-    // Logutil('filtered', filtered);
-    app.use(
-      Proxy.proxy({
-        proxies: filtered,
-        proxyTimeout: config.proxyTimeout,
-        logLevel: process.env.NODE_ENV === 'production' ? 'error' : 'debug' // Config.development ? 'debug' : 'error'
-      })
-    );
-  }
+  httpProxy(app, config);
 
   // This is the end - we continue in the next level to construct the server
   // @TODO this return is just an empty placeholder function so we should remove it
