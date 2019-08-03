@@ -7,6 +7,7 @@ module.exports = function(extra = {}) {
   return serverIoCore(_.extend({
     debugger: false,
     reload: false,
+    open: false,
     webroot: join(__dirname, 'demo', 'dist', 'base')
   }, extra));
 }

@@ -19,28 +19,23 @@ app.use(async (ctx, next) => {
 io.attach(app);
 // Use the raw socket instead
 app._io.on('connection', sock => {
-  debug('connection established');
+  debug('socket connection established');
   sock.emit('news', 'Hello world!');
   sock.on('message', (msg, fn) => {
     debug('client sent data to message endpoint', msg);
     fn(options.message.reply);
   });
 });
-/*
-Const handler = function(req, res) {
-  res.writeHead(200, { 'Content-Type': 'text/plain' });
-  res.write('request successfully proxied!' + '\n' + JSON.stringify(req.headers, true, 2));
-  res.end();
-}
-*/
+
 const { port } = options.proxy;
-debug(port);
+
 const webserver = http.createServer(app.callback(), () => {
   debug('proxied server started on', port);
 });
 
-module.exports = () => {
-  webserver.listen(port);
+module.exports = (p = null) => {
+  debug(p || port);
+  webserver.listen(p || port);
   return {
     webserver,
     proxyApp: app

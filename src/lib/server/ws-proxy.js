@@ -1,10 +1,10 @@
 // Try to use the http-proxy.ws
-const httpProxy = require('http-proxy');
+const HttpProxy = require('http-proxy');
 const url = require('url');
 
-const chalk = require('chalk');
+// const chalk = require('chalk');
 // Const { WS_PROXY } = require('../utils/constants');
-const { logutil, ensureFirstSlash, inArray } = require('../utils');
+const { ensureFirstSlash, inArray } = require('../utils');
 const debug = require('debug')('server-io-core:ws-proxy');
 
 const _ = require('lodash');
@@ -58,8 +58,9 @@ const generateProxyServers = proxies => {
   return proxies
     .map(proxy => {
       return {
-        [proxy.namespace]: new httpProxy.createProxyServer({
-          target: proxy.target
+        [proxy.namespace]: new HttpProxy.createProxyServer({
+          target: proxy.target,
+          ws: true
         })
       };
     })

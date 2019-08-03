@@ -9,23 +9,24 @@ const { join } = require('path');
 const debug = require('debug')('server-io-core:proxy-test');
 const {
   // frontServer,
-  standaloneServer,
+  // standaloneServer,
   frontPort,
   proxyConfig
 } = require('./fixtures/socket');
+const proxyServer = require('./fixtures/proxy');
 const namespace = 'behind-the-proxy';
+const proxyPort = 9001
 
 test.before(t => {
-  const proxyPort = proxyConfig.target.port;
+
+  t.context.proxyServer = proxyServer(proxyPort)
+
   const { stop } = serverIoCore({
-    open: false,
-    wsProxy: {
-      enable: true,
-      target: {
-        namespace: namespace,
-        host: ['http://localhost', proxyPort].join(':'),
-        events: ['msg', 'reply']
-      }
+    debugger: true,
+    reload: true,
+    wsProxies: {
+      target: ['ws://localhost', proxyPort].join(':'),
+      namespace: namespace
     },
     port: frontPort
   });
@@ -35,11 +36,37 @@ test.before(t => {
 test.after(t => {
   setTimeout(function() {
     debug('execute after call');
+    t.context.proxyServer.close()
     t.context.stop();
-    standaloneServer.close();
-  }, 10*1000);
+    // standaloneServer.close();
+  }, 1000);
 });
 
+test.cb(`Connect to the socket server directly on ${proxyPort}`, t => {
+  const client = socketClient(`ws://localhost:${proxyPort}`)
+  t.plan(1)
+  client.on('connect', (socket) => {
+    debug('connected')
+    socket.on('news', msg => {
+      debug('news msg', msg)
+      t.pass()
+      t.end()
+    })
+  })
+})
+
+
+test.cb.skip(`It should able to connect to the socket server via ${namespace} on ${proxyPort}`, t => {
+  const client = socketClient(`http://localhost:${frontPort}/${namespace}`);
+  t.plan(1);
+  client.on('connect', function() {
+    t.pass()
+    t.end()
+  })
+})
+
+
+/*
 test.cb("server-io-core should able proxy over the socket", t => {
   const client = socketClient(`http://localhost:${frontPort}/${namespace}`);
   t.plan(1);
@@ -55,3 +82,4 @@ test.cb("server-io-core should able proxy over the socket", t => {
     });
   });
 });
+*/
