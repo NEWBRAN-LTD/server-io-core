@@ -75,6 +75,7 @@ const generateProxyServers = proxies => {
  */
 const handleWsProxy = (webserver, namespaceInUsed, proxies) => {
   const proxyServers = generateProxyServers(proxies);
+  debug('proxyServers', proxyServers)
 
   webserver.on('upgrade', function(req, socket, head) {
     const pathname = getPath(req);

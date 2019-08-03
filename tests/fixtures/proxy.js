@@ -1,37 +1,38 @@
 // Create a phoney socket server
 const http = require('http');
-
+const socketIo = require('socket.io')
 const options = require('./options.json');
 
 const debug = require('debug')('server-io-core:fixtures:proxy');
 
 const Koa = require('koa');
-const KoaSocket = require('koa-socket-2');
-const app = new Koa();
-const io = new KoaSocket();
 
+const app = new Koa();
 // Reuse for proxy for the http
 app.use(async (ctx, next) => {
   await next();
   ctx.body = options.message.banner;
 });
 
-io.attach(app);
-// Use the raw socket instead
-app._io.on('connection', sock => {
-  debug('socket connection established');
-  sock.emit('news', 'Hello world!');
-  sock.on('message', (msg, fn) => {
-    debug('client sent data to message endpoint', msg);
-    fn(options.message.reply);
-  });
-});
+
 
 const { port } = options.proxy;
 
 const webserver = http.createServer(app.callback(), () => {
   debug('proxied server started on', port);
 });
+
+const io = socketIo(webserver);
+
+io.on('connection', socket => {
+  // fucking on of undefined?
+  socket.on('msg', (data, fn) => {
+    debug('message', data)
+    fn(`I got your message`)
+  })
+
+  socket.emit('news', 'Hello world!')
+})
 
 module.exports = (p = null) => {
   debug(p || port);
