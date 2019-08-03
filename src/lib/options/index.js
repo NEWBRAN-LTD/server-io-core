@@ -16,7 +16,6 @@ const defaultProperties = [
   'inject',
   'open',
   'https',
-  'wsProxy',
   'socket'
 ];
 // Rename to the key defaultOptions
@@ -45,10 +44,7 @@ const defaultOptions = {
   // object into an array so when we call it, it couldn't tell
   proxies: [],
   // We have to seperate them, see README about reason why
-  wsProxy: {
-    enable: false,
-    target: []
-  },
+  wsProxies: [],
   proxyTimeout: 5000,
   // Stock certicates @TODO combine this together
   open: {
@@ -126,7 +122,7 @@ const defaultOptions = {
     enable: false
   }
 };
-const arraySource = ['middlewares', 'proxies', 'wsProxy.target'];
+const arraySource = ['middlewares', 'proxies', 'wsProxies'];
 // Export just one function
 module.exports = {
   defaultOptions,

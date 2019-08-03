@@ -97,7 +97,12 @@ exports.serverIoCore = function(config) {
   staticServe(config)(app);
 
   // Now pass to the ws proxy at the very end
-  const proxyServer = wsProxyServer(webserver, config, socketIsEnabled, namespaceInUsed);
+  const proxyServerExitFn = wsProxyServer(
+    webserver,
+    config,
+    socketIsEnabled,
+    namespaceInUsed
+  );
 
   // Start server @2018-08-13
   if (config.autoStart === true) {
@@ -114,7 +119,7 @@ exports.serverIoCore = function(config) {
 
     unwatchFn.forEach(fn => fn());
     // Closing the proxyServer
-    proxyServer.close();
+    proxyServerExitFn();
   });
 
   // Finally return the instance

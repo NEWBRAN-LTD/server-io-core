@@ -365,25 +365,20 @@ From your code, you just call `/proxy` and it will redirect to the http://localh
 
 ### Proxy for socket (Experimental)
 
-Due to the architecture of Koa, we can not simply use a middleware to handle such function.
-~~Therefore, we need to hijack the `upgrade` event after the server is started. And this lead to another problem.
-Our internal socket.io will not able to work once the socket proxy is activate, because the way how [node-http-proxy](https://github.com/nodejitsu/node-http-proxy#proxying-websockets) works. We can only proxy out every `upgrade` connection to the other server.~~
-
-We create our own pass over solution. So our socket server listen your request, then pass it over to another `socket.io-client`.
-This way, it won't affect our other operation.  
+We change to a `http-proxy` implementation in V1.2.0.
+Due to we use socket.io internally for various operation, we can no simply
+proxy out all your socket connection to another target. Therefore you must
+provide a namespace that you want to proxy out. Also your namespace can not
+use those names that we already using (please check previous sections)
 
 Example:
 
 ```js
 serverIoCore({
-  wsProxy: {
-    enable: true, // REQUIRED!
-    target: {
-      host: 'http://somewhereelse.com:3456', // REQUIRED
-      namespace: 'your-name-space-client-connect-to', // REQUIRED
-      events: ['message', 'whatever'] // REQUIRED
-    }
-  }
+  wsProxies: [{
+    target: 'http://somewhereelse.com:3456', // REQUIRED
+    namespace: 'your-name-space-client-connect-to', // REQUIRED
+  }]
 });
 ```
 

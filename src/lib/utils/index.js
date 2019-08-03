@@ -258,6 +258,13 @@ const stripFirstSlash = str => {
  */
 const ensureFirstSlash = str => "/" + stripFirstSlash(str);
 
+/**
+ * @param {any} value to compare
+ * @param {array} arr for compare
+ * @return {boolean} true found
+ */
+const inArray = (value, arr) => !!arr.filter(a => a === value).length
+
 // Export
 module.exports = {
   searchFileFromFiles,
@@ -277,5 +284,6 @@ module.exports = {
   isWindoze,
   readAsync,
   stripFirstSlash,
-  ensureFirstSlash
+  ensureFirstSlash,
+  inArray
 };
