@@ -360,45 +360,43 @@ serverIoCore(
 );
 ```
 
-
 From your code, you just call `/proxy` and it will redirect to the http://localhost:5678
 
 ### Proxy for socket (Experimental)
 
-We change to a `http-proxy` implementation in V1.2.0.
-Due to we use socket.io internally for various operation, we can no simply
-proxy out all your socket connection to another target. Therefore you must
-provide a namespace that you want to proxy out. Also your namespace can not
-use those names that we already using (please check previous sections)
-
-Example:
+**BREAKING CHANGE** we no longer support the dummy proxies for socket, because its really dump.*
+Instead we create an new interface if you need to proxy web and socket at the same time.
 
 ```js
-serverIoCore({
-  wsProxies: [{
-    target: 'http://somewhereelse.com:3456', // REQUIRED
-    namespace: 'your-name-space-client-connect-to', // REQUIRED
-  }]
-});
+const serverIoCoreProxy = require('server-io-core/proxy')
+
+const config = {
+  proxies: [
+    {
+      context: '/some-where-else',
+      target: 'http://some-other-server.com:3456'
+    },
+    {
+      context: '/some-name-space',
+      target: 'http://some-socket-server.com:6789',
+      ws: true
+    }
+  ]
+}
+// run
+serverIoCoreProxy(config)
 ```
 
-Now your client:
+When you use this interface, we will require two ports to run it. The original `server-io-core` will run on `port0`.
+If you don't provide it, then your front port will still be `http://localhost:8000` and then it proxy out to the
+`http://localhost:8001`
 
-```js
-var client = io.connect('http://localhost:8000/your-name-space-client-connect-to');
-client.on('connect', function() {
-  client.on('message', function(arg) {
-    // do your thing
-  });
-  client.emit('whatever', 'some stuff you just need to send over');s
-});
-```
-The **target** field can be an object with just one or you can pass an array of objects.
-And MAKE SURE all required fields are present!
+internally, we are using the [http-proxy](https://github.com/http-party/node-http-proxy).
+Also when you proxy out to a third (or nth) server, the namespace must not crash with those we are using for
+`server-io-core` operation, see above sections about which one will be in use.
 
-**More Options**
-
-More options coming in later release.
+If you only need to proxy web then you can still use the original `proxies` options, nothing change.
+Use this new one **ONLY** when you need to proxy socket connection!
 
 ### Middlewares
 
