@@ -8,8 +8,7 @@ const chalk = require('chalk');
 const {
   webserverGenerator,
   staticServe,
-  socketServer,
-  wsProxyServer
+  socketServer
 } = require('./lib/server');
 const debuggerServer = require('./lib/debugger');
 const clientReload = require('./lib/reload');
@@ -96,14 +95,6 @@ exports.serverIoCore = function(config) {
   // Keep the init of the static serve until the last call
   staticServe(config)(app);
 
-  // Now pass to the ws proxy at the very end
-  const proxyServerExitFn = wsProxyServer(
-    webserver,
-    config,
-    socketIsEnabled,
-    namespaceInUsed
-  );
-
   // Start server @2018-08-13
   if (config.autoStart === true) {
     start();
@@ -118,10 +109,11 @@ exports.serverIoCore = function(config) {
     }
 
     unwatchFn.forEach(fn => fn());
-    // Closing the proxyServer
-    proxyServerExitFn();
   });
-
-  // Finally return the instance
-  return { webserver, app, start, stop, io };
+  // Finally return the instance, V1.2.0 export one more prop
+  let result = { webserver, app, start, stop, io };
+  if (config.__proxied__) {
+    result.namespaceInUsed = namespaceInUsed;
+  }
+  return result;
 };

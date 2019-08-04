@@ -3,7 +3,7 @@ const { createConfiguration } = require('./src/lib/options');
 const { serverIoCore } = require('./src');
 const { resolve } = require('path');
 const { toArray } = require('./src/lib/utils/');
-const { inspect } = require('util');
+const { createProxy } = require('./src/lib/server')
 const debug = require('debug')('server-io-core:main:proxy');
 /*
 We have tried almost every single scenario to try to integrate the proxy
@@ -25,24 +25,64 @@ example
 */
 
 /**
+ * Check if there is any socket proxy
+ * @param {array} proxies
+ * @return {boolean} true
+ */
+function hasSocketProxy(proxies) {
+  return proxies.filter(proxy => proxy.ws)
+}
+
+/**
  * Sort out all the options
  * @param {object} opts
  * @return {object} opts sort out for proxies
  */
-function reconfig(opts) {}
+function reconfig(opts) {
+  if (opts.port === opts.port0) {
+    throw new Error(`port and port0 can not be the same!`)
+  }
+  // store for later use
+  const port0 = opts.port0;
+  const port = opts.port;
+  const autoStart = config.autoStart;
+  opts.autoStart = false;
+  // swap the port
+  opts.port = port0
+  const socketProxies = hasSocketProxy(config.proxies)
+  if (!socketProxies.length) {socketProxies
+    console.error(`There is no socket proxy config, you don't need to call this api!`)
+  }
+  const webProxies = opts.proxies.filter(proxy => !proxy.ws)
+  // return the new opts
+  return {
+    opts,
+    port: port0,
+    autoStart,
+    socketProxies,
+    webProxies
+  }
+}
 
 /**
  * @param {object} config configuration
  * @return {object} generated methods map
  */
 module.exports = function(config = {}) {
-  const opts = createConfiguration(config);
-  opts.webroot = toArray(opts.webroot).map(dir => resolve(dir));
-  opts.__processed__ = true;
+  const opts0 = createConfiguration(config);
+  opts0.webroot = toArray(opts.webroot).map(dir => resolve(dir));
+  opts0.__processed__ = true;
   // New from here onward
-  opts.__proxied__ = true;
-  if (config.proxies.length) {
+  opts0.__proxied__ = true;
+  if (opts0.proxies.length) {
+    let { opts, port, autoStart, socketProxies, webProxies } = reconfig(opts0)
+    let { webserver, app, start, stop, io, namespaceInUsed } = serverIoCore(opts)
+    createProxy(webserver, opts, port, namespaceInUsed, socketProxies, webProxies)
+    if (autoStart) {
+      start()
+    }
+    // return the same props out
+    return { webserver, app, start, stop, io }
   }
-
   return serverIoCore(opts);
 };

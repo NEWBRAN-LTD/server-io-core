@@ -8,7 +8,7 @@ const socketServer = require('./socket');
 const staticServe = require('./static-serve');
 const httpProxy = require('./http-proxy');
 // @TODO replace the internal
-const wsProxyServer = require('./ws-proxy');
+const createProxy = require('./create-proxy');
 
 // Exports
 module.exports = {
@@ -16,5 +16,5 @@ module.exports = {
   staticServe,
   socketServer,
   httpProxy,
-  wsProxyServer
+  createProxy
 };

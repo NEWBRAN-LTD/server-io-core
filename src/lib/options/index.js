@@ -26,6 +26,7 @@ const defaultOptions = {
   development: true,
   host: getServingIpforOS(), // @2018-08-15 use the ip address by default
   port: 8000,
+  port0: 8001,
   // Path: '/', // @2018-07-31 this no longer in use
   webroot: path.join(process.cwd(), 'app'),
   autoStart: true,
@@ -43,9 +44,7 @@ const defaultOptions = {
   // @2018-03-19 it was just an array but some how the lodash.merge turns an
   // object into an array so when we call it, it couldn't tell
   proxies: [],
-  // We have to seperate them, see README about reason why
-  wsProxies: [],
-  proxyTimeout: 5000,
+  proxyTimeout: 5000, // this is actually useless 
   // Stock certicates @TODO combine this together
   open: {
     enable: true,
@@ -122,7 +121,7 @@ const defaultOptions = {
     enable: false
   }
 };
-const arraySource = ['middlewares', 'proxies', 'wsProxies'];
+const arraySource = ['middlewares', 'proxies'];
 // Export just one function
 module.exports = {
   defaultOptions,
