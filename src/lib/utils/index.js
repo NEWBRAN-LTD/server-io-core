@@ -265,6 +265,9 @@ const ensureFirstSlash = str => "/" + stripFirstSlash(str);
  */
 const inArray = (value, arr) => !!arr.filter(a => a === value).length
 
+
+
+
 // Export
 module.exports = {
   searchFileFromFiles,

@@ -4,7 +4,10 @@ const { serverIoCore } = require('./src');
 const { resolve } = require('path');
 const { toArray } = require('./src/lib/utils/');
 const { createProxy } = require('./src/lib/server')
+const openInBrowser = require('./src/lib/utils/open');
+
 const debug = require('debug')('server-io-core:main:proxy');
+
 /*
 We have tried almost every single scenario to try to integrate the proxy
 with our own setup, most of the time FAILED. That is to do with the
@@ -46,9 +49,11 @@ function reconfig(opts) {
   const port0 = opts.port0;
   const port = opts.port;
   const autoStart = config.autoStart;
+  const open = config.open;
   opts.autoStart = false;
+  opts.open = false;
   // swap the port
-  opts.port = port0
+  opts.port = port0;
   const socketProxies = hasSocketProxy(config.proxies)
   if (!socketProxies.length) {socketProxies
     console.error(`There is no socket proxy config, you don't need to call this api!`)
@@ -57,7 +62,9 @@ function reconfig(opts) {
   // return the new opts
   return {
     opts,
-    port: port0,
+    port0, // <-- the server-io-core running on
+    port, // <-- this server is going to run on
+    open,
     autoStart,
     socketProxies,
     webProxies
@@ -75,14 +82,29 @@ module.exports = function(config = {}) {
   // New from here onward
   opts0.__proxied__ = true;
   if (opts0.proxies.length) {
-    let { opts, port, autoStart, socketProxies, webProxies } = reconfig(opts0)
+    let { opts, port, port0, open, autoStart, socketProxies, webProxies } = reconfig(opts0)
     let { webserver, app, start, stop, io, namespaceInUsed } = serverIoCore(opts)
-    createProxy(webserver, opts, port, namespaceInUsed, socketProxies, webProxies)
-    if (autoStart) {
-      start()
+    // need to create the new start stop methods
+    const startBackServer = start;
+    const stopBackServer = stop;
+    // also need to reconfig the open and the callback
+    const frontWebServer = createProxy(opts, port, namespaceInUsed, socketProxies, webProxies)
+    const result = {
+      io,
+      app,
+      webserver,
+      start: () => {
+        
+      },
+      stop: () => {
+
+      }
     }
-    // return the same props out
-    return { webserver, app, start, stop, io }
+    if (autoStart) {
+      result.start()
+    }
+    // return the same name but different context props out
+    return result;
   }
   return serverIoCore(opts);
 };
