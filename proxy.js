@@ -2,8 +2,8 @@
 const { createConfiguration } = require('./src/lib/options');
 const { serverIoCore } = require('./src');
 const { resolve } = require('path');
-const { toArray } = require('./src/lib/utils/');
-const { createProxy } = require('./src/lib/server')
+const { toArray, logutil } = require('./src/lib/utils/');
+const { createProxy } = require('./src/lib/server');
 const openInBrowser = require('./src/lib/utils/open');
 
 const debug = require('debug')('server-io-core:main:proxy');
@@ -29,37 +29,49 @@ example
 
 /**
  * Check if there is any socket proxy
- * @param {array} proxies
+ * @param {array} proxies list
  * @return {boolean} true
  */
 function hasSocketProxy(proxies) {
-  return proxies.filter(proxy => proxy.ws)
+  return proxies.filter(proxy => proxy.ws);
 }
 
 /**
  * Sort out all the options
- * @param {object} opts
+ * @param {object} opts configuration
  * @return {object} opts sort out for proxies
  */
 function reconfig(opts) {
   if (opts.port === opts.port0) {
-    throw new Error(`port and port0 can not be the same!`)
+    throw new Error(`port and port0 can not be the same!`);
   }
-  // store for later use
+
+  debug('options passed', opts);
+
+  // Store for later use
   const port0 = opts.port0;
   const port = opts.port;
-  const autoStart = config.autoStart;
-  const open = config.open;
+  const autoStart = opts.autoStart;
+  const open = opts.open;
   opts.autoStart = false;
   opts.open = false;
-  // swap the port
+  // Swap the port
   opts.port = port0;
-  const socketProxies = hasSocketProxy(config.proxies)
-  if (!socketProxies.length) {socketProxies
-    console.error(`There is no socket proxy config, you don't need to call this api!`)
+  const socketProxies = hasSocketProxy(opts.proxies);
+  if (!socketProxies.length) {
+    console.error(`There is no socket proxy config, you don't need to call this api!`);
   }
-  const webProxies = opts.proxies.filter(proxy => !proxy.ws)
-  // return the new opts
+
+  const webProxies = opts.proxies
+    .filter(proxy => !proxy.ws)
+    .map(proxy => {
+      if (proxy.host && !proxy.target) {
+        proxy.target = proxy.host; // Swap it to fit the http-proxy naming
+      }
+
+      return proxy;
+    });
+  // Return the new opts
   return {
     opts,
     port0, // <-- the server-io-core running on
@@ -68,7 +80,7 @@ function reconfig(opts) {
     autoStart,
     socketProxies,
     webProxies
-  }
+  };
 }
 
 /**
@@ -77,34 +89,51 @@ function reconfig(opts) {
  */
 module.exports = function(config = {}) {
   const opts0 = createConfiguration(config);
-  opts0.webroot = toArray(opts.webroot).map(dir => resolve(dir));
+  opts0.webroot = toArray(opts0.webroot).map(dir => resolve(dir));
   opts0.__processed__ = true;
   // New from here onward
   opts0.__proxied__ = true;
   if (opts0.proxies.length) {
-    let { opts, port, port0, open, autoStart, socketProxies, webProxies } = reconfig(opts0)
-    let { webserver, app, start, stop, io, namespaceInUsed } = serverIoCore(opts)
-    // need to create the new start stop methods
+    let { opts, port, port0, open, autoStart, socketProxies, webProxies } = reconfig(
+      opts0
+    );
+    debug(`port0: ${port0}`);
+    let { webserver, app, start, stop, io, namespaceInUsed } = serverIoCore(opts);
+    // Need to create the new start stop methods
     const startBackServer = start;
     const stopBackServer = stop;
-    // also need to reconfig the open and the callback
-    const frontWebServer = createProxy(opts, port, namespaceInUsed, socketProxies, webProxies)
+    // Also need to reconfig the open and the callback
+    const frontWebServer = createProxy(
+      opts,
+      port,
+      namespaceInUsed,
+      socketProxies,
+      webProxies
+    );
     const result = {
       io,
       app,
       webserver,
       start: () => {
-        
+        startBackServer();
+        frontWebServer.listen(port, () => {
+          logutil(`start front server on ${port}`);
+          opts.open = open; // Passing the original back
+          openInBrowser(opts);
+        });
       },
       stop: () => {
-
+        stopBackServer();
+        frontWebServer.close();
       }
-    }
+    };
     if (autoStart) {
-      result.start()
+      result.start();
     }
-    // return the same name but different context props out
+
+    // Return the same name but different context props out
     return result;
   }
-  return serverIoCore(opts);
+
+  return serverIoCore(config);
 };
