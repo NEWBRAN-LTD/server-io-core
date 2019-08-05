@@ -17,7 +17,7 @@
     "demo": "DEBUG=server-io-core* node ./tests/fixtures/demo",
     "test:favicon": "ava ./tests/favicon.test.js",
     "test:demo": "DEBUG=server-io-core* ava ./tests/inject.test.js",
-    "test:socket": "DEBUG=server-io-core*,socket.io* ava ./tests/proxy-socket.test.js",
+    "test:socket": "DEBUG=server-io-core* ava ./tests/proxy-socket.test.js",
     "test:proxy": "DEBUG=server-io-core* ava ./tests/proxy.test.js",
     "run:proxied": "DEBUG=server-io-core* node ./tests/fixtures/proxy.js",
     "test:inject": "DEBUG=server-io-core* node ./tests/fixtures/run.js",

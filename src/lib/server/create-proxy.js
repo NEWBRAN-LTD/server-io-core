@@ -30,6 +30,7 @@ const handleWebProxies = (webProxies, port) => {
   // Handle the web proxy first
   return http.createServer(function(req, res) {
     const pathname = getPath(req);
+    debug(`catch the ${pathname}`)
     let handled = false;
     const ctn0 = webProxies.length;
     for (let i = 0; i < ctn; ++i) {
@@ -42,6 +43,7 @@ const handleWebProxies = (webProxies, port) => {
     }
 
     if (!handled) {
+      debug(`pass to the default`)
       webProxyServer(req, res, { target: `http://localhost:${port}` });
     }
   });
@@ -94,4 +96,7 @@ module.exports = function(
       defaultProxy.ws(req, socket, head);
     }
   });
+
+  // return the server for other operation
+  return server;
 };
