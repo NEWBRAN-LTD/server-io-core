@@ -5,32 +5,31 @@ const fs = require('fs');
 const { join } = require('path');
 const { inspect } = require('util');
 const debug = require('debug')('server-io-core:socket-setup');
-// init
+// Init
 const standaloneServer = http.createServer(handler);
 const io = socketIo(standaloneServer);
-const portNum = 9015
+const portNum = 9015;
 standaloneServer.listen(portNum, () => {
   debug('stand alone server start at ', portNum);
 });
 
 function handler(req, res) {
-  fs.readFile(join(__dirname, '..', 'proxy', 'index.html'),
-    function (err, data) {
-      if (err) {
-        res.writeHead(500);
-        return res.end('Error loading index.html');
-      }
-      res.writeHead(200);
-      res.end(data);
+  fs.readFile(join(__dirname, '..', 'proxy', 'index.html'), function(err, data) {
+    if (err) {
+      res.writeHead(500);
+      return res.end('Error loading index.html');
     }
-  );
+
+    res.writeHead(200);
+    res.end(data);
+  });
 }
 
 io.on('connection', function(socket) {
   debug('proxy behind socket server connection establish');
   setTimeout(() => {
-    socket.emit('msg', {hello: 'world'});
-  },500);
+    socket.emit('msg', { hello: 'world' });
+  }, 500);
 
   socket.on('reply', function(data) {
     debug('receive reply: ', data);
@@ -69,10 +68,10 @@ frontServer.on('upgrade', function (req, socket, head) {
 */
 
 const frontPort = 8015;
-// frontServer.listen(frontPort);
+// FrontServer.listen(frontPort);
 
 module.exports = {
-  // frontServer,
+  // FrontServer,
   standaloneServer,
   frontPort,
   proxyConfig,

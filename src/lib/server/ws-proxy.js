@@ -2,7 +2,7 @@
 const HttpProxy = require('http-proxy');
 const url = require('url');
 
-// const chalk = require('chalk');
+// Const chalk = require('chalk');
 // Const { WS_PROXY } = require('../utils/constants');
 const { ensureFirstSlash, inArray } = require('../utils');
 const debug = require('debug')('server-io-core:ws-proxy');
@@ -75,7 +75,7 @@ const generateProxyServers = proxies => {
  */
 const handleWsProxy = (webserver, namespaceInUsed, proxies) => {
   const proxyServers = generateProxyServers(proxies);
-  debug('proxyServers', proxyServers)
+  debug('proxyServers', proxyServers);
 
   webserver.on('upgrade', function(req, socket, head) {
     const pathname = getPath(req);

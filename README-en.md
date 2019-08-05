@@ -362,41 +362,11 @@ serverIoCore(
 
 From your code, you just call `/proxy` and it will redirect to the http://localhost:5678
 
-### Proxy for socket (Experimental)
+### Proxy for socket (Not supported from V1.2.0)
 
-**BREAKING CHANGE** we no longer support the dummy proxies for socket, because its really dump.*
-Instead we create an new interface if you need to proxy web and socket at the same time.
-
-```js
-const serverIoCoreProxy = require('server-io-core/proxy')
-
-const config = {
-  proxies: [
-    {
-      context: '/some-where-else',
-      target: 'http://some-other-server.com:3456'
-    },
-    {
-      context: '/some-name-space',
-      target: 'http://some-socket-server.com:6789',
-      ws: true
-    }
-  ]
-}
-// run
-serverIoCoreProxy(config)
-```
-
-When you use this interface, we will require two ports to run it. The original `server-io-core` will run on `port0`.
-If you don't provide it, then your front port will still be `http://localhost:8000` and then it proxy out to the
-`http://localhost:8001`
-
-internally, we are using the [http-proxy](https://github.com/http-party/node-http-proxy).
-Also when you proxy out to a third (or nth) server, the namespace must not crash with those we are using for
-`server-io-core` operation, see above sections about which one will be in use.
-
-If you only need to proxy web then you can still use the original `proxies` options, nothing change.
-Use this new one **ONLY** when you need to proxy socket connection!
+There are just way too much problem (with Socket.io!) to create a useful proxy for socket.
+Therefore, we just drop this support all together. Might return in the future.
+In the meantime, if you need such feature, you could grab the return `io` object and do something with it.
 
 ### Middlewares
 

@@ -5,11 +5,7 @@ const Koa = require('koa');
 const _ = require('lodash');
 const chalk = require('chalk');
 // Ours
-const {
-  webserverGenerator,
-  staticServe,
-  socketServer
-} = require('./lib/server');
+const { webserverGenerator, staticServe, socketServer } = require('./lib/server');
 const debuggerServer = require('./lib/debugger');
 const clientReload = require('./lib/reload');
 const openInBrowser = require('./lib/utils/open');
@@ -115,5 +111,6 @@ exports.serverIoCore = function(config) {
   if (config.__proxied__) {
     result.namespaceInUsed = namespaceInUsed;
   }
+
   return result;
 };

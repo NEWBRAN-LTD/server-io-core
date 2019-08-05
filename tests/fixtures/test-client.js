@@ -1,6 +1,6 @@
 const debug = require('debug')('server-io-core:test-client');
 /*
-const {
+Const {
   proxyConfig,
   namespace
 } = require('./socket');
@@ -20,4 +20,4 @@ nsp.on('connect', () => {
   setTimeout(function() {
     nsp.emit('reply', 'Here is my reply to you!');
   }, 2000);
-})
+});

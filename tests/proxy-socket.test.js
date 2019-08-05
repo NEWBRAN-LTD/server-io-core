@@ -1,7 +1,7 @@
 // Do this in a standalone way because the server requirement are different
 const test = require('ava');
 const socketClient = require('socket.io-client');
-const request = require('superkoa')
+const request = require('request');
 const serverIoCore = require('../proxy');
 
 const debug = require('debug')('server-io-core:proxy-test');
@@ -12,32 +12,49 @@ const namespace = 'behind-the-proxy';
 const frontPort = 8000;
 const proxyPort = 9001;
 
-// develop here
+// Develop here
 
-const http = require('http')
-const httpProxy = require('http-proxy')
-const url = require('url')
-
+const http = require('http');
+const httpProxy = require('http-proxy');
+const url = require('url');
 
 test.before(t => {
-  t.context.proxyServer = proxyServer(proxyPort);
+  let { webserver } = proxyServer(proxyPort);
+  t.context.proxyServer = webserver;
 
   const proxy = httpProxy.createProxyServer({});
-
+  const proxySocket = httpProxy.createProxyServer({
+    target: {
+      host: 'localhost',
+      port: proxyPort
+    }
+  });
   proxy.on('error', function(e) {
-    debug(`Proxy error:`, e)
-  })
+    debug(`Proxy error:`, e);
+  });
 
-  t.context.server = http.createServer(function(req, res) {
-    const { pathname } = url.parse(req.url);
-    debug(`pathname: ${pathname}`)
-    proxy.web(req, res, { target: `http://localhost:${proxyPort}` });
-  }).listen(frontPort, () => {
-    debug(`proxy server started on ${frontPort}`)
-  })
+  const server = http
+    .createServer(function(req, res) {
+      const { pathname } = url.parse(req.url);
+      debug(`pathname: ${pathname}`);
+      proxy.web(req, res, { target: `http://localhost:${proxyPort}` });
+    })
+    .listen(frontPort, () => {
+      debug(`proxy server started on ${frontPort}`);
+    });
+
+  server.on('upgrade', function(req, socket, head) {
+    const obj = url.parse(req.url);
+    debug(`hear the upgrade event via `, obj);
+    // Debug(`socket`, socket)
+    debug(`head`, head.toString());
+    proxySocket.ws(req, socket, head);
+  });
+
+  t.context.server = server;
 
   /*
-  const { app, stop } = serverIoCore({
+  Const { app, stop } = serverIoCore({
     open: false,
     debugger: true,
     reload: true,
@@ -60,7 +77,8 @@ test.before(t => {
 
 test.after(t => {
   t.context.proxyServer.close();
-  // t.context.stop();
+  t.context.server.close();
+  // T.context.stop();
 });
 
 test.cb(`Connect to the socket server directly on ${proxyPort}`, t => {
@@ -76,9 +94,30 @@ test.cb(`Connect to the socket server directly on ${proxyPort}`, t => {
   });
 });
 
-test(`Connect to the http via the proxy server on ${frontPort}`, async t => {
-  const res = await request(t.context.app).get('/test')
+test.cb(`Connect to the http via the proxy server on ${frontPort}`, t => {
+  t.plan(1);
+  const res = request(`http://localhost:${frontPort}/test`, (err, res, body) => {
+    if (err) {
+      return debug(`request err`, err);
+    }
 
-  debug(res.body)
-  t.is(res.status, 200)
-})
+    debug(body);
+    t.is(res.statusCode, 200);
+    t.end();
+  });
+});
+
+test.cb(
+  `It should able to connect to the socket server via the proxy port ${frontPort}`,
+  t => {
+    t.plan(1);
+    const client = socketClient(`ws://localhost:${frontPort}/some-namespace`);
+    client.on('connect', () => {
+      debug(`connected on ${frontPort}`);
+      client.on('news', msg => {
+        t.truthy(msg);
+        t.end();
+      });
+    });
+  }
+);

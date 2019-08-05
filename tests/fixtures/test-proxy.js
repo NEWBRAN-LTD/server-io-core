@@ -1,13 +1,12 @@
 const debug = require('debug')('server-io-core:test-proxy');
 const serverIoCore = require('../../index');
 const {
-  // frontServer,
+  // FrontServer,
   standaloneServer,
   frontPort,
   proxyConfig,
   namespace
 } = require('./socket');
-
 
 const proxyPort = proxyConfig.target.port;
 
@@ -24,4 +23,4 @@ const { stop } = serverIoCore({
   },
   port: frontPort
 });
-// t.context.stop = stop;
+// T.context.stop = stop;

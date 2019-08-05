@@ -15,16 +15,16 @@ const proxySrv = require('../proxy');
 const options = require('../options.json');
 
 const port = options.proxy.port;
-// start the proxySrv
+// Start the proxySrv
 const proxySrvApp = proxySrv();
 
-// options
+// Options
 const config = {
-  // debugger: true,
+  // Debugger: true,
   reload: {
     displayLog: true
   },
-  // socket: true,
+  // Socket: true,
   inject: {
     source: [
       // DummyJs,
@@ -37,7 +37,7 @@ const config = {
     ]
   },
   /*
-  proxies: [{
+  Proxies: [{
     host: `http://localhost:${port}`,
     context: '/proxy'
   }], */
@@ -49,6 +49,6 @@ const config = {
   ]
 };
 
-// debug('options', config);
+// Debug('options', config);
 
 serverIoCore(config);
