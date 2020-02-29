@@ -4,7 +4,7 @@ const {
     // defaultOptions,
     // defaultProperties,
     createConfiguration
-} = require('../src/options')
+} = require('../src/lib/options')
 
 
 test(`It should able to use just one props to overwrite the default props`, t => {
@@ -14,6 +14,6 @@ test(`It should able to use just one props to overwrite the default props`, t =>
     }
     const options = createConfiguration(config)
 
-    t.is(options.open, false)
+    t.is(options.open.enable, false)
 
 })
