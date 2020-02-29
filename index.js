@@ -15,8 +15,6 @@ const debug = require('debug')('server-io-core:main')
  */
 module.exports = function(config = {}) {
     
-    debug('original config', config)
-    
     const configCopy = merge({}, config) // make sure it can not get mutated  
 
     const opts = createConfiguration(configCopy)

@@ -17,11 +17,11 @@
     "demo": "DEBUG=server-io-core* node ./tests/fixtures/demo",
     "test:option": "DEBUG=server-io-core* ava ./tests/options.test.js",
     "test:favicon": "ava ./tests/favicon.test.js",
-    "test:demo": "DEBUG=server-io-core* ava ./tests/inject.test.js",
+    "test:inject": "DEBUG=server-io-core* ava ./tests/inject.test.js",
     "test:socket": "DEBUG=server-io-core* ava ./tests/proxy-socket.test.js",
     "test:proxy": "DEBUG=server-io-core* ava ./tests/proxy.test.js",
     "run:proxied": "DEBUG=server-io-core* node ./tests/fixtures/proxy.js",
-    "test:inject": "DEBUG=server-io-core* node ./tests/fixtures/run.js",
+    "test:demo": "DEBUG=server-io-core* node ./tests/fixtures/run.js",
     "start:server": "DEBUG=server-io-core* node ./tests/fixtures/test-proxy.js",
     "start:client": "DEBUG=server-io-core* node ./tests/fixtures/test-client.js"
   },
