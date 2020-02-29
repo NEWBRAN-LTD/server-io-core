@@ -49,7 +49,7 @@ test(`Testing the replace function`, async t => {
   const replaceOptions1 = [
     {
       target: '<h1>This is a dummy page</h1>',
-      str: join(__dirname, 'fixtures', 'demo', 'text.txt')
+      file: join(__dirname, 'fixtures', 'demo', 'text.txt')
     }
   ]
   const result = replaceContent(html.toString(), replaceOptions1);

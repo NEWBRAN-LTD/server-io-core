@@ -356,7 +356,7 @@ replace: [
   {
     target: 'what you want to replace', // REQUIRED,
     str: 'thing you want to replace',
-    file: '/path/to/the/file/of/content.txt' // if you pass the str then this will get ignore, so only one 
+    file: '/path/to/the/file/of/content.txt' // if you pass this option then the str will get ignore
     all: undefined // unless you specificly pass all:false to turn off global search
   }
 ]

@@ -303,7 +303,7 @@ const replaceContent = (html, replace) => {
       if (target) {
         let toReplace = '';
         if (file && fsx.existsSync(file)) {
-          toReplace = fsx.readFileSync(file, { encoding: 'utf8' }).toString();
+          toReplace = fsx.readFileSync(file, { encoding: 'utf8' });
         } else if (str) {
           toReplace = str;
         }
