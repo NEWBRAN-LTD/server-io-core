@@ -1,9 +1,9 @@
 /**
  * Create a default options to reduce the complexity of the main file
  */
-const path = require('path')
-const src = path.join(__dirname, '..', '..')
-const { getServingIpforOS } = require('../utils/')
+const path = require('path');
+const src = path.join(__dirname, '..', '..');
+const { getServingIpforOS } = require('../utils/');
 
 // Also export the function here
 const enableMiddlewareShorthand = require('./enable-middleware-shorthand');
@@ -17,7 +17,7 @@ const defaultProperties = [
   'open',
   'https',
   'socket'
-]
+];
 // Rename to the key defaultOptions
 const defaultOptions = {
   /**
@@ -112,8 +112,8 @@ const defaultOptions = {
     client: true, // Allow passing a configuration to overwrite the client
     server: true // Allow passing configuration - see middleware.js for more detail
   }
-}
-const arraySource = ['middlewares', 'proxies']
+};
+const arraySource = ['middlewares', 'proxies'];
 // Export just one function
 module.exports = {
   defaultOptions,
@@ -124,6 +124,6 @@ module.exports = {
       defaultProperties,
       arraySource,
       options
-    )
+    );
   }
-}
+};

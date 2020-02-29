@@ -49,13 +49,13 @@
  files to.
 
  */
-const { logutil } = require('../utils')
-const _ = require('lodash')
-const cheerio = require('cheerio')
-const glob = require('glob')
-const chalk = require('chalk')
-const debug = require('debug')('server-io-core:inject')
-const fsx = require('fs-extra')
+const { logutil } = require('../utils');
+const _ = require('lodash');
+const cheerio = require('cheerio');
+const glob = require('glob');
+const chalk = require('chalk');
+const debug = require('debug')('server-io-core:inject');
+const fsx = require('fs-extra');
 /**
  * NOT IN USE
  * @param {array} files to wrap with tag
@@ -79,16 +79,16 @@ const tagCss = (files, ignorePath) => {
 const tagFile = (type, file, ignorePath) => {
   if (ignorePath) {
     if (ignorePath) {
-      file = file.replace(ignorePath, '')
+      file = file.replace(ignorePath, '');
     }
   }
 
   if (type === 'css') {
-    return `<link rel="stylesheet" href="${file}" />`
+    return `<link rel="stylesheet" href="${file}" />`;
   }
 
-  return `<script type="text/javascript" src="${file}" defer></script>`
-}
+  return `<script type="text/javascript" src="${file}" defer></script>`;
+};
 
 /**
  * @param {array} files to wrap with tag
@@ -96,8 +96,8 @@ const tagFile = (type, file, ignorePath) => {
  * @return {string} conccat them all
  */
 const tagJs = (files, ignorePath) => {
-  return files.map(file => tagFile('js', file, ignorePath)).join('\r\n')
-}
+  return files.map(file => tagFile('js', file, ignorePath)).join('\r\n');
+};
 
 /**
  * @param {string} source to process
@@ -106,29 +106,29 @@ const tagJs = (files, ignorePath) => {
 const processFiles = source => {
   let files = [];
   if (source.indexOf('*') > -1) {
-    files = files.concat(glob.sync(source))
+    files = files.concat(glob.sync(source));
   } else {
-    files = files.concat([source])
+    files = files.concat([source]);
   }
 
-  return files
-}
+  return files;
+};
 
 /**
  * @param {strimg} name file
  * @return {boolean} true found css
  */
 const isCss = name => {
-  return name.toLowerCase().substr(-3) === 'css'
-}
+  return name.toLowerCase().substr(-3) === 'css';
+};
 
 /**
  * @param {string} name file
  * @return {boolean} true found js
  */
 const isJs = name => {
-  return name.toLowerCase().substr(-2) === 'js'
-}
+  return name.toLowerCase().substr(-2) === 'js';
+};
 
 /**
  *
@@ -139,29 +139,29 @@ const isJs = name => {
 const extractFromSource = (source, key) => {
   if (source[key]) {
     let s = source[key];
-    return Array.isArray(s) ? s : [s]
+    return Array.isArray(s) ? s : [s];
   }
 
-  return []
-}
+  return [];
+};
 
 /**
  * @param {object} config the inject configuration object
  * @return {object} js<Array> css<Array>
  */
 const getSource = config => {
-  let js = []
-  let css = []
+  let js = [];
+  let css = [];
   const { target, source } = config;
   // If they pass a non array then it will get ignore!
   if (source && Array.isArray(source) && source.length) {
     // Processing the object
     for (let i = 0, len = source.length; i < len; ++i) {
-      let s = source[i]
+      let s = source[i];
       if (isCss(s)) {
-        css = css.concat(processFiles(s))
+        css = css.concat(processFiles(s));
       } else if (isJs(s)) {
-        js = js.concat(processFiles(s))
+        js = js.concat(processFiles(s));
       }
     }
   }
@@ -173,12 +173,12 @@ const getSource = config => {
     // Expect head of bottom!
     // it's pretty simple actually those with head in css
     // those with body in js and that's it
-    css = css.concat(extractFromSource(target, 'head'))
-    js = js.concat(extractFromSource(target, 'body'))
+    css = css.concat(extractFromSource(target, 'head'));
+    js = js.concat(extractFromSource(target, 'body'));
   }
 
-  return { js, css }
-}
+  return { js, css };
+};
 
 /**
  * Combine function
@@ -188,14 +188,14 @@ const getSource = config => {
  */
 function checkAndTagFile(file, ignorePath) {
   if (isJs(file)) {
-    return tagFile('js', file, ignorePath)
+    return tagFile('js', file, ignorePath);
   }
 
   if (isCss(file)) {
-    return tagFile('css', file, ignorePath)
+    return tagFile('css', file, ignorePath);
   }
 
-  throw new Error('It must be js or css file!')
+  throw new Error('It must be js or css file!');
 }
 
 /**
@@ -208,15 +208,15 @@ function checkAndTagFile(file, ignorePath) {
 function getProcessor(config, js) {
   const { processor } = config;
   if (processor && typeof processor === 'function') {
-    let result = Reflect.apply(processor, null, [js])
+    let result = Reflect.apply(processor, null, [js]);
     if (!Array.isArray(result)) {
-      throw new Error(`Expect your processor to return an array of javascript files!`)
+      throw new Error(`Expect your processor to return an array of javascript files!`);
     }
 
-    return result
+    return result;
   }
 
-  return js
+  return js;
 }
 
 /**
@@ -227,21 +227,21 @@ function getProcessor(config, js) {
 const getFilesToInject = function(config) {
   // @2018-05-07 disbale this check because we couldn't get the fileanme from the middleware
   // const target = getTarget(config.target);
-  const { js, css } = getSource(config)
+  const { js, css } = getSource(config);
   // Const check = target && (js || css);
   if (!js.length && !css.length) {
     // Both should have at least one have properties!
     if (config.enable) {
       // Display an error inline here
-      const msg = '[inject] Configuration is incorrect for injector to work!'
-      debug('injector error', msg)
-      logutil(chalk.red(msg), config)
+      const msg = '[inject] Configuration is incorrect for injector to work!';
+      debug('injector error', msg);
+      logutil(chalk.red(msg), config);
     }
 
-    return { js: '', css: '' }
+    return { js: '', css: '' };
   }
 
-  const br = '\r\n'
+  const br = '\r\n';
 
   return {
     js:
@@ -249,8 +249,8 @@ const getFilesToInject = function(config) {
         .map(j => checkAndTagFile(j, config.ignorePath))
         .join(br) + br,
     css: css.map(c => checkAndTagFile(c, config.ignorePath)).join(br) + br
-  }
-}
+  };
+};
 
 /**
  * @TODO add the before / after parameter
@@ -262,65 +262,66 @@ const getFilesToInject = function(config) {
  * @return {string} overwritten HTML
  */
 const injectToHtml = (body, jsTags, cssTags, before = true) => {
-  const html = _.isString(body) ? body : body.toString('utf8')
-  const $ = cheerio.load(html)
+  const html = _.isString(body) ? body : body.toString('utf8');
+  const $ = cheerio.load(html);
   // @2018-08-13 add check if there is existing javascript tags
-  const $scripts = $('body script').toArray()
+  const $scripts = $('body script').toArray();
   if (jsTags) {
     if ($scripts.length) {
       if (before) {
-        $($scripts[0]).before(jsTags)
+        $($scripts[0]).before(jsTags);
       } else {
-        $($scripts[$scripts.length - 1]).after(jsTags)
+        $($scripts[$scripts.length - 1]).after(jsTags);
       }
     } else {
-      $('body').append(jsTags)
+      $('body').append(jsTags);
     }
   }
 
   if (cssTags) {
-    $('head').append(cssTags)
+    $('head').append(cssTags);
   }
 
-  return $.html()
-}
+  return $.html();
+};
 
 /**
- * 1.3.0 add replace option, expecting keys are 
- * - target: a string tag 
- * - replace: a string to replace with 
+ * 1.3.0 add replace option, expecting keys are
+ * - target: a string tag
+ * - replace: a string to replace with
  * - file (optional): we will try to read the file and use the content to replace it
- * - all (optional): replace every single one or not (false by default) 
+ * - all (optional): replace every single one or not (false by default)
  * @param {string} html the html document
  * @param {array} replace array of the above mentioned object
- * @return {string} the replaced html document 
+ * @return {string} the replaced html document
  */
 const replaceContent = (html, replace) => {
   if (Array.isArray(replace) && replace.length > 0) {
-    return replace.reduce( (text, opt) => {
-      const { target, str, file, all } = opt
-      const g = all !== false // unless set otherwise always replace global 
+    return replace.reduce((text, opt) => {
+      const { target, str, file, all } = opt;
+      const g = all !== false; // Unless set otherwise always replace global
       if (target) {
-        let toReplace = ''
+        let toReplace = '';
         if (file && fsx.existsSync(file)) {
-          toReplace = fsx.readFileSync(file, {encoding: 'utf8'})
+          toReplace = fsx.readFileSync(file, { encoding: 'utf8' });
         } else if (str) {
-          toReplace = str
+          toReplace = str;
         }
-        if (g) { 
-          let regex = new RegExp(target, "g")
-          return text.replace(regex, toReplace)
+
+        if (g) {
+          let regex = new RegExp(target, 'g');
+          return text.replace(regex, toReplace);
         }
-        return text.replace(target, replace)
+
+        return text.replace(target, replace);
       }
 
-      return text
-    }, html)
+      return text;
+    }, html);
   }
 
-  return html 
-}
+  return html;
+};
 
-// Export 
-module.exports = { tagJs, getFilesToInject, injectToHtml, replaceContent }
-
+// Export
+module.exports = { tagJs, getFilesToInject, injectToHtml, replaceContent };

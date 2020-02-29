@@ -2,11 +2,11 @@
  * From the original gulp-webserver
  */
 // const extend = require('util')._extend;
-const { merge, extend } = require('lodash')
-const { toArray } = require('../utils/')
-const { version } = require('../../../package.json')
-const { WS_PROXY } = require('../utils/constants')
-const _ = require('lodash')
+const { merge, extend } = require('lodash');
+const { toArray } = require('../utils/');
+const { version } = require('../../../package.json');
+const { WS_PROXY } = require('../utils/constants');
+const _ = require('lodash');
 // Const debug = require('debug')('server-io-core:enable-middleware-shorthand');
 
 // Const debug = require('debug')('server-io-core:enable-middleware-shorthand');
@@ -21,26 +21,26 @@ const ensureArrayProps = (arraySource, options) => {
     .map(key => {
       // @2019-05-07 if we pass it as a path
       if (key.indexOf('.') > -1) {
-        const value = _.get(options, key)
-        const parts = key.split('.')
-        const objKey = parts[0]
-        const propKey = parts[1]
+        const value = _.get(options, key);
+        const parts = key.split('.');
+        const objKey = parts[0];
+        const propKey = parts[1];
         // Here could be a problem if the level is deeper than one
         return {
           [objKey]: merge({}, options[objKey], { [propKey]: toArray(value) })
-        }
+        };
       }
 
       if (options[key]) {
-        return { [key]: toArray(options[key]) }
+        return { [key]: toArray(options[key]) };
       }
 
-      return { [key]: [] }
+      return { [key]: [] };
     })
     .reduce((next, last) => {
-      return extend(next, last)
-    }, options)
-}
+      return extend(next, last);
+    }, options);
+};
 
 /**
  * Make sure we get the config in an array
@@ -49,15 +49,15 @@ const ensureArrayProps = (arraySource, options) => {
  */
 const extractArrayProps = config => {
   if (typeof config === 'object' && config.target && config.enable !== false) {
-    return toArray(config.target)
+    return toArray(config.target);
   }
 
   if (Array.isArray(config)) {
-    return config
+    return config;
   }
 
-  return false
-}
+  return false;
+};
 
 /**
  * A bit of sideway hack to correct the configuration for a special case
@@ -68,17 +68,17 @@ const extractArrayProps = config => {
  */
 const handleSpecialCase = (key, config) => {
   if (key === WS_PROXY) {
-    const target = extractArrayProps(config)
+    const target = extractArrayProps(config);
     if (target !== false) {
       return {
         enable: true,
         target: target
-      }
+      };
     }
   }
 
-  return false
-}
+  return false;
+};
 
 /**
  * @param {object} defaults the stock options
@@ -89,8 +89,8 @@ const handleSpecialCase = (key, config) => {
  */
 module.exports = function(defaults, props, arraySource, options) {
   // Make a copy to use later
-  const originalOptions = merge({}, options)
-  const originalDefaults = merge({}, defaults)
+  const originalOptions = merge({}, options);
+  const originalDefaults = merge({}, defaults);
   /*
     @2018-03-19 The bug is here when call the merge
     lodash.merge merge object into array source turns it into
@@ -101,15 +101,15 @@ module.exports = function(defaults, props, arraySource, options) {
     again another problem with the prop inside an object that is not array but
     we need it to be an array
   */
-  const tmpProp = ensureArrayProps(arraySource, options)
-  let config = merge({}, defaults, tmpProp)
+  const tmpProp = ensureArrayProps(arraySource, options);
+  let config = merge({}, defaults, tmpProp);
   // This just make sure it's an array
   if (Object.prototype.toString.call(props) === '[object String]') {
-    props = [props]
+    props = [props];
   }
 
   for (let i = 0, len = props.length; i < len; ++i) {
-    let prop = props[i]
+    let prop = props[i];
     // Debug('prop', prop);
     /**
      * The problem is when someone pass optionName: true
@@ -118,24 +118,24 @@ module.exports = function(defaults, props, arraySource, options) {
      * enable: true
      * then the feature is not enable
      */
-    let specialCase = handleSpecialCase(prop, config[prop])
+    let specialCase = handleSpecialCase(prop, config[prop]);
     if (specialCase !== false) {
-      config[prop] = specialCase
+      config[prop] = specialCase;
     } else if (config[prop] === true) {
-      config[prop] = merge({}, originalDefaults[prop])
+      config[prop] = merge({}, originalDefaults[prop]);
       config[prop].enable = true;
     } else if (originalOptions[prop] && Object.keys(originalOptions[prop]).length) {
       // If the user has provided some property
       // Then we add the enable here for the App to use
       config[prop].enable = true;
     } else if (config[prop] === false) {
-      config[prop] = merge({}, originalDefaults[prop], { enable: false })
+      config[prop] = merge({}, originalDefaults[prop], { enable: false });
     }
   }
 
   // Here we add things that we don't want to get overwritten
-  config.version = version
+  config.version = version;
   // Change from sessionId to timestamp, just for reference not in use anywhere
-  config.timestamp = Date.now()
-  return config
-}
+  config.timestamp = Date.now();
+  return config;
+};
