@@ -110,7 +110,7 @@ const scriptsInjectorMiddleware = function(config) {
             debug('use overwrite', ctx.url, ctx.path)
             const doc = await searchHtmlDocuments({
               webroot: config.webroot,
-              p: p,
+              p: isHtmlDoc,
               js: _.compact([files, js]).join(''),
               css: css,
               insertBefore: config.inject.insertBefore

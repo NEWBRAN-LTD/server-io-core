@@ -1,9 +1,9 @@
 /**
  * Create a default options to reduce the complexity of the main file
  */
-const path = require('path');
-const src = path.join(__dirname, '..', '..');
-const { getServingIpforOS } = require('../utils/');
+const path = require('path')
+const src = path.join(__dirname, '..', '..')
+const { getServingIpforOS } = require('../utils/')
 
 // Also export the function here
 const enableMiddlewareShorthand = require('./enable-middleware-shorthand');
@@ -17,7 +17,7 @@ const defaultProperties = [
   'open',
   'https',
   'socket'
-];
+]
 // Rename to the key defaultOptions
 const defaultOptions = {
   /**

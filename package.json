@@ -15,6 +15,7 @@
     "pretest": "eslint . --fix",
     "precommit": "lint-staged",
     "demo": "DEBUG=server-io-core* node ./tests/fixtures/demo",
+    "test:option": "DEBUG=server-io-core* ava ./tests/options.test.js",
     "test:favicon": "ava ./tests/favicon.test.js",
     "test:demo": "DEBUG=server-io-core* ava ./tests/inject.test.js",
     "test:socket": "DEBUG=server-io-core* ava ./tests/proxy-socket.test.js",

@@ -46,3 +46,5 @@ test.serial('It should able to inject files according to the inject object', asy
   debug('return body', res.body)
   t.pass()
 })
+
+test.todo(`Testing the replace option in the inject`)
