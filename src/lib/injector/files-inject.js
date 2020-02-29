@@ -297,22 +297,24 @@ const injectToHtml = (body, jsTags, cssTags, before = true) => {
  */
 const replaceContent = (html, replace) => {
   if (Array.isArray(replace) && replace.length > 0) {
-    return replace.reduce( (toGetReplace, opt) => {
-      const {target, replace, file, all} = opt
+    return replace.reduce( (text, opt) => {
+      const { target, str, file, all } = opt
+      const g = all !== false // unless set otherwise always replace global 
       if (target) {
         let toReplace = ''
         if (file && fsx.existsSync(file)) {
           toReplace = fsx.readFileSync(file, {encoding: 'utf8'})
-        } else if (replace) {
-          toReplace = replace
+        } else if (str) {
+          toReplace = str
         }
-        if (all) {
-          let regex = new RegExp(toReplace, "g")
-          return toGetReplace.replace(regex, toReplace)
+        if (g) { 
+          let regex = new RegExp(target, "g")
+          return text.replace(regex, toReplace)
         }
-        return toGetReplace.replace(target, replace)
+        return text.replace(target, replace)
       }
-      
+
+      return text
     }, html)
   }
 

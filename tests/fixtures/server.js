@@ -8,9 +8,8 @@ const defaultOptions = {
   open: false,
   webroot: join(__dirname, 'demo', 'dist', 'base')
 }
-const debug = require('debug')('server-io-core:fixtures:server')
+// const debug = require('debug')('server-io-core:fixtures:server')
 // Return
 module.exports = function(extra = {}) {
-  debug(extra)
   return serverIoCore(Object.assign(defaultOptions, extra))
 }
