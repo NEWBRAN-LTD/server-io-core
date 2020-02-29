@@ -2,13 +2,13 @@
  * This is breaking out to deal with the injecting reload.js script and
  * the debugger scripts
  */
-const _ = require('lodash');
-const { join } = require('path');
-const { getFilesToInject, injectToHtml, tagJs } = require('./files-inject');
+const _ = require('lodash')
+const { join } = require('path')
+const { getFilesToInject, injectToHtml, tagJs } = require('./files-inject')
 const {
   getFeatureScripts,
   renderScriptsMiddleware
-} = require('./render-scripts-middleware');
+} = require('./render-scripts-middleware')
 const {
   searchIndexFile,
   isHtmlFile,
@@ -16,8 +16,8 @@ const {
   getDocLen,
   readDocument,
   searchFileFromFiles
-} = require('../utils/');
-const debug = require('debug')('server-io-core:inject');
+} = require('../utils/')
+const debug = require('debug')('server-io-core:inject')
 
 /**
  * Breaking out the read function for the aynsc operation
@@ -30,10 +30,10 @@ const debug = require('debug')('server-io-core:inject');
 const getHtmlDocument = function(p, js, css, insertBefore) {
   return readDocument(p).then(data => {
     if (data) {
-      return injectToHtml(data, js, css, insertBefore);
+      return injectToHtml(data, js, css, insertBefore)
     }
-  });
-};
+  })
+}
 
 /**
  * Search the array of documents until it find the right one otherwise just
@@ -47,13 +47,13 @@ const getHtmlDocument = function(p, js, css, insertBefore) {
  * @return {object} throw on not found
  */
 const searchHtmlDocuments = function({ webroot, p, js, css, insertBefore }) {
-  const file = searchFileFromFiles([p].concat(webroot.map(dir => join(dir, p))));
+  const file = searchFileFromFiles([p].concat(webroot.map(dir => join(dir, p))))
   if (file) {
-    return getHtmlDocument(file, js, css, insertBefore);
+    return getHtmlDocument(file, js, css, insertBefore)
   }
 
-  throw Promise.reject(new Error(`File ${p} not found from ${webroot}`));
-};
+  throw Promise.reject(new Error(`File ${p} not found from ${webroot}`))
+}
 
 /**
  * @param {object} config the main config
@@ -69,7 +69,7 @@ exports.scriptsInjectorMiddleware = function(config) {
   };
   const { socketIoJs, debuggerJs, stacktraceJsFile, reloadJs } = getFeatureScripts(
     config
-  );
+  )
 
   // Debug('inject config %O', config.inject);
 
@@ -80,22 +80,22 @@ exports.scriptsInjectorMiddleware = function(config) {
   if (features.debugger) {
     // @TODO if they change the debugger config
     // we might have to do additional checks here just in case
-    scripts = scripts.concat([stacktraceJsFile, debuggerJs]);
+    scripts = scripts.concat([stacktraceJsFile, debuggerJs])
   }
 
   if (features.reload) {
     // @2018-05-14 using our new reload method
-    scripts.push(reloadJs);
+    scripts.push(reloadJs)
   }
 
-  const files = tagJs(scripts);
+  const files = tagJs(scripts)
   // Next we add the fileInjector function here
-  const { js, css } = getFilesToInject(config.inject);
+  const { js, css } = getFilesToInject(config.inject)
   if (config.inject.enable) {
-    debug('getFilesToInject', js, css);
+    debug('getFilesToInject', js, css)
   }
 
-  const contentType = 'text/html';
+  const contentType = 'text/html'
   // Export the middleware
   return async function(ctx, next) {
     if (ctx.method === 'HEAD' || ctx.method === 'GET') {
@@ -126,14 +126,15 @@ exports.scriptsInjectorMiddleware = function(config) {
             ctx.throw(404, `[injector] Html file ${p} not found!`);
           }
 
-          return;
+          return
         }
       }
     }
 
-    await next();
-  };
-};
+    await next()
+  }
+}
 
 // Re-export
-exports.renderScriptsMiddleware = renderScriptsMiddleware;
+module.exports = { renderScriptsMiddleware }
+
