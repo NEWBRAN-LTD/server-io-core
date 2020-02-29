@@ -46,9 +46,15 @@ test(`Testing the replace function`, async t => {
   const html = fsx.readFileSync(
     join(__dirname, 'fixtures', 'demo', 'dist', 'base', 'dummy.html')
   );
-  const result = replaceContent(html.toString(), replaceOptions);
+  const replaceOptions1 = [
+    {
+      target: '<h1>This is a dummy page</h1>',
+      str: join(__dirname, 'fixtures', 'demo', 'text.txt')
+    }
+  ]
+  const result = replaceContent(html.toString(), replaceOptions1);
   const $ = cheerio.load(result);
-  const h2 = $('h2').toArray();
+  const h2 = $('h3').toArray();
 
   t.truthy(h2.length);
 });

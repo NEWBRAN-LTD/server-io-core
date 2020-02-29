@@ -327,6 +327,43 @@ Please note, the `body` option is always inject before the closing tag of `body`
 
 __Also very import, to pass an array of files use `source` and if you want to inject into specific places than use `target` as shown in the examples above__
 
+#### replace (new in 1.3.0)
+
+You can now just replace a piece of string in the html document (only!)
+
+```js
+// same as above
+serverIoCore({
+  webroot: '/path/to/webroot',
+  inject: {
+    replace: [
+      {
+        target: '<h2>I am dummy</h2>',
+        str: '<h2>I am not a dummy</h2>'
+      }
+    ]
+  }
+});
+```
+
+By default it will replace every occurance of the `target`. If you only want to replace the first result, then pass `all:false` to the object in the array. 
+
+You can also pass `file: /path/to/file` and it will try to read the file and replace with the target.
+
+```js
+
+replace: [
+  {
+    target: 'what you want to replace', // REQUIRED,
+    str: 'thing you want to replace',
+    file: '/path/to/the/file/of/content.txt' // if you pass the str then this will get ignore, so only one 
+    all: undefined // unless you specificly pass all:false to turn off global search
+  }
+]
+
+
+```
+
 ### Https
 
 ```js
