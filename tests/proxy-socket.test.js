@@ -1,22 +1,18 @@
 // Do this in a standalone way because the server requirement are different
 const test = require('ava');
 const socketClient = require('socket.io-client');
-const request = require('request');
-const serverIoCore = require('../proxy');
+const http = require('http');
+const httpProxy = require('http-proxy');
+const url = require('url');
+// const serverIoCore = require('../proxy');
 
 const debug = require('debug')('server-io-core:proxy-test');
 
 const proxyServer = require('./fixtures/proxy');
-const namespace = 'behind-the-proxy';
+// const namespace = 'behind-the-proxy';
 
 const frontPort = 8000;
 const proxyPort = 9001;
-
-// Develop here
-
-const http = require('http');
-const httpProxy = require('http-proxy');
-const url = require('url');
 
 test.before(t => {
   let { webserver } = proxyServer(proxyPort);
@@ -96,12 +92,12 @@ test.cb(`Connect to the socket server directly on ${proxyPort}`, t => {
 
 test.cb(`Connect to the http via the proxy server on ${frontPort}`, t => {
   t.plan(1);
-  const res = request(`http://localhost:${frontPort}/test`, (err, res, body) => {
-    if (err) {
-      return debug(`request err`, err);
+  http.get(`http://localhost:${frontPort}/test`, (res) => {
+    if (res.statusCode !== 200) {
+      return debug(`request err`, res);
     }
 
-    debug(body);
+    debug(res);
     t.is(res.statusCode, 200);
     t.end();
   });
