@@ -1,12 +1,13 @@
 // Just setup the server for reuse later
-const serverIoCore = require('../../index');
-const { join } = require('path');
-const _ = require('lodash');
+const serverIoCore = require('../../index')
+const { join } = require('path')
+
 // Return
 module.exports = function(extra = {}) {
   return serverIoCore(
-    _.extend(
+    Object.assign(
       {
+        socket: false,
         debugger: false,
         reload: false,
         open: false,
@@ -14,5 +15,5 @@ module.exports = function(extra = {}) {
       },
       extra
     )
-  );
-};
+  )
+}

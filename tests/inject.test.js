@@ -11,10 +11,6 @@ test.before(t => {
       join(__dirname, 'fixtures', 'demo', 'dist', 'base'),
       join(__dirname, 'fixtures', 'demo', 'dist', 'assets')
     ],
-    open: false,
-    debugger: false,
-    reload: false,
-    socket: false,
     port: 8002,
     inject: {
       insertBefore: false,

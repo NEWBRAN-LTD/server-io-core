@@ -1,12 +1,12 @@
 // New top import for using proxy
-const { createConfiguration } = require('./src/lib/options');
-const { serverIoCore } = require('./src');
-const { resolve } = require('path');
-const { toArray, logutil } = require('./src/lib/utils/');
-const { createProxy } = require('./src/lib/server');
-const openInBrowser = require('./src/lib/utils/open');
+const { createConfiguration } = require('./src/lib/options')
+const { serverIoCore } = require('./src')
+const { resolve } = require('path')
+const { toArray, logutil } = require('./src/lib/utils/')
+const { createProxy } = require('./src/lib/server')
+const openInBrowser = require('./src/lib/utils/open')
 
-const debug = require('debug')('server-io-core:main:proxy');
+const debug = require('debug')('server-io-core:main:proxy')
 
 /*
 We have tried almost every single scenario to try to integrate the proxy
@@ -33,7 +33,7 @@ example
  * @return {boolean} true
  */
 function hasSocketProxy(proxies) {
-  return proxies.filter(proxy => proxy.ws);
+  return proxies.filter(proxy => proxy.ws)
 }
 
 /**
@@ -43,34 +43,34 @@ function hasSocketProxy(proxies) {
  */
 function reconfig(opts) {
   if (opts.port === opts.port0) {
-    throw new Error(`port and port0 can not be the same!`);
+    throw new Error(`port and port0 can not be the same!`)
   }
 
-  debug('options passed', opts);
+  debug('options passed', opts)
 
   // Store for later use
-  const port0 = opts.port0;
-  const port = opts.port;
-  const autoStart = opts.autoStart;
-  const open = opts.open;
-  opts.autoStart = false;
-  opts.open = false;
+  const port0 = opts.port0
+  const port = opts.port
+  const autoStart = opts.autoStart
+  const open = opts.open
+  opts.autoStart = false
+  opts.open = false
   // Swap the port
-  opts.port = port0;
-  const socketProxies = hasSocketProxy(opts.proxies);
+  opts.port = port0
+  const socketProxies = hasSocketProxy(opts.proxies)
   if (!socketProxies.length) {
-    console.error(`There is no socket proxy config, you don't need to call this api!`);
+    console.error(`There is no socket proxy config, you don't need to call this api!`)
   }
 
   const webProxies = opts.proxies
     .filter(proxy => !proxy.ws)
     .map(proxy => {
       if (proxy.host && !proxy.target) {
-        proxy.target = proxy.host; // Swap it to fit the http-proxy naming
+        proxy.target = proxy.host // Swap it to fit the http-proxy naming
       }
 
-      return proxy;
-    });
+      return proxy
+    })
   // Return the new opts
   return {
     opts,
@@ -80,7 +80,7 @@ function reconfig(opts) {
     autoStart,
     socketProxies,
     webProxies
-  };
+  }
 }
 
 /**
@@ -88,20 +88,20 @@ function reconfig(opts) {
  * @return {object} generated methods map
  */
 module.exports = function(config = {}) {
-  const opts0 = createConfiguration(config);
-  opts0.webroot = toArray(opts0.webroot).map(dir => resolve(dir));
-  opts0.__processed__ = true;
+  const opts0 = createConfiguration(config)
+  opts0.webroot = toArray(opts0.webroot).map(dir => resolve(dir))
+  opts0.__processed__ = true
   // New from here onward
-  opts0.__proxied__ = true;
+  opts0.__proxied__ = true
   if (opts0.proxies.length) {
     let { opts, port, port0, open, autoStart, socketProxies, webProxies } = reconfig(
       opts0
-    );
-    debug(`port0: ${port0}`);
-    let { webserver, app, start, stop, io, namespaceInUsed } = serverIoCore(opts);
+    )
+    debug(`port0: ${port0}`)
+    let { webserver, app, start, stop, io, namespaceInUsed } = serverIoCore(opts)
     // Need to create the new start stop methods
-    const startBackServer = start;
-    const stopBackServer = stop;
+    const startBackServer = start
+    const stopBackServer = stop
     // Also need to reconfig the open and the callback
     const frontWebServer = createProxy(
       opts,
@@ -109,31 +109,31 @@ module.exports = function(config = {}) {
       namespaceInUsed,
       socketProxies,
       webProxies
-    );
+    )
     const result = {
       io,
       app,
       webserver,
       start: () => {
-        startBackServer();
+        startBackServer()
         frontWebServer.listen(port, () => {
-          logutil(`start front server on ${port}`);
-          opts.open = open; // Passing the original back
-          openInBrowser(opts);
+          logutil(`start front server on ${port}`)
+          opts.open = open // Passing the original back
+          openInBrowser(opts)
         });
       },
       stop: () => {
-        stopBackServer();
-        frontWebServer.close();
+        stopBackServer()
+        frontWebServer.close()
       }
-    };
+    }
     if (autoStart) {
-      result.start();
+      result.start()
     }
 
     // Return the same name but different context props out
-    return result;
+    return result
   }
 
-  return serverIoCore(config);
-};
+  return serverIoCore(config)
+}

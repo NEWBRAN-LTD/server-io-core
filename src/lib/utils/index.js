@@ -2,41 +2,41 @@
 /**
  * Move some of the functions out of the main.js to reduce the complexity
  */
-const fs = require('fs');
-const os = require('os');
-const path = require('path');
-const { promisify } = require('util');
-const _ = require('lodash');
-const log = require('fancy-log');
-const { defaultHostIp } = require('./constants');
+const fs = require('fs')
+const os = require('os')
+const path = require('path')
+const { promisify } = require('util')
+const _ = require('lodash')
+const log = require('fancy-log')
+const { defaultHostIp } = require('./constants')
 
-const test = process.env.NODE_ENV === 'test';
+const test = process.env.NODE_ENV === 'test'
 
 /**
  * create a promisify version of read file also check before read
  */
 const readAsync = file => {
   if (fs.existsSync(file)) {
-    return promisify(fs.readFile)(file, {encoding: 'utf8'});
+    return promisify(fs.readFile)(file, {encoding: 'utf8'})
   }
-  return Promise.reject(new Error(file + ' not found!'));
-};
+  return Promise.reject(new Error(file + ' not found!'))
+}
 
 /**
  * @return {string} ip address
  */
 const getLocalIp = () => (
   Object.values(os.networkInterfaces()).filter(net => {
-    return net[0].address !== '127.0.0.1';
+    return net[0].address !== '127.0.0.1'
   }).reduce((last, next) => {
-    return next[0].address;
+    return next[0].address
   }, '')
-);
+)
 
 /**
  * @return {boolean} windoze or not
  */
-const isWindoze = () => (os.platform().indexOf('win') === 0);
+const isWindoze = () => (os.platform().indexOf('win') === 0)
 
 /**
  * If's it's windows then need to get the ip address of the network interface
@@ -46,18 +46,18 @@ const isWindoze = () => (os.platform().indexOf('win') === 0);
 const getServingIpforOS = () => {
   const ip = getLocalIp();
   if (isWindoze()) {
-    return [ip, ip];
+    return [ip, ip]
   }
-  return [defaultHostIp, ip];
-};
+  return [defaultHostIp, ip]
+}
 
 // Const debug = process.env.DEBUG;
 // Main
 const logutil = function(...args) {
   if (!test) {
-    Reflect.apply(log, null, args);
+    Reflect.apply(log, null, args)
   }
-};
+}
 
 /**
  * create a random number between two values, for creating a random port number
@@ -66,26 +66,26 @@ const logutil = function(...args) {
  * @return {int} port
  */
 const getRandomInt = (min, max) => {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-};
+  return Math.floor(Math.random() * (max - min + 1)) + min
+}
 
 /**
  * Make sure the supply argument is an array
  */
 const toArray = param => {
   if (param) {
-    return Array.isArray(param) ? param : [param];
+    return Array.isArray(param) ? param : [param]
   }
-  return [];
-};
+  return []
+}
 
 /**
  * @param {mixed} opt
  * @return {boolean} result
  */
 const isString = opt => {
-  return _.isString(opt);
-};
+  return _.isString(opt)
+}
 
 /**
  * Set headers @TODO there is bug here that cause the server not running correctly
@@ -99,40 +99,40 @@ const setHeaders = (config, urlToOpen) => {
       res.setHeader(
         'Access-Control-Allow-Origin',
         isString(config.headers.origin) || (isString(urlToOpen) || '*')
-      );
+      )
     }
     res.setHeader(
       'Access-Control-Request-Method',
       isString(config.headers.requestMethod) || '*'
-    );
+    )
     res.setHeader(
       'Access-Control-Allow-Methods',
       isString(config.headers.allowMethods) || 'GET , POST , PUT , DELETE , OPTIONS'
-    );
+    )
     res.setHeader(
       'Access-Control-Allow-Headers',
       isString(config.headers.allowHeaders) || 'Content-Type, Authorization, Content-Length, X-Requested-With'
-    );
-  };
-};
+    )
+  }
+}
 
 /**
  * For use in debugger / reload client file generator
  */
 const getSocketConnectionConfig = config => {
   let connectionOptions =
-    ", {'force new connection': false , 'transports': ['websocket']}";
+    ", {'force new connection': false , 'transports': ['websocket']}"
   if (typeof config.server === 'object') {
     if (
       config.server.clientConnectionOptions &&
       typeof config.server.clientConnectionOptions === 'object'
     ) {
       connectionOptions =
-        ', ' + JSON.stringify(config.server.clientConnectionOptions);
+        ', ' + JSON.stringify(config.server.clientConnectionOptions)
     }
   }
-  return connectionOptions;
-};
+  return connectionOptions
+}
 
 /**
  * Make sure to pass directories to this method
@@ -141,17 +141,17 @@ const getSocketConnectionConfig = config => {
  * @return {array} fixed paths
  */
 const ensureIsDir = filePaths => {
-  const paths = toArray(filePaths);
+  const paths = toArray(filePaths)
   return _.compact(
     paths.map(d => {
       return fs.existsSync(d)
         ? fs.lstatSync(d).isDirectory()
           ? d
           : path.dirname(d)
-        : false;
+        : false
     })
-  );
-};
+  )
+}
 
 /**
  * The koa ctx object is not returning what it said on the documentation
@@ -162,18 +162,18 @@ const ensureIsDir = filePaths => {
  */
 const headerParser = (req, type) => {
   try {
-    const headers = req.headers.accept.split(',');
+    const headers = req.headers.accept.split(',')
     if (type) {
       return headers.filter(h => {
-        return h === type;
-      });
+        return h === type
+      })
     }
-    return headers;
+    return headers
   } catch(e) {
     // When Chrome dev tool activate the headers become empty
-    return [];
+    return []
   }
-};
+}
 
 /**
  * get document (string) byte length for use in header
@@ -181,36 +181,34 @@ const headerParser = (req, type) => {
  * @return {number} length
  */
 const getDocLen = doc => {
-  return Buffer.byteLength(doc, 'utf8');
-};
+  return Buffer.byteLength(doc, 'utf8')
+}
 
 /**
  * turn callback to promise
  * @param {string} p path to file
  * @return {object} promise to resolve
  */
-const readDocument = p => {
-  return new Promise((resolver, rejecter) => {
+const readDocument = p => new Promise((resolver, rejecter) => {
     fs.readFile(p, {encoding: 'utf8'}, (err, data) => {
       if (err) {
-        return rejecter(err);
+        return rejecter(err)
       }
-      resolver(data);
-    });
-  });
-};
+      resolver(data)
+    })
+  })
+
 
 /**
  * @param {array} files to search
  * @return false on not found
  */
-const searchFileFromFiles = files => {
-  return files
+const searchFileFromFiles = files => files
   .filter(fs.existsSync)
   .reduce((last, next) => {
-    return next;
-  }, null);
-}
+    return next
+  }, null)
+
 
 /**
  * Search for the default index file
@@ -218,15 +216,15 @@ const searchFileFromFiles = files => {
  * @return {string} path to the index file
  */
 const searchIndexFile = config => {
-  const { webroot, index } = config;
-  const webroots = toArray(webroot);
+  const { webroot, index } = config
+  const webroots = toArray(webroot)
   return webroots
     .map(d => [d, index].join('/'))
     .filter(fs.existsSync)
     .reduce((last, next) => {
-      return next;
-    }, null);
-};
+      return next
+    }, null)
+}
 
 /**
  * Double check if its a HTML file
@@ -234,9 +232,9 @@ const searchIndexFile = config => {
  * @return {boolean} or not
  */
 const isHtmlFile = file => {
-  const ext = path.extname(file).toLowerCase();
-  return ext === '.html' || ext === '.htm';
-};
+  const ext = path.extname(file).toLowerCase()
+  return ext === '.html' || ext === '.htm'
+}
 
 /**
  * strip the root slash for the proxy context
@@ -244,19 +242,19 @@ const isHtmlFile = file => {
  * @return {string} output without first slash
  */
 const stripFirstSlash = str => {
-  const first = str.substring(0,1);
+  const first = str.substring(0,1)
   if (first === '/') {
-    return str.substring(1);
+    return str.substring(1)
   }
-  return str;
-};
+  return str
+}
 
 /**
  * make sure there is a slash before the namespace
  * @param {string} str input
  * @return {string} output with slash at the beginning
  */
-const ensureFirstSlash = str => "/" + stripFirstSlash(str);
+const ensureFirstSlash = str => "/" + stripFirstSlash(str)
 
 /**
  * @param {any} value to compare
@@ -264,8 +262,6 @@ const ensureFirstSlash = str => "/" + stripFirstSlash(str);
  * @return {boolean} true found
  */
 const inArray = (value, arr) => !!arr.filter(a => a === value).length
-
-
 
 
 // Export
@@ -289,4 +285,4 @@ module.exports = {
   stripFirstSlash,
   ensureFirstSlash,
   inArray
-};
+}
