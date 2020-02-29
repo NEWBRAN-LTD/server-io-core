@@ -4,7 +4,7 @@
  */
 const _ = require('lodash')
 const { join } = require('path')
-const { getFilesToInject, injectToHtml, tagJs } = require('./files-inject')
+const { getFilesToInject, injectToHtml, tagJs, replaceContent } = require('./files-inject')
 const {
   getFeatureScripts,
   renderScriptsMiddleware
@@ -32,6 +32,7 @@ const getHtmlDocument = function(p, js, css, insertBefore) {
     if (data) {
       return injectToHtml(data, js, css, insertBefore)
     }
+    return data
   })
 }
 
@@ -60,21 +61,19 @@ const searchHtmlDocuments = function({ webroot, p, js, css, insertBefore }) {
  * @return {function} middleware
  * @api public
  */
-exports.scriptsInjectorMiddleware = function(config) {
-  let scripts = [];
+const scriptsInjectorMiddleware = function(config) {
+  let scripts = []
   let features = {
     debugger: config.debugger.enable,
     reload: config.reload.enable,
     inject: config.inject.enable
-  };
+  }
   const { socketIoJs, debuggerJs, stacktraceJsFile, reloadJs } = getFeatureScripts(
     config
   )
 
-  // Debug('inject config %O', config.inject);
-
   if (features.debugger || features.reload) {
-    scripts.push(socketIoJs);
+    scripts.push(socketIoJs)
   }
 
   if (features.debugger) {
@@ -100,30 +99,32 @@ exports.scriptsInjectorMiddleware = function(config) {
   return async function(ctx, next) {
     if (ctx.method === 'HEAD' || ctx.method === 'GET') {
       if (headerParser(ctx.request, contentType)) {
-        const p =
+        const isHtmlDoc =
           ctx.path === '/'
             ? searchIndexFile(config)
             : isHtmlFile(ctx.path)
             ? ctx.path
-            : false;
-        if (p) {
+            : false
+        if (isHtmlDoc) {
           try {
-            debug('use overwrite', ctx.url, ctx.path);
+            debug('use overwrite', ctx.url, ctx.path)
             const doc = await searchHtmlDocuments({
               webroot: config.webroot,
               p: p,
               js: _.compact([files, js]).join(''),
               css: css,
               insertBefore: config.inject.insertBefore
-            });
+            })
+            // @1.3.0 chain to the replace 
+            .then(doc => replaceContent(doc, config.inject.replace))
             /* eslint require-atomic-updates: off */
-            ctx.status = 200;
-            ctx.type = contentType + '; charset=utf8';
-            ctx.length = getDocLen(doc);
-            ctx.body = doc;
+            ctx.status = 200
+            ctx.type = contentType + '; charset=utf8'
+            ctx.length = getDocLen(doc)
+            ctx.body = doc
           } catch (err) {
             debug('get document error', err);
-            ctx.throw(404, `[injector] Html file ${p} not found!`);
+            ctx.throw(404, `[injector] Html file ${p} not found!`)
           }
 
           return
@@ -135,6 +136,6 @@ exports.scriptsInjectorMiddleware = function(config) {
   }
 }
 
-// Re-export
-module.exports = { renderScriptsMiddleware }
+// Export 
+module.exports = { renderScriptsMiddleware, scriptsInjectorMiddleware }
 

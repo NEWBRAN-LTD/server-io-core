@@ -77,14 +77,13 @@ const defaultOptions = {
    *      reload: true
    *    });
    */
-  // @TODO remove cordova option later, there is no use anymore
-  cordova: false, // @2018-08-20 add this option to fake a cordova.js file
   inject: {
     enable: false,
     insertBefore: true,
     target: {}, // List of files to inject with head or body
     source: [], // List of files to get inject
     options: {}, // Reversed for future use
+    replace: [], // @1.3.0 a tag to replace with a string
     processor: args => args
   },
   // Client reload - default TRUE
@@ -112,16 +111,9 @@ const defaultOptions = {
     broadcast: false,
     client: true, // Allow passing a configuration to overwrite the client
     server: true // Allow passing configuration - see middleware.js for more detail
-  },
-  // @TODO remove later no longer support
-  mock: {
-    enable: false
-  },
-  serverReload: {
-    enable: false
   }
-};
-const arraySource = ['middlewares', 'proxies'];
+}
+const arraySource = ['middlewares', 'proxies']
 // Export just one function
 module.exports = {
   defaultOptions,
@@ -132,6 +124,6 @@ module.exports = {
       defaultProperties,
       arraySource,
       options
-    );
+    )
   }
-};
+}

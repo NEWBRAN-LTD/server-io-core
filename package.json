@@ -9,8 +9,8 @@
     "cli.js"
   ],
   "scripts": {
-    "test": "ava --verbose",
-    "devtest": "DEBUG=server-io-core:test* ava --verbose",
+    "test": "ava",
+    "devtest": "DEBUG=server-io-core:test* ava",
     "cli": "DEBUG=server-io-core* node ./cli",
     "pretest": "eslint . --fix",
     "precommit": "lint-staged",
@@ -35,7 +35,7 @@
     "development",
     "server"
   ],
-  "author": "Joel Chu <joelckchu@gmail.com>",
+  "author": "Joel Chu <joelchu@foxmail.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://gitlab.com/newbranltd/server-io-core/issues"
