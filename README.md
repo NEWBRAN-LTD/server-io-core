@@ -1,12 +1,22 @@
 # server-io-core 
 
 ```sh
-npm install server-io-core --save-dev
+$ npm install server-io-core --save-dev
 ```
 
-[中文使用手册](https://gitlab.com/newbranltd/server-io-core/blob/master/README-cn.md)
+```sh
+$ npm install --global server-io-core 
+$ server-io-core /path/to/your/web/root
 
-[English Manual](https://gitlab.com/newbranltd/server-io-core/blob/master/README-en.md)
+```
+
+
+
+## Documentations 
+
+[中文使用手册](https://gitlab.com/newbranltd/server-io-core/blob/master/_CN.md)
+
+[English Manual](https://gitlab.com/newbranltd/server-io-core/blob/master/_EN.md)
 
 ---
 
