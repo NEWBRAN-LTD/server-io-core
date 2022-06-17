@@ -25,7 +25,7 @@ const defaultOptions = {
    */
   development: true,
   host: getServingIpforOS(), // @2018-08-15 use the ip address by default
-  port: 8000,
+  port: 8000, // try a random port and see what happens
   port0: 8001,
   // Path: '/', // @2018-07-31 this no longer in use
   webroot: path.join(process.cwd(), 'app'),
@@ -38,11 +38,12 @@ const defaultOptions = {
   middlewares: [],
   favicon: null, // Pass a string path then we search for favicon, false disable it
   // Middleware: Proxy
-  // For possible options, see:
-  // https://github.com/chimurai/http-proxy-middleware
-  // replace with the `http-proxy-middleware`
-  // @2018-03-19 it was just an array but some how the lodash.merge turns an
-  // object into an array so when we call it, it couldn't tell
+  // @NOTE 2022-06-17
+  // there is one way to fix the proxy with socket
+  // but require a complete re-engineer of how this app start 
+  // basically if we want to do proxy, we actually run the proxy server first 
+  // then our own dev server run on a random port then from the front port proxy back into it 
+  // then the proxy will deal with other locations as well 
   proxies: [],
   proxyTimeout: 5000, // This is actually useless
   // Stock certicates @TODO combine this together

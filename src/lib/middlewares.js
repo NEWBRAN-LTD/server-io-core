@@ -41,10 +41,13 @@ module.exports = function(app, config) {
   // Properties
   let middlewares = [bodyparser()];
   // Start adding middlewares
+  /* remove the noCache because it keeps complaint and complaint 
+    and if you look at the source code, its beyound stupid!
+    also if I chanage to their new noCache - it's broken 
   if (config.development) {
     middlewares.push(helmet.noCache());
   }
-
+  */
   // Adding the favicon middleware
   if (config.favicon !== false) {
     middlewares.push(faviconMiddleware(config));

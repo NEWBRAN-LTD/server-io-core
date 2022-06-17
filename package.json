@@ -10,6 +10,7 @@
   ],
   "scripts": {
     "test": "ava",
+    "prepublishOnly": "nyc ava",
     "devtest": "DEBUG=server-io-core:test* ava",
     "cli": "DEBUG=server-io-core* node ./cli",
     "__pretest__": "eslint . --fix",
@@ -27,7 +28,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@gitlab.com/newbranltd/server-io-core.git"
+    "url": "git+ssh://git@github.com/NEWBRAN-LTD/server-io-core.git"
   },
   "keywords": [
     "Koa",
@@ -39,44 +40,44 @@
   "author": "Joel Chu <joelchu@foxmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://gitlab.com/newbranltd/server-io-core/issues"
+    "url": "https://github.com/NEWBRAN-LTD/server-io-core/issues"
   },
-  "homepage": "https://gitlab.com/newbranltd/server-io-core#README",
+  "homepage": "https://github.com/NEWBRAN-LTD/server-io-core#README",
   "dependencies": {
-    "chalk": "^3.0.0",
-    "cheerio": "^1.0.0-rc.3",
-    "chokidar": "^3.3.1",
-    "fancy-log": "^1.3.3",
-    "fs-extra": "^8.1.0",
-    "glob": "^7.1.6",
-    "kefir": "^3.8.6",
-    "koa": "^2.11.0",
-    "koa-bodyparser": "^4.2.1",
-    "koa-helmet": "^5.2.0",
+    "chalk": "^5.0.1",
+    "cheerio": "^1.0.0-rc.11",
+    "chokidar": "^3.5.3",
+    "fancy-log": "^2.0.0",
+    "fs-extra": "^10.1.0",
+    "glob": "^8.0.3",
+    "kefir": "^3.8.8",
+    "koa": "^2.13.4",
+    "koa-bodyparser": "^4.3.0",
+    "koa-helmet": "^6.1.0",
     "koa-nginx": "^1.1.3",
-    "koa-send": "^5.0.0",
-    "lodash": "^4.17.15",
-    "meow": "^6.0.1",
-    "open": "^7.0.3",
-    "socket.io": "^2.3.0",
-    "socket.io-client": "^2.3.0",
+    "koa-send": "^5.0.1",
+    "lodash": "^4.17.21",
+    "meow": "^10.1.2",
+    "open": "^8.4.0",
+    "socket.io": "^4.5.1",
+    "socket.io-client": "^4.5.1",
     "stacktrace-js": "^2.0.2"
   },
   "devDependencies": {
-    "ava": "^3.5.0",
-    "debug": "^4.1.1",
-    "eslint": "^6.8.0",
-    "eslint-config-prettier": "^6.10.0",
-    "eslint-config-xo": "^0.29.1",
-    "eslint-plugin-prettier": "^3.1.2",
+    "ava": "^4.3.0",
+    "debug": "^4.3.4",
+    "eslint": "^8.17.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-xo": "^0.41.0",
+    "eslint-plugin-prettier": "^4.0.0",
     "gulp": "^4.0.2",
-    "husky": "^4.2.3",
-    "koa-socket-2": "^1.2.0",
-    "lint-staged": "^10.0.8",
-    "nyc": "^15.0.0",
-    "prettier": "^1.19.1",
+    "husky": "^8.0.1",
+    "koa-socket-2": "^2.0.0",
+    "lint-staged": "^13.0.2",
+    "nyc": "^15.1.0",
+    "prettier": "^2.7.1",
     "superkoa": "^1.0.3",
-    "through2": "^3.0.1"
+    "through2": "^4.0.2"
   },
   "lint-staged": {
     "*.js": [
