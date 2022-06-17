@@ -1,4 +1,5 @@
 // Do this in a standalone way because the server requirement are different
+// @TODO this is for further develop the V.2 proxy features
 const test = require('ava');
 const socketClient = require('socket.io-client');
 const http = require('http');
@@ -77,43 +78,52 @@ test.after(t => {
   // T.context.stop();
 });
 
-test.cb(`Connect to the socket server directly on ${proxyPort}`, t => {
-  const client = socketClient(`ws://localhost:${proxyPort}`);
+test(`Connect to the socket server directly on ${proxyPort}`, async (t) => {
   t.plan(1);
-  client.on('connect', () => {
-    debug('connected');
-    client.on('news', msg => {
-      debug('news msg', msg);
-      t.pass();
-      t.end();
-    });
-  });
-});
-
-test.cb(`Connect to the http via the proxy server on ${frontPort}`, t => {
-  t.plan(1);
-  http.get(`http://localhost:${frontPort}/test`, (res) => {
-    if (res.statusCode !== 200) {
-      return debug(`request err`, res);
-    }
-
-    debug(res);
-    t.is(res.statusCode, 200);
-    t.end();
-  });
-});
-
-test.cb(
-  `It should able to connect to the socket server via the proxy port ${frontPort}`,
-  t => {
-    t.plan(1);
-    const client = socketClient(`ws://localhost:${frontPort}/some-namespace`);
+  return new Promise((resolver) => {
+    const client = socketClient(`ws://localhost:${proxyPort}`);
+    
     client.on('connect', () => {
-      debug(`connected on ${frontPort}`);
+      debug('connected');
       client.on('news', msg => {
-        t.truthy(msg);
-        t.end();
+        debug('news msg', msg);
+        t.pass();
+        // end 
+        resolver(true)
       });
     });
+  }) 
+});
+
+test(`Connect to the http via the proxy server on ${frontPort}`, async (t) => {
+  t.plan(1);
+  return new Promise((resolver) => {
+    http.get(`http://localhost:${frontPort}/test`, (res) => {
+      if (res.statusCode !== 200) {
+        return debug(`request err`, res);
+      }
+      debug(res);
+      t.is(res.statusCode, 200);
+      // end 
+      resolver(true)
+    });
+  })
+});
+
+test(
+  `It should able to connect to the socket server via the proxy port ${frontPort}`,
+  async (t) => {
+    t.plan(1);
+    return new Promise((resolver) => {
+      const client = socketClient(`ws://localhost:${frontPort}/some-namespace`);
+      client.on('connect', () => {
+        debug(`connected on ${frontPort}`);
+        client.on('news', msg => {
+          t.truthy(msg);
+          // end 
+          resolver(true)
+        });
+      });
+    })
   }
 );
