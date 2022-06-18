@@ -5,7 +5,7 @@ import { isString, isWindoze } from './common.mjs'
 import {
   DEFAULT_HOST_IP,
   DEFAULT_HOSTNAME
-} from '../lib/constants'
+} from '../lib/constants.mjs'
 
 const debug = getDebug('open')
 

@@ -3,7 +3,6 @@ import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import { promisify } from 'node:util'
-import _isString from 'lodash-es/isString'
 import log from 'fancy-log'
 import { defaultHostIp } from '../lib/constants.mjs'
 
@@ -81,7 +80,7 @@ export const toArray = param => {
  * @return {boolean} result
  */
 export const isString = opt => {
-  return _isString(opt)
+  return typeof opt === 'string'
 }
 
 /**

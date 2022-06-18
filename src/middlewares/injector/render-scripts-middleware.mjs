@@ -4,14 +4,15 @@
  */
 import fs from 'node:fs'
 import { join } from 'node:path'
-import * as _ from 'lodash-es'
+import { template } from 'lodash'
 import chalk from 'chalk'
 import {
   logutil,
   getSocketConnectionConfig,
   readDocument,
   getDocLen,
-  getDebug
+  getDebug,
+  isString
 } from '../../utils/index.mjs'
 import {
   stacktraceName,
@@ -123,7 +124,7 @@ export async function hasExtraVirtualOverwrite (ctx, config) {
         return true
       }
 
-      if (_.isString(config.cordova)) {
+      if (isString(config.cordova)) {
         try {
           success(ctx, await readDocument(config.cordova))
           return true
@@ -170,7 +171,7 @@ export function renderScriptsMiddleware (config) {
             const body = await readDocument(
               join(__dirname, '..', 'reload', 'reload.tpl')
             ).then(data => {
-              const clientFileFn = _.template(data.toString())
+              const clientFileFn = template(data.toString())
               const connectionOptions = getSocketConnectionConfig(config)
               return getCacheVer(
                 clientFileFn({
@@ -206,7 +207,7 @@ export function renderScriptsMiddleware (config) {
                 typeof config.debugger.client === 'object' && config.debugger.client.ping
                   ? 'true'
                   : 'false'
-              const serveDataFn = _.template(data)
+              const serveDataFn = template(data)
               const connectionOptions = getSocketConnectionConfig(config)
               return getCacheVer(
                 serveDataFn({

@@ -2,7 +2,7 @@
 /**
  * The stock watcher without bacon.js wrapper
  */
-import * as _ from 'lodash-es'
+import { extend } from 'lodash'
 import chokidar from 'chokidar'
 import { ensureIsDir, getDebug } from '../../utils/index.mjs'
 import { DEFAULT_DELAY } from '../../lib/constants.mjs'
@@ -24,7 +24,7 @@ export default function stockWatcher (config, callback) {
   try {
     w = chokidar.watch(
       directories,
-      _.extend(
+      extend(
         {
           ignoreInitial: true,
           interval: delay

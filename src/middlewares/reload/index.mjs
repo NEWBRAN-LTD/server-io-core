@@ -1,5 +1,5 @@
 // watcher
-import * as _ from 'lodash-es'
+import { extend } from 'lodash'
 import chalk from 'chalk'
 import { logutil, getDebug } from '../../utils/index.mjs'
 import { EVENT_NAME } from '../../lib/constants.mjs'
@@ -16,7 +16,7 @@ const debug = getDebug('reload')
  * @return {function} unwatch callback
  */
 export default function reload (filePaths, io, config) {
-  const watcherCb = watcher(_.extend({ filePaths }, config))
+  const watcherCb = watcher(extend({ filePaths }, config))
   const props = watcherCb(true)
   // First setup the socket io namespace
   // debug('[reload][setup]', 'setup namespace', config.namespace);

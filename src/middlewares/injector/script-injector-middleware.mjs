@@ -1,6 +1,6 @@
 // Script injector middleware
 import { join } from 'node:path'
-import * as _ from 'lodash-es'
+import { compact } from 'lodash'
 import {
   getFilesToInject,
   injectToHtml,
@@ -98,7 +98,7 @@ export function scriptsInjectorMiddleware (config) {
   const contentType = 'text/html'
   // Export the middleware
   return async function middleware (ctx, next) {
-    if (ctx.method === 'HEAD' || ctx.method === 'GET') {
+    if (ctx.method === 'GET') {
       if (headerParser(ctx.request, contentType)) {
         const isHtmlDoc =
           ctx.path === '/'
@@ -112,7 +112,7 @@ export function scriptsInjectorMiddleware (config) {
             const doc = await searchHtmlDocuments({
               webroot: config.webroot,
               p: isHtmlDoc,
-              js: _.compact([files, js]).join(''),
+              js: compact([files, js]).join(''),
               css: css,
               insertBefore: config.inject.insertBefore
             })
@@ -125,7 +125,7 @@ export function scriptsInjectorMiddleware (config) {
             ctx.body = doc
           } catch (err) {
             debug('get document error', err)
-            ctx.throw(404, `[injector] Html file ${p} not found!`)
+            ctx.throw(404, '[injector] Html file not found!')
           }
           return
         }

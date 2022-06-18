@@ -2,12 +2,13 @@
  * Take out a bunch of functions from the original debugger setup
  */
 import util from 'node:util'
-import * as _ from 'lodash-es'
+import { forEach, isString, isObject } from 'lodash'
 import chalk from 'chalk'
 import { logutil } from '../../utils/index.mjs'
 
 const keys = ['browser', 'location']
 const lb = chalk.white('-'.repeat(90))
+const colorTable = { debug: 'red', info: 'magenta', warning: 'yellow' }
 
 /**
  * Just getting some color configuration
@@ -22,19 +23,13 @@ export function getColor (data) {
   if (str === dc) {
     return str // Default
   }
-  switch (str) {
-    case 'debug':
-      return 'red'
-    case 'info':
-      return 'magenta'
-    case 'warning':
-      return 'yellow'
-    default:
-      if (chalk[str]) {
-        return str
-      }
-      return dc
+  if (colorTable[str]) {
+    return table[str]
   }
+  if (chalk[str]) {
+    return str
+  }
+  return dc
 }
 
 // Ditch the npm:table
@@ -68,18 +63,18 @@ export const displayError = e => {
     }
   })
   const _msg = parseObj(e.msg)
-  if (_.isString(_msg)) {
+  if (isString(_msg)) {
     rows.push([chalk.white('MESSAGE:'), chalk[color](e.msg)].join(' '))
   } else {
     let toShow
-    const msgToArr = _.isString(_msg) ? parseObj(_msg) : _msg
+    const msgToArr = isString(_msg) ? parseObj(_msg) : _msg
     if (Array.isArray(msgToArr)) {
       rows.push(chalk.white('MESSAGE(S):'))
       msgToArr.forEach(a => {
         if (typeof a === 'object') {
           rows.push(lb)
-          _.forEach(a, (v, k) => {
-            toShow = _.isObject(v) ? util.inspect(v, false, null) : v
+          forEach(a, (v, k) => {
+            toShow = isObject(v) ? util.inspect(v, false, null) : v
             rows.push([chalk.white(k + ':'), chalk[color](toShow)].join(' '))
           })
         } else {
@@ -87,9 +82,9 @@ export const displayError = e => {
         }
       })
       rows.push([lb, 'END'].join(' '))
-    } else if (_.isObject(_msg)) {
+    } else if (isObject(_msg)) {
       rows.push(lb)
-      _.forEach(_msg, (v, k) => {
+      forEach(_msg, (v, k) => {
         rows.push([chalk.white(k + ':'), chalk[color](v)].join(' '))
       })
       rows.push([lb + 'END'].join(' '))

@@ -1,13 +1,10 @@
 /**
  * Port from the original gulp-webserver
  */
-import * as _ from 'lodash-es'
+import { merge, extend, get } from 'lodash'
 import { toArray } from '../common.mjs'
 import { version } from '../../../package.json'
 import { WS_PROXY } from '../../lib/constants.mjs'
-
-const { merge, extend } = _
-
 /**
  * Make sure the incoming parameter to be array when it's coming out
  * @param {array} arraySource list of keys to process
@@ -19,7 +16,7 @@ const ensureArrayProps = (arraySource, options) => {
     .map(key => {
       // @2019-05-07 if we pass it as a path
       if (key.indexOf('.') > -1) {
-        const value = _.get(options, key)
+        const value = get(options, key)
         const parts = key.split('.')
         const objKey = parts[0]
         const propKey = parts[1]
@@ -131,7 +128,6 @@ export default function enableMiddlewareShorthand (
       config[prop] = merge({}, originalDefaults[prop], { enable: false })
     }
   }
-
   // Here we add things that we don't want to get overwritten
   config.version = version
   // Change from sessionId to timestamp, just for reference not in use anywhere

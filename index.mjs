@@ -2,9 +2,9 @@
 import { resolve } from 'node:path'
 import { inspect } from 'node:util'
 import { createConfiguration } from './src/utils/config/index.mjs'
-import serverIoCore from './src'
-import { toArray, getDebug } from './src/utils'
-import merge from 'lodash-es/merge'
+import serverIoCore from './src/index.mjs'
+import { toArray, getDebug } from './src/utils/index.mjs'
+import { merge } from 'lodash'
 
 const debug = getDebug('index')
 
