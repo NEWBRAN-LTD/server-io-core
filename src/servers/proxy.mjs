@@ -7,7 +7,7 @@ import httpProxyLib from 'http-proxy'
 import http from 'node:http'
 import url from 'node:url'
 import getDebug from '../utils/debug.mjs'
-import { DEFAULT_KEY, INTERNAL_PORT, DEFAULT_HOST } from '../lib/constants'
+import { DEFAULT_KEY, INTERNAL_PORT, DEFAULT_HOST } from '../lib/constants.mjs'
 // Vars
 const debug = getDebug('servers:proxy')
 // Main - async is not right too, this should return an observable

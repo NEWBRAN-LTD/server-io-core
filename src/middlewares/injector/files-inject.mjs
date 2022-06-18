@@ -4,7 +4,7 @@ import cheerio from 'cheerio'
 import glob from 'glob'
 import fsx from 'fs-extra'
 import chalk from 'chalk'
-import { logutil, getDebug } from '../../utils'
+import { logutil, getDebug } from '../../utils/index.mjs'
 
 const debug = getDebug('files-inject')
 

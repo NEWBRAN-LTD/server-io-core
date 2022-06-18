@@ -2,8 +2,8 @@
  * this register all the required middlewares
  */
 import bodyParser from 'koa-bodyparser'
-import { scriptsInjectorMiddleware, renderScriptsMiddleware } from './injector'
-import faviconMiddleware from './favicon'
+import { scriptsInjectorMiddleware, renderScriptsMiddleware } from './injector/index.mjs'
+import faviconMiddleware from './favicon/index.mjs'
 // main
 export default function registerMiddlewares (app, config) {
   let addDebugger = false

@@ -1,3 +1,3 @@
 // injector main export
-export { renderScriptsMiddleware } from './render-scripts-middleware'
-export { scriptsInjectorMiddleware } from './script-injector-middleware'
+export { renderScriptsMiddleware } from './render-scripts-middleware.mjs'
+export { scriptsInjectorMiddleware } from './script-injector-middleware.mjs'

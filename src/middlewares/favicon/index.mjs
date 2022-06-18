@@ -1,7 +1,7 @@
 // Favicon middleware
 import { join, resolve } from 'node:path'
 import { existsSync, readFileSync } from 'fs-extra'
-import { MAX_AGE, MAX_MAX_AGE } from '../../lib/constants'
+import { MAX_AGE, MAX_MAX_AGE } from '../../lib/constants.mjs'
 // Main - now its all name export
 export function faviconMiddlewareGenerator (config) {
   let icon

@@ -5,7 +5,7 @@ import path from 'node:path'
 import { promisify } from 'node:util'
 import _isString from 'lodash-es/isString'
 import log from 'fancy-log'
-import { defaultHostIp } from '../lib/constants'
+import { defaultHostIp } from '../lib/constants.mjs'
 
 const IS_TEST = process.env.NODE_ENV === 'test'
 

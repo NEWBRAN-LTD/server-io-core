@@ -2,7 +2,7 @@
  * Modified from koa-static to allow us intercept the content and overwritten them
  */
 import send from 'koa-send'
-import { toArray, getDebug } from '../utils'
+import { toArray, getDebug } from '../utils/index.mjs'
 const debug = getDebug('static-serve')
 /**
  * Customize version of koa-static

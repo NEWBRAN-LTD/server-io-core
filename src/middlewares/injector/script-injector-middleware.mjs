@@ -9,7 +9,7 @@ import {
 } from './files-inject.mjs'
 import {
   getFeatureScripts
-} from './render-scripts-middleware'
+} from './render-scripts-middleware.mjs'
 import {
   searchIndexFile,
   isHtmlFile,
@@ -18,7 +18,7 @@ import {
   readDocument,
   searchFileFromFiles,
   getDebug
-} from '../../utils'
+} from '../../utils/index.mjs'
 const debug = getDebug('inject')
 
 /**

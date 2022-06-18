@@ -4,7 +4,7 @@
 import util from 'node:util'
 import * as _ from 'lodash-es'
 import chalk from 'chalk'
-import { logutil } from '../../utils'
+import { logutil } from '../../utils/index.mjs'
 
 const keys = ['browser', 'location']
 const lb = chalk.white('-'.repeat(90))

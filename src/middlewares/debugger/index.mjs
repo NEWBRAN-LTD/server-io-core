@@ -3,7 +3,7 @@
  */
 import util from 'node:util'
 import chalk from 'chalk'
-import { logutil, getDebug } from '../../utils'
+import { logutil, getDebug } from '../../utils/index.mjs'
 import { table, parseObj, displayError } from './helpers.mjs'
 const debug = getDebug('debugger')
 

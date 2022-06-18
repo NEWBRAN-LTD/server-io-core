@@ -2,16 +2,16 @@
 import Koa from 'koa'
 import chalk from 'chalk'
 // the 3 main servers
-import webserverGenerator from './webserver'
-import staticServe from './static-serve'
-import socketServer from './socket-server'
+import webserverGenerator from './webserver.mjs'
+import staticServe from './static-serve.mjs'
+import socketServer from './socket-server.mjs'
 // the others
-import debuggerServer from '../middlewares/debugger'
-import clientReload from '../middlewares/reload'
+import debuggerServer from '../middlewares/debugger/index.mjs'
+import clientReload from '../middlewares/reload/index.mjs'
 import openInBrowser from '../utils/open.mjs'
 // middlewares
-import middlewaresHandler from '../middlewares'
-import { logutil, getDebug } from '../utils'
+import middlewaresHandler from '../middlewares/index.mjs'
+import { logutil, getDebug } from '../utils/index.mjs'
 const debug = getDebug('serverIoCore')
 // main
 export default async function serverIoCoreInternal (config) {

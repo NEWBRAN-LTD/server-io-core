@@ -5,8 +5,8 @@ import fs from 'fs:node'
 import http from 'http:node'
 import https from 'https:node'
 import chalk from 'chalk'
-import { logutil } from '../utils'
-import { DEFAULT_PORT, DEFAULT_HOST } from '../lib/constants'
+import { logutil } from '../utils/index.mjs'
+import { DEFAULT_PORT, DEFAULT_HOST } from '../lib/constants.mjs'
 // According to https://github.com/visionmedia/supertest/issues/111
 // Put this here to make sure it works everywhere
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0

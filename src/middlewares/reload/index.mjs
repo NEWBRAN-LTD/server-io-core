@@ -1,9 +1,9 @@
 // watcher
 import * as _ from 'lodash-es'
 import chalk from 'chalk'
-import { logutil, getDebug } from '../../utils'
+import { logutil, getDebug } from '../../utils/index.mjs'
 import { EVENT_NAME } from '../../lib/constants.mjs'
-import watcher from '../watcher'
+import watcher from '../watcher/index.mjs'
 const debug = getDebug('reload')
 /**
  * @v1.5.0 we create our own reload script and remove the old reload.js

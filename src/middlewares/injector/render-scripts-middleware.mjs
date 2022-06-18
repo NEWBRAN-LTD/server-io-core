@@ -12,13 +12,13 @@ import {
   readDocument,
   getDocLen,
   getDebug
-} from '../../utils'
+} from '../../utils/index.mjs'
 import {
   stacktraceName,
   contentType,
   dummyJs,
   cordovaJs
-} from '../../lib/constants'
+} from '../../lib/constants.mjs'
 
 const debug = getDebug('render-scripts')
 

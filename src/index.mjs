@@ -1,9 +1,9 @@
 // V.2 using ESM
 // with a cjs build for other,let's give it a try
-import serverIoCoreInternal from './servers'
+import serverIoCoreInternal from './servers/index.mjs'
 import createPublicProxy from './servers/proxy.mjs'
-import { INTERNAL_PORT } from './lib/constants'
-import { getDebug } from './utils'
+import { INTERNAL_PORT } from './lib/constants.mjs'
+import { getDebug } from './utils/index.mjs'
 const debug = getDebug('main')
 // Main
 export default async function serverIoCore (config = {}) {
