@@ -13,8 +13,6 @@
     "prepublishOnly": "nyc ava",
     "devtest": "DEBUG=server-io-core:test* ava",
     "cli": "DEBUG=server-io-core* node ./cli",
-    "__pretest__": "eslint . --fix",
-    "__precommit__": "lint-staged",
     "demo": "DEBUG=server-io-core* node ./tests/fixtures/demo",
     "test:option": "DEBUG=server-io-core* ava ./tests/options.test.js",
     "test:favicon": "ava ./tests/favicon.test.js",
@@ -68,54 +66,14 @@
     "ava": "^4.3.0",
     "debug": "^4.3.4",
     "eslint": "^8.18.0",
-    "eslint-config-prettier": "^8.5.0",
     "eslint-config-xo": "^0.41.0",
-    "eslint-plugin-prettier": "^4.0.0",
     "gulp": "^4.0.2",
     "husky": "^8.0.1",
     "koa-socket-2": "^2.0.0",
-    "lint-staged": "^13.0.2",
     "nyc": "^15.1.0",
     "prettier": "^2.7.1",
     "superkoa": "^1.0.3",
     "through2": "^4.0.2"
-  },
-  "lint-staged": {
-    "*.js": [
-      "eslint --fix",
-      "git add"
-    ],
-    "*.json": [
-      "prettier --write",
-      "git add"
-    ]
-  },
-  "eslintConfig": {
-    "extends": [
-      "xo",
-      "prettier"
-    ],
-    "env": {
-      "jest": true,
-      "node": true
-    },
-    "rules": {
-      "prettier/prettier": [
-        "error",
-        {
-          "singleQuote": true,
-          "printWidth": 90
-        }
-      ]
-    },
-    "plugins": [
-      "prettier"
-    ],
-    "overrides": [
-      {
-        "files": "src/**/*.js"
-      }
-    ]
   },
   "ava": {
     "files": [

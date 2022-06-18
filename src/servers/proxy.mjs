@@ -1,22 +1,22 @@
 /*
-This will be the front that facing the public 
+This will be the front that facing the public
 Then we proxy the connection to the service behind it,
-This server will get call last in the stack - waiting for other service started first 
+This server will get call last in the stack - waiting for other service started first
 */
 import httpProxyLib from 'http-proxy'
 import http from 'node:http'
 import url from 'node:url'
 import getDebug from '../utils/debug.mjs'
-// vars 
+// Vars
 const debug = getDebug('servers:proxy')
 
-// main - async is not right too, this should return an observable 
+// Main - async is not right too, this should return an observable
 export default async function createProxyServer(config) {
-  // @NOTE the config is already clear by the time it gets here 
-  
+  // @NOTE the config is already clear by the time it gets here
 
-  // this is not right yet, we should run through the config 
-  // to see how many things we need to proxy first 
+
+  // this is not right yet, we should run through the config
+  // to see how many things we need to proxy first
   const httpProxy = httpProxyLib.createProxyServer({})
   const socketProxy = httpProxyLib.createProxyServer({
     target: {
@@ -27,7 +27,7 @@ export default async function createProxyServer(config) {
   /*
     // for each proxy needs to have their own error handler
     httpProxy.on('error', e => {
-      // handle the error 
+      // handle the error
     })
   */
   // now construct the public facing server
@@ -40,18 +40,18 @@ export default async function createProxyServer(config) {
       })
     })
     .listen(publicPortNum, () => {
-      // random bind a port 
+      // random bind a port
       if (publicPortNum === 0) {
-        const p = publicFacingServer.address().port 
+        const p = publicFacingServer.address().port
         // @TODO let the outside know the port number
       }
     })
 
-  // proxy to the websocket 
+  // proxy to the websocket
   publicFacingServer.on('upgrade', (req, socket, head) => {
     const urlObj = url.parse(req.url)
     debug(`handle the upgrade event`, urlObj)
-    debug('head', head.toString()) 
+    debug('head', head.toString())
     // just pass them on
     socketProxy.ws(req, socket, head)
   })
