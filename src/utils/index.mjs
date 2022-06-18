@@ -1,5 +1,5 @@
-import getDebug from './debug'
-import openInBrowser from './open'
+import getDebug from './debug.mjs'
+import openInBrowser from './open.mjs'
 export {
   readAsync,
   getLocalIp,
