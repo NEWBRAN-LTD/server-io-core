@@ -6,21 +6,21 @@ import { toArray, getDebug } from '../utils'
 const debug = getDebug('static-serve')
 /**
  * Customize version of koa-static
+ * @param {object} app the Koa instance
  * @param {object} config full options
  * @return {function} to call
  * @api public
  */
-export default function serverStatic (config) {
+export default function serverStatic (app, config) {
   const dirs = toArray(config.webroot)
   const opts = { defer: true }
   if (config.index) {
     opts.index = config.index
   }
-  return app => {
-    dirs.forEach(dir => {
-      app.use(serve(dir, opts, config))
-    })
-  }
+  // V.2 we just run through it
+  dirs.forEach(dir => {
+    app.use(serve(dir, opts, config))
+  })
 }
 /**
  * Serve static files from `root`.

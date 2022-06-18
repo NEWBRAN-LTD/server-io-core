@@ -22,3 +22,6 @@ export const DEFAULT_WAIT = 5000
 // we use random port
 export const DEFAULT_PORT = 0
 export const DEFAULT_HOST = 'localhost'
+
+export const DEFAULT_KEY = '__default__'
+export const INTERNAL_PORT = '__internal_port__'

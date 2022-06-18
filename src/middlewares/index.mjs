@@ -37,13 +37,14 @@ export default function registerMiddlewares (app, config) {
   } else {
     middlewares.push(config.middlewares)
   }
+  const ctn = middlewares.length
   // Now inject the middlewares
-  if (middlewares.length) {
+  if (ctn) {
     // But the problem with Koa is the ctx.state is not falling through
     // all the way, so we might need to add the middleware in stack
     // with app.use.apply(app, [middlewares_sub_array]);
     middlewares.forEach(m => app.use(m))
   }
-  // should return what?
-  return {}
+  // Just return the number of middlewares
+  return ctn
 }

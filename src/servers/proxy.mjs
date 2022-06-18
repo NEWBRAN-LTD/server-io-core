@@ -7,56 +7,103 @@ import httpProxyLib from 'http-proxy'
 import http from 'node:http'
 import url from 'node:url'
 import getDebug from '../utils/debug.mjs'
+import { DEFAULT_KEY, INTERNAL_PORT, DEFAULT_HOST } from '../lib/constants'
 // Vars
 const debug = getDebug('servers:proxy')
-
 // Main - async is not right too, this should return an observable
-export default async function createProxyServer (config) {
+export default async function createPublicProxy (config) {
   // @NOTE the config is already clear by the time it gets here
-
-
   // this is not right yet, we should run through the config
   // to see how many things we need to proxy first
+  const publicPortNum = config.port
+  const hostname = Array.isArray(config.host) ? config.host[0] : config.host
+  const internalPort = config[INTERNAL_PORT]
+  const httpProxies = {}
+  const wsProxies = {}
+  // these proxy to our internal servers
   const httpProxy = httpProxyLib.createProxyServer({})
-  const socketProxy = httpProxyLib.createProxyServer({
-    target: {
-      host: 'localhost',
-      port: websocketDestPort
-    }
-  })
-  /*
-    // for each proxy needs to have their own error handler
-    httpProxy.on('error', e => {
-      // handle the error
+  if (config.socketIsEnabled) {
+    // this ws proxy point back to our own internal socket server
+    wsProxies[DEFAULT_KEY] = httpProxyLib.createProxyServer({
+      target: {
+        host: DEFAULT_HOST,
+        port: internalPort
+      }
     })
-  */
+  }
+  // prepare the routes
+  if (config.proxies.length) {
+    config.proxies.forEach(proxyConfig => {
+      const { type } = proxyConfig
+      if (type === 'http') {
+        const { from, target } = proxyConfig
+        if (from && target) {
+          httpProxies[from] = [
+            target,
+            httpProxyLib.createProxyServer({})
+          ]
+        } else {
+          debug('mis-config http proxy', proxyConfig)
+        }
+      } else if (type === 'ws') {
+        const { from, host, port } = proxyConfig
+        if (host && port) {
+          wsProxies[from] = httpProxyLib.createProxyServer({
+            target: { host, port }
+          })
+        } else {
+          debug('mis-config ws proxy', proxyConfig)
+        }
+      } else {
+        debug('unknown proxy config', config)
+      }
+    })
+  }
   // now construct the public facing server
   const publicFacingServer = http
     .createServer((req, res) => {
       const { pathname } = url.parse(req.url)
       debug(`calling pathname: ${pathname}`)
-      httpProxy.web(req, res, {
-        target: `http://localhost:${port}`
-      })
-    })
-    .listen(publicPortNum, () => {
-      // random bind a port
-      if (publicPortNum === 0) {
-        const p = publicFacingServer.address().port
-        // @TODO let the outside know the port number
+      // first we search for route that match
+      if (httpProxies[pathname]) {
+        const [target, proxy] = httpProxies[pathname]
+        proxy.web(req, res, { target })
+      } else {
+        httpProxy.web(req, res, {
+          target: `http://${DEFAULT_HOST}:${internalPort}`
+        })
       }
     })
-
-  // proxy to the websocket
-  publicFacingServer.on('upgrade', (req, socket, head) => {
-    const urlObj = url.parse(req.url)
-    debug(`handle the upgrade event`, urlObj)
-    debug('head', head.toString())
-    // just pass them on
-    socketProxy.ws(req, socket, head)
-  })
-
+    // proxy to the websocket
+    .on('upgrade', (req, socket, head) => {
+      const urlObj = url.parse(req.url)
+      debug('handle the upgrade event', urlObj)
+      debug('head', head.toString())
+      const { pathname } = urlObj
+      if (wsProxies[pathname]) {
+        wsProxies[pathname].ws(req, socket, head)
+      } else if (wsProxies[DEFAULT_KEY]) {
+        // just pass them on
+        wsProxies[DEFAULT_KEY].ws(req, socket, head)
+      }
+    })
   // add this point we should return a stop function
-
-
+  return {
+    async start () {
+      return new Promise((resolve) => {
+        publicFacingServer.listen(publicPortNum, hostname, () => {
+          // random bind a port
+          if (publicPortNum === 0) {
+            const p = publicFacingServer.address().port
+            // @TODO let the outside know the port number
+            return resolve({ port: p })
+          }
+          resolve({ port: publicPortNum})
+        })
+      })
+    },
+    stop () {
+      publicFacingServer.stop()
+    }
+  }
 }

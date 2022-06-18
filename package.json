@@ -1,6 +1,6 @@
 {
   "name": "server-io-core",
-  "version": "1.4.0",
+  "version": "2.0.0-beta.1",
   "description": "Developement server using Koa with Socket.io reload and Javascript remote debugger",
   "main": "index.js",
   "files": [
@@ -19,8 +19,8 @@
     "test:inject": "DEBUG=server-io-core* ava ./tests/inject.test.js",
     "test:socket": "DEBUG=server-io-core* ava ./tests/proxy-socket.test.js",
     "test:proxy": "DEBUG=server-io-core* ava ./tests/proxy.test.js",
-    "run:proxied": "DEBUG=server-io-core* node ./tests/fixtures/proxy.js",
     "test:demo": "DEBUG=server-io-core* node ./tests/fixtures/run.js",
+    "run:proxied": "DEBUG=server-io-core* node ./tests/fixtures/proxy.js",
     "start:server": "DEBUG=server-io-core* node ./tests/fixtures/test-proxy.js",
     "start:client": "DEBUG=server-io-core* node ./tests/fixtures/test-client.js"
   },
@@ -90,6 +90,6 @@
     "failFast": true
   },
   "bin": {
-    "server-io-core": "./cli.js"
+    "server-io-core": "./cli.mjs"
   }
 }

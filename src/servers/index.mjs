@@ -14,9 +14,9 @@ import middlewaresHandler from '../middlewares'
 import { logutil, getDebug } from '../utils'
 const debug = getDebug('serverIoCore')
 // main
-export default function serverIoCore (config) {
+export default async function serverIoCoreInternal (config) {
   let io = null
-  // let socketIsEnabled = falses
+  let socketIsEnabled = false
   const app = new Koa()
   const namespaceInUsed = []
   const unwatchFn = []
@@ -51,7 +51,7 @@ export default function serverIoCore (config) {
     config.reload.enable ||
     (config.debugger.enable && config.debugger.server === true)
   ) {
-    // socketIsEnabled = true
+    socketIsEnabled = true
     io = socketServer(webserver, config)
   }
   // @TODO we need to combine the two socket server into one
@@ -64,23 +64,22 @@ export default function serverIoCore (config) {
     unwatchFn.push(clientReload(config.webroot, io, config.reload))
     namespaceInUsed.push(config.reload.namespace)
   }
-
   // Debugger server start
   if (config.debugger.enable && config.debugger.server === true) {
     unwatchFn.push(debuggerServer(config, io))
     namespaceInUsed.push(config.debugger.namespace)
   }
-
   // Enable the injectors here, if socket server is enable that means
   // The injector related function need to be activated
   middlewaresHandler(app, config)
   // @TODO should this return a promise so we know if it works or not?
   // Keep the init of the static serve until the last call
-  staticServe(config)(app)
+  staticServe(app, config)
   // Start server @2018-08-13
-  if (config.autoStart === true) {
-    start()
-  }
+  // V.2 we don't start here
+  // if (config.autoStart === true) {
+  //  port0 = await start()
+  // }
   // Call back on close
   webserver.on('close', () => {
     debug('server on close')
@@ -90,11 +89,6 @@ export default function serverIoCore (config) {
     }
     unwatchFn.forEach(fn => fn())
   })
-  // Finally return the instance, V1.2.0 export one more prop
-  const result = { webserver, app, start, stop, io }
-  // @TODO need to fix the damn proxy problem
-  if (config.__proxied__) {
-    result.namespaceInUsed = namespaceInUsed
-  }
-  return result
+  // V.2 return a whole bunch of props for use later
+  return { webserver, app, start, stop, io, socketIsEnabled }
 }
