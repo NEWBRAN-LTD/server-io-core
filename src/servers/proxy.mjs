@@ -11,7 +11,7 @@ import getDebug from '../utils/debug.mjs'
 const debug = getDebug('servers:proxy')
 
 // Main - async is not right too, this should return an observable
-export default async function createProxyServer(config) {
+export default async function createProxyServer (config) {
   // @NOTE the config is already clear by the time it gets here
 
 
