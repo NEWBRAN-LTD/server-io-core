@@ -67,6 +67,7 @@
     "debug": "^4.3.4",
     "eslint": "^8.18.0",
     "eslint-config-xo": "^0.41.0",
+    "esm": "^3.2.25",
     "gulp": "^4.0.2",
     "husky": "^8.0.1",
     "koa-socket-2": "^2.0.0",
@@ -77,12 +78,10 @@
   },
   "ava": {
     "files": [
-      "tests/**/*.test.js"
+      "tests/**/*.test.mjs"
     ],
-    "ignoredByWatcher": [
-      "tests/fixtures/**/*",
-      "demo/**/*",
-      "src/**/*"
+    "require": [
+      "esm"
     ],
     "verbose": true,
     "tap": false,

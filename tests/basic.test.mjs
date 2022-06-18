@@ -2,8 +2,8 @@
 
 import test from 'ava'
 import request from 'superkoa'
-import serverSetup from './fixtures/server-setup'
-import { getDebug } from './src/utils'
+import serverSetup from './fixtures/server-setup.mjs'
+import { getDebug } from '../src/utils/index.mjs'
 
 const debug = getDebug('test:basic')
 
