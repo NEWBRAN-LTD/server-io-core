@@ -1,6 +1,5 @@
 // V.2 using ESM
 // with a cjs build for other,let's give it a try
-import { createConfiguration } from './utils/config/index.mjs'
 import serverIoCoreInternal from './servers'
 import createPublicProxy from './servers/proxy.mjs'
 import { INTERNAL_PORT } from './lib/constants'
@@ -8,8 +7,7 @@ import { getDebug } from './utils'
 const debug = getDebug('main')
 // Main
 export default async function serverIoCore (config = {}) {
-  const options = createConfiguration(config)
-  console.info('Hello world!', options)
+  console.info('Hello world!', config)
   // first start our internal
   const {
     // webserver, app, io,
