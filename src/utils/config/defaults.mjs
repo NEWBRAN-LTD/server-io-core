@@ -1,6 +1,6 @@
 // Move from the app.js to here
 import { join } from 'node:path'
-import { getServingIpforOS } from '../index.mjs'
+import { getServingIpforOS } from '../common.mjs'
 const src = join(__dirname, '..', '..')
 const defaultProperties = [
   'reload',

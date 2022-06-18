@@ -2,7 +2,7 @@
  * Port from the original gulp-webserver
  */
 import * as _ from 'lodash-es'
-import { toArray } from '../index.mjs'
+import { toArray } from '../common.mjs'
 import { version } from '../../../package.json'
 import { WS_PROXY } from '../../lib/constants'
 

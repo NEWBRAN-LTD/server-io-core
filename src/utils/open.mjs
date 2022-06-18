@@ -1,7 +1,7 @@
 // Open in browser
 import open from 'open'
 import getDebug from './debug.mjs'
-import { isString, isWindoze } from './index.mjs'
+import { isString, isWindoze } from './common.mjs'
 import {
   DEFAULT_HOST_IP,
   DEFAULT_HOSTNAME
