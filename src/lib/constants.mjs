@@ -14,3 +14,8 @@ export const DEFAULT_HOSTNAME = 'localhost'
 
 export const MAX_AGE = 86400000
 export const MAX_MAX_AGE = 31556926000
+
+// from reload
+export const DEFAULT_DELAY = 1000
+export const EVENT_NAME = 'change'
+export const DEFAULT_WAIT = 5000
