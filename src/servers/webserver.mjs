@@ -69,8 +69,8 @@ export default function webserverGenerator (app, config) {
           DEFAULT_PORT,
           DEFAULT_HOST,
           () => {
-            config.callback()
             resolve(webserver.address().port)
+            config.callback()
           }
         )
       })

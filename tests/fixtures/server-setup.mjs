@@ -12,6 +12,6 @@ const defaultOptions = {
   webroot: join(__dirname, 'demo', 'dist', 'base')
 }
 
-export default function (extra = {}) {
-  return serverIoCore(Object.assign(defaultOptions, extra))
+export default async function (extra = {}) {
+  return await serverIoCore(Object.assign(defaultOptions, extra))
 }

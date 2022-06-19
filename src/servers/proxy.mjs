@@ -87,7 +87,7 @@ export default async function createPublicProxy (config) {
         wsProxies[DEFAULT_KEY].ws(req, socket, head)
       }
     })
-  // add this point we should return a stop function
+  // add this point we should return a start, stop function
   return {
     async start () {
       return new Promise((resolve) => {
@@ -95,15 +95,17 @@ export default async function createPublicProxy (config) {
           // random bind a port
           if (publicPortNum === 0) {
             const p = publicFacingServer.address().port
+            debug('proxy server started on dynamic port:', p)
             // @TODO let the outside know the port number
             return resolve({ port: p })
           }
-          resolve({ port: publicPortNum})
+          debug('proxy server started on port:', publicPortNum)
+          resolve({ port: publicPortNum })
         })
       })
     },
     stop () {
-      publicFacingServer.stop()
+      publicFacingServer.close()
     }
   }
 }

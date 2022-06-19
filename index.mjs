@@ -19,7 +19,7 @@ export default async function serverIoCorePublic (config = {}) {
   opts.webroot = toArray(opts.webroot).map(dir => resolve(dir))
   opts.__processed__ = true
 
-  debug('configCopy', configCopy)
+  debug('user supplied config', configCopy)
   debug('options', inspect(opts, false, null, true))
 
   return await serverIoCore(opts)

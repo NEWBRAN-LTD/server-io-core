@@ -10,11 +10,13 @@ export default async function serverIoCore (config = {}) {
   console.info('Hello world!', config)
   // first start our internal
   const {
-    // webserver, app, io,
+    webserver,
+    app,
+    io,
     start,
     stop,
     socketIsEnabled
-  } = serverIoCoreInternal(config)
+  } = await serverIoCoreInternal(config)
   // first just store the stop call in here
   const allStop = [stop]
   // here we combine several start call togethear
@@ -23,7 +25,7 @@ export default async function serverIoCore (config = {}) {
     debug(`Internal server started on ${port0}`)
     config[INTERNAL_PORT] = port0
     config.socketIsEnabled = socketIsEnabled
-    const obj = createPublicProxy(config)
+    const obj = await createPublicProxy(config)
     allStop.push(obj.stop)
     return await obj.start()
   }
@@ -37,8 +39,11 @@ export default async function serverIoCore (config = {}) {
   if (config.autoStart) {
     await allStartFn()
   }
-  // return the start stop methos
+  // return all the references
   return {
+    webserver,
+    app,
+    io,
     start: allStartFn,
     stop: allStopFn
   }

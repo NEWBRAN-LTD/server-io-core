@@ -8,6 +8,9 @@ const debug = getDebug('test:basic')
 
 test.before(async (t) => {
   const { app, stop } = await serverSetup({ port: 8001 })
+
+  console.log('what is app', app)
+
   t.context.app = app
   t.context.stop = stop
 })
