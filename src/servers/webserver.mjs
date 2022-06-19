@@ -1,9 +1,9 @@
 /**
  * The generated server code are identical on both side anyway
  */
-import fs from 'fs:node'
-import http from 'http:node'
-import https from 'https:node'
+import fs from 'node:fs'
+import http from 'node:http'
+import https from 'node:https'
 import chalk from 'chalk'
 import { logutil } from '../utils/index.mjs'
 import { DEFAULT_PORT, DEFAULT_HOST } from '../lib/constants.mjs'

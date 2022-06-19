@@ -1,10 +1,15 @@
 /**
  * Port from the original gulp-webserver
  */
-import { merge, extend, get } from 'lodash'
-import { toArray } from '../common.mjs'
-import { version } from '../../../package.json'
+import { toArray, extend, get, merge, getDirname } from '../common.mjs'
+import { join } from 'node:path'
+import fsx from 'fs-extra'
 import { WS_PROXY } from '../../lib/constants.mjs'
+
+const __dirname = getDirname(import.meta.url)
+const pkg = fsx.readJsonSync(join(__dirname, '..', '..', '..', 'package.json'))
+const { version } = pkg
+
 /**
  * Make sure the incoming parameter to be array when it's coming out
  * @param {array} arraySource list of keys to process

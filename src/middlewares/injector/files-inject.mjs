@@ -1,10 +1,9 @@
 // Inject dependencies (CSS,js) files etc
-import * as _ from 'lodash-es'
 import cheerio from 'cheerio'
 import glob from 'glob'
 import fsx from 'fs-extra'
 import chalk from 'chalk'
-import { logutil, getDebug } from '../../utils/index.mjs'
+import { logutil, getDebug, isString } from '../../utils/index.mjs'
 
 const debug = getDebug('files-inject')
 
@@ -189,7 +188,7 @@ export const getFilesToInject = function (config) {
  * @return {string} overwritten HTML
  */
 export const injectToHtml = (body, jsTags, cssTags, before = true) => {
-  const html = _.isString(body) ? body : body.toString('utf8')
+  const html = isString(body) ? body : body.toString('utf8')
   const $ = cheerio.load(html)
   // @2018-08-13 add check if there is existing javascript tags
   const $scripts = $('body script').toArray()

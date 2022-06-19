@@ -1,6 +1,5 @@
 // Script injector middleware
 import { join } from 'node:path'
-import { compact } from 'lodash'
 import {
   getFilesToInject,
   injectToHtml,
@@ -17,7 +16,8 @@ import {
   getDocLen,
   readDocument,
   searchFileFromFiles,
-  getDebug
+  getDebug,
+  compact
 } from '../../utils/index.mjs'
 const debug = getDebug('inject')
 

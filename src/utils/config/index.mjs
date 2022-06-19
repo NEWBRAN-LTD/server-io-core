@@ -2,7 +2,7 @@ import {
   defaultProperties,
   arraySource,
   defaultOptions
-} from './defaults'
+} from './defaults.mjs'
 import enableMiddlewareShorthand from './enable-middleware-shorthand.mjs'
 
 function createConfiguration (options = {}) {

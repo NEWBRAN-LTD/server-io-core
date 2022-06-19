@@ -1,8 +1,8 @@
 /**
  * Socket server generator
  */
-import socketIO from 'socket.io'
-import socketCb from './socket-cb'
+import { Server } from 'socket.io' // 3.x import style
+import socketCb from './socket-cb.mjs'
 /**
  * @param {object} server http server instance
  * @param {object} config full config options
@@ -18,7 +18,7 @@ export default function socketIoGenerator (server, config) {
         : ['websocket']
   }
   // Need to take this constructor out and re-use with the reload
-  const io = socketIO(server, socketConfig)
+  const io = new Server(server, socketConfig)
   if (Array.isArray(config.namespace) && config.namespace.length) {
     socketCb(io, config.namespace)
   }

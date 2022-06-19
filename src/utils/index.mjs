@@ -1,6 +1,14 @@
 import getDebug from './debug.mjs'
 import openInBrowser from './open.mjs'
 export {
+  template,
+  getDirname,
+  isObject,
+  merge,
+  compact,
+  extend,
+  forEach,
+  get,
   readAsync,
   getLocalIp,
   isWindoze,

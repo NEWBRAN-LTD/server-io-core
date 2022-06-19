@@ -1,7 +1,6 @@
 // watcher
-import { extend } from 'lodash'
 import chalk from 'chalk'
-import { logutil, getDebug } from '../../utils/index.mjs'
+import { logutil, getDebug, extend } from '../../utils/index.mjs'
 import { EVENT_NAME } from '../../lib/constants.mjs'
 import watcher from '../watcher/index.mjs'
 const debug = getDebug('reload')

@@ -1,5 +1,4 @@
 // basic test with autoStart
-
 import test from 'ava'
 import request from 'superkoa'
 import serverSetup from './fixtures/server-setup.mjs'

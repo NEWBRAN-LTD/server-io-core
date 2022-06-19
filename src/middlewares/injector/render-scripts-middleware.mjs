@@ -4,7 +4,6 @@
  */
 import fs from 'node:fs'
 import { join } from 'node:path'
-import { template } from 'lodash'
 import chalk from 'chalk'
 import {
   logutil,
@@ -12,7 +11,9 @@ import {
   readDocument,
   getDocLen,
   getDebug,
-  isString
+  isString,
+  template,
+  getDirname
 } from '../../utils/index.mjs'
 import {
   stacktraceName,
@@ -22,6 +23,7 @@ import {
 } from '../../lib/constants.mjs'
 
 const debug = getDebug('render-scripts')
+const __dirname = getDirname(import.meta.url)
 
 /**
  * Get scripts paths

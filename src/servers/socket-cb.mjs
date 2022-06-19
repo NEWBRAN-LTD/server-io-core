@@ -17,3 +17,15 @@ export default function socketCb (io, namespace) {
     }
   }
 }
+/*
+this is the new style
+import io from "socket.io-client";
+
+const socket = io();
+
+// or, more explicit version
+import { Manager } from "socket.io-client";
+
+const manager = new Manager("https://example.com");
+const socket = manager.socket("/");
+*/

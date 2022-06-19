@@ -1,11 +1,13 @@
 // Favicon middleware
 import { join, resolve } from 'node:path'
-import { existsSync, readFileSync } from 'fs-extra'
+import fsx from 'fs-extra'
 import { MAX_AGE, MAX_MAX_AGE } from '../../lib/constants.mjs'
+import { getDirname } from '../../utils/index.mjs'
 // Main - now its all name export
-export function faviconMiddlewareGenerator (config) {
+export default function faviconMiddlewareGenerator (config) {
   let icon
-  const filePath = config.favicon && existsSync(resolve(config.favicon))
+  const __dirname = getDirname(import.meta.url)
+  const filePath = config.favicon && fsx.existsSync(resolve(config.favicon))
     ? config.favicon
     : join(__dirname, 'favicon.ico')
   const maxAge = config.maxAge === null
@@ -16,7 +18,7 @@ export function faviconMiddlewareGenerator (config) {
   return async function faviconMiddleware (ctx, next) {
     if ((ctx.method === 'GET' || ctx.method === 'HEAD') && ctx.path === '/favicon.ico') {
       if (!icon) {
-        icon = readFileSync(filePath)
+        icon = fsx.readFileSync(filePath)
       }
       ctx.status = 200
       ctx.set('Cache-Control', cacheControl)

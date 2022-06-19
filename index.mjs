@@ -3,8 +3,7 @@ import { resolve } from 'node:path'
 import { inspect } from 'node:util'
 import { createConfiguration } from './src/utils/config/index.mjs'
 import serverIoCore from './src/index.mjs'
-import { toArray, getDebug } from './src/utils/index.mjs'
-import { merge } from 'lodash'
+import { toArray, getDebug, merge } from './src/utils/index.mjs'
 
 const debug = getDebug('index')
 

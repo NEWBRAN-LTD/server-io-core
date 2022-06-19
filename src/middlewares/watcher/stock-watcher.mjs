@@ -2,9 +2,8 @@
 /**
  * The stock watcher without bacon.js wrapper
  */
-import { extend } from 'lodash'
 import chokidar from 'chokidar'
-import { ensureIsDir, getDebug } from '../../utils/index.mjs'
+import { ensureIsDir, getDebug, extend } from '../../utils/index.mjs'
 import { DEFAULT_DELAY } from '../../lib/constants.mjs'
 const debug = getDebug('watchers')
 

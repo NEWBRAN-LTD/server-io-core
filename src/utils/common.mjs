@@ -3,10 +3,81 @@ import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import { promisify } from 'node:util'
+import { fileURLToPath } from 'node:url'
 import log from 'fancy-log'
-import { defaultHostIp } from '../lib/constants.mjs'
+import { DEFAULT_HOST_IP } from '../lib/constants.mjs'
+import template from 'lodash.template'
 
 const IS_TEST = process.env.NODE_ENV === 'test'
+
+export { template }
+
+/** import.meta.url */
+export function getDirname (url) {
+  const __filename = fileURLToPath(url)
+  return path.dirname(__filename)
+}
+
+/** should get rip of all the lodash crap long time ago */
+
+export const isObject = (item) => {
+  return (item && typeof item === 'object' && !Array.isArray(item))
+}
+
+const mergeDeep = (target, ...sources) => {
+  if (!sources.length) return target
+  const source = sources.shift()
+
+  if (isObject(target) && isObject(source)) {
+    for (const key in source) {
+      if (isObject(source[key])) {
+        if (!target[key]) {
+          Object.assign(target, {
+            [key]: {}
+          })
+        }
+        mergeDeep(target[key], source[key])
+      } else {
+        Object.assign(target, {
+          [key]: source[key]
+        })
+      }
+    }
+  }
+  return mergeDeep(target, ...sources)
+}
+// just alias it
+export const merge = mergeDeep
+
+export const compact = arr => arr.filter(Boolean)
+
+export function extend (...args) {
+  return Reflect.apply(Object.assign, null, args)
+}
+
+export function forEach (obj, cb) {
+  let i = 0
+  for (const name in obj) {
+    cb(obj[name], i)
+    ++i
+  }
+}
+
+/** the key is a dot path */
+export function get (obj, key) {
+  const keys = key.split('.')
+  const ctn = keys.length
+  let result
+  for (let i = 0; i < ctn; ++i) {
+    const k = keys[i]
+    if (!result) {
+      result = obj[k]
+    } else {
+      result = result[k]
+    }
+  }
+  return result
+}
 
 /**
  * create a promisify version of read file also check before read
@@ -44,7 +115,7 @@ export const getServingIpforOS = () => {
   if (isWindoze()) {
     return [ip, ip]
   }
-  return [defaultHostIp, ip]
+  return [DEFAULT_HOST_IP, ip]
 }
 
 // Const debug = process.env.DEBUG;

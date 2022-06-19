@@ -4,7 +4,7 @@ import chalk from 'chalk'
 // the 3 main servers
 import webserverGenerator from './webserver.mjs'
 import staticServe from './static-serve.mjs'
-import socketServer from './socket-server.mjs'
+import socketServer from './socket.mjs'
 // the others
 import debuggerServer from '../middlewares/debugger/index.mjs'
 import clientReload from '../middlewares/reload/index.mjs'

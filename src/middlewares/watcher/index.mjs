@@ -7,9 +7,10 @@ import { fork } from 'node:child_process'
 import { join } from 'node:path'
 import kefir from 'kefir'
 import chalk from 'chalk'
-import { logutil, getDebug } from '../../utils/index.mjs'
+import { logutil, getDebug, getDirname } from '../../utils/index.mjs'
 import { EVENT_NAME, DEFAULT_WAIT } from '../../lib/constants.mjs'
 // setup
+const __dirname = getDirname(import.meta.url)
 const watcherFile = join(__dirname, 'fork.mjs')
 const debug = getDebug('watchers')
 const lastChangeFiles = new Set()

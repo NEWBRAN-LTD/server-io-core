@@ -2,9 +2,8 @@
  * Take out a bunch of functions from the original debugger setup
  */
 import util from 'node:util'
-import { forEach, isString, isObject } from 'lodash'
 import chalk from 'chalk'
-import { logutil } from '../../utils/index.mjs'
+import { logutil, forEach, isString, isObject } from '../../utils/common.mjs'
 
 const keys = ['browser', 'location']
 const lb = chalk.white('-'.repeat(90))
