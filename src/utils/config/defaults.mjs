@@ -20,10 +20,10 @@ const defaultOptions = {
    */
   development: true,
   host: getServingIpforOS(), // @2018-08-15 use the ip address by default
-  port: 8000, // try a random port and see what happens
-  port0: 8001,
+  port: 8000,
+  port0: 0, // this is for internal use only
   // Path: '/', // @2018-07-31 this no longer in use
-  webroot: join(process.cwd(), 'app'),
+  webroot: join(process.cwd(), 'app'), // should this be empty?
   autoStart: true,
   fallback: false,
   index: 'index.html', // Can only have one!

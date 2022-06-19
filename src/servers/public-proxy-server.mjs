@@ -11,7 +11,7 @@ import { DEFAULT_KEY, INTERNAL_PORT, DEFAULT_HOST } from '../lib/constants.mjs'
 // Vars
 const debug = getDebug('servers:proxy')
 // Main - async is not right too, this should return an observable
-export default async function createPublicProxy (config) {
+export default async function createPublicProxyServer (config) {
   // @NOTE the config is already clear by the time it gets here
   // this is not right yet, we should run through the config
   // to see how many things we need to proxy first
@@ -93,22 +93,22 @@ export default async function createPublicProxy (config) {
     })
   // add this point we should return a start, stop function
   return {
-    async start () {
+    async startPublic () {
       return new Promise((resolve) => {
         publicFacingServer.listen(publicPortNum, hostname, () => {
           // random bind a port
           if (publicPortNum === 0) {
-            const p = publicFacingServer.address().port
-            debug('proxy server started on dynamic port:', p)
+            const port = publicFacingServer.address().port
+            debug('proxy server started on dynamic port:', port)
             // @TODO let the outside know the port number
-            return resolve({ port: p })
+            return resolve(port)
           }
           debug('proxy server started on port:', publicPortNum)
-          resolve({ port: publicPortNum })
+          resolve(publicPortNum)
         })
       })
     },
-    stop () {
+    stopPublic () {
       publicFacingServer.close()
     }
   }
