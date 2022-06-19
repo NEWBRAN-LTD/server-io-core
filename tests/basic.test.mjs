@@ -7,10 +7,7 @@ import { getDebug } from '../src/utils/index.mjs'
 const debug = getDebug('test:basic')
 
 test.before(async (t) => {
-  const { app, stop } = await serverSetup({ port: 8001 })
-
-  console.log('what is app', app)
-
+  const { app, stop } = await serverSetup({ port: 0 })
   t.context.app = app
   t.context.stop = stop
 })

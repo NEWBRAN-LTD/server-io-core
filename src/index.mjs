@@ -7,7 +7,6 @@ import { getDebug } from './utils/index.mjs'
 const debug = getDebug('main')
 // Main
 export default async function serverIoCore (config = {}) {
-  console.info('Hello world!', config)
   // first start our internal
   const {
     webserver,

@@ -1,5 +1,7 @@
+// utils main
 import getDebug from './debug.mjs'
 import openInBrowser from './open.mjs'
+import startMsg from './start-msg.mjs'
 export {
   template,
   getDirname,
@@ -37,5 +39,6 @@ export {
 } from './config/index.mjs'
 export {
   getDebug,
-  openInBrowser
+  openInBrowser,
+  startMsg
 }
