@@ -34,6 +34,7 @@ export default async function createPublicProxy (config) {
   // prepare the routes
   if (config.proxies.length) {
     config.proxies.forEach(proxyConfig => {
+      debug('proxyConfig', proxyConfig)
       const { type } = proxyConfig
       if (type === 'http') {
         const { from, target } = proxyConfig
@@ -66,11 +67,14 @@ export default async function createPublicProxy (config) {
       debug(`calling pathname: ${pathname}`)
       // first we search for route that match
       if (httpProxies[pathname]) {
+        debug('found proxy for ', pathname)
         const [target, proxy] = httpProxies[pathname]
         proxy.web(req, res, { target })
       } else {
+        const internalHost = `http://${DEFAULT_HOST}:${internalPort}`
+        debug('fallback to ', internalHost)
         httpProxy.web(req, res, {
-          target: `http://${DEFAULT_HOST}:${internalPort}`
+          target: internalHost
         })
       }
     })
