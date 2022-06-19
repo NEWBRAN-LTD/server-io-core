@@ -1,5 +1,5 @@
 // use the console.table to show some fancy output
-import { DEFAULT_HOST } from '../../lib/constants'
+import { DEFAULT_HOST } from '../lib/constants.mjs'
 
 export default function startMsg (config) {
   if (process.env.NODE_ENV === 'test') {

@@ -72,6 +72,7 @@
     "gulp": "^4.0.2",
     "husky": "^8.0.1",
     "koa-socket-2": "^2.0.0",
+    "node-fetch": "^3.2.6",
     "nyc": "^15.1.0",
     "prettier": "^2.7.1",
     "superkoa": "^1.0.3",

@@ -3,9 +3,9 @@ This will be the front that facing the public
 Then we proxy the connection to the service behind it,
 This server will get call last in the stack - waiting for other service started first
 */
-import httpProxyLib from 'http-proxy'
 import http from 'node:http'
 import url from 'node:url'
+import httpProxyLib from 'http-proxy'
 import getDebug from '../utils/debug.mjs'
 import { DEFAULT_KEY, INTERNAL_PORT, DEFAULT_HOST } from '../lib/constants.mjs'
 // Vars
@@ -47,10 +47,10 @@ export default async function createPublicProxyServer (config) {
           debug('mis-config http proxy', proxyConfig)
         }
       } else if (type === 'ws') {
-        const { from, host, port } = proxyConfig
-        if (host && port) {
+        const { from, target } = proxyConfig
+        if (from && target) {
           wsProxies[from] = httpProxyLib.createProxyServer({
-            target: { host, port }
+            target: target
           })
         } else {
           debug('mis-config ws proxy', proxyConfig)
@@ -63,19 +63,25 @@ export default async function createPublicProxyServer (config) {
   // now construct the public facing server
   const publicFacingServer = http
     .createServer((req, res) => {
-      const { pathname } = url.parse(req.url)
-      debug(`calling pathname: ${pathname}`)
-      // first we search for route that match
-      if (httpProxies[pathname]) {
-        debug('found proxy for ', pathname)
-        const [target, proxy] = httpProxies[pathname]
-        proxy.web(req, res, { target })
-      } else {
-        const internalHost = `http://${DEFAULT_HOST}:${internalPort}`
-        debug('fallback to ', internalHost)
-        httpProxy.web(req, res, {
-          target: internalHost
-        })
+      try {
+        const { pathname } = url.parse(req.url)
+        debug(`calling pathname: ${pathname}`)
+        // first we search for route that match
+        if (httpProxies[pathname]) {
+          const [target, proxy] = httpProxies[pathname]
+          debug('found proxy for ', pathname, 'to', target)
+          proxy.web(req, res, { target }, e => {
+            debug('custom proxy', target, 'error:', e)
+          })
+        } else {
+          const internalHost = `http://${DEFAULT_HOST}:${internalPort}`
+          debug('fallback to ', internalHost)
+          httpProxy.web(req, res, { target: internalHost }, e => {
+            debug('internal proxy error', e)
+          })
+        }
+      } catch (e) {
+        debug('some thing else went wrong!', e)
       }
     })
     // proxy to the websocket
@@ -91,6 +97,9 @@ export default async function createPublicProxyServer (config) {
         wsProxies[DEFAULT_KEY].ws(req, socket, head)
       }
     })
+    .on('error', err => {
+      debug('publicProxyServer error', err)
+    })
   // add this point we should return a start, stop function
   return {
     async startPublic () {
@@ -99,12 +108,10 @@ export default async function createPublicProxyServer (config) {
           // random bind a port
           if (publicPortNum === 0) {
             const port = publicFacingServer.address().port
-            debug('proxy server started on dynamic port:', port)
             // @TODO let the outside know the port number
-            return resolve(port)
+            return resolve({ hostname, port })
           }
-          debug('proxy server started on port:', publicPortNum)
-          resolve(publicPortNum)
+          resolve({ hostname, port: publicPortNum })
         })
       })
     },

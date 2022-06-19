@@ -64,7 +64,7 @@ export default function webserverGenerator (app, config) {
     startInternal: async () => {
       return new Promise(resolve => {
         // @TODO this will be using a port:0 which means we are going to get a random port
-        // and we need to some how return this for the main proxy to use
+        // and we return this for the main proxy to use
         webserver.listen(
           config.port0 || DEFAULT_PORT, // we could pick a port for test purpose
           DEFAULT_HOST,

@@ -5,7 +5,7 @@ import createPublicProxyServer from './servers/public-proxy-server.mjs'
 import openInBrowser from './utils/open.mjs'
 import { INTERNAL_PORT } from './lib/constants.mjs'
 import { getDebug } from './utils/index.mjs'
-import startMsg from './utils/start-msg'
+import startMsg from './utils/start-msg.mjs'
 const debug = getDebug('main')
 // Main
 export default async function serverIoCore (config = {}) {
@@ -36,12 +36,13 @@ export default async function serverIoCore (config = {}) {
     if (typeof configCb === 'function') {
       Reflect.apply(configCb, null, [config])
     }
-    const publicPort = await startPublic()
-    config.port = publicPort // swap it because it could be a dynamic port now
+    const { port, hostname } = await startPublic()
+    debug('Public proxy server started on ', hostname, port)
+    config.port = port // swap its because it could be a dynamic port now
     openInBrowser(config)
     startMsg(config)
     // create a table display
-    return [publicPort, port0]
+    return [port, port0, hostname]
   }
   // stop all
   const stopAllFn = () => {
