@@ -1,24 +1,17 @@
-#!/usr/bin/env node
-/**
- * Command line interface with meow
- * $ server-io-core ./dist
- * or
- * $ srvio ./
- */
-const path = require('path');
-const fs = require('fs-extra');
-const _ = require('lodash');
-const meow = require('meow');
-const log = require('fancy-log');
-// Main
-const serverIoCore = require('./index');
-// Config
+// Cli interface in ESM
+import path from 'node:path'
+import fsx from 'fs-extra'
+import meow from 'meow'
+import log from 'fancy-log'
+import serverIoCore from './index.mjs'
+// Config shorthand map
 const alias = {
   p: 'port',
   h: 'host',
   s: 'ssl',
   c: 'config'
-};
+}
+// create cli
 const cli = meow(
   `
    Usage
@@ -46,57 +39,53 @@ const cli = meow(
    * When using --config (-c) flag, all the other flag will be ignore
  `,
   { alias }
-);
+)
 const serve = cli => {
-  if (_.isEmpty(cli.input[0])) {
+  if (!fsx.existsSync(cli.input[0])) {
     return log.error(
       'Sorry the path to your file is required! Run `server-io-core` --help for more information'
-    );
+    )
   }
-
-  const argv = cli.flags;
-  const dirs = cli.input[0].split(',');
+  const argv = cli.flags
+  const dirs = cli.input[0].split(',')
   serverIoCore(
-    (function() {
-      let config;
+    (function () {
+      let config
       // Use the config to ovewrite everything else
       if (argv.config) {
         // Now we need to check if that's a js file or json file
-        const configfile = argv.config;
+        const configfile = argv.config
         if (path.extname(configfile) === '.json') {
-          config = fs.readJsonSync(configfile);
+          config = fsx.readJsonSync(configfile)
         } else if (path.extname(configfile) === '.js') {
-          config = require(configfile);
+          config = require(configfile)
         }
-
         if (!config) {
           throw new Error(
             ['configuration file', configfile, ' is not supported or not found!'].join(
               ' '
             )
-          );
+          )
         }
       } else {
-        config = { webroot: dirs.map(d => path.resolve(d)) };
+        config = {
+          webroot: dirs.map(d => path.resolve(d))
+        }
         if (argv.port) {
-          config.port = argv.port;
+          config.port = argv.port
         }
-
         if (argv.host) {
-          config.host = argv.host;
+          config.host = argv.host
         }
-
         if (argv.https) {
           config.https = {
             enable: true
-          };
+          }
         }
       }
-
-      return config;
+      return config
     })()
-  );
-};
-
+  )
+}
 // Run
-serve(cli);
+serve(cli)
