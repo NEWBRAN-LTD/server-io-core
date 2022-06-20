@@ -6,7 +6,7 @@ import http from 'node:http'
 import https from 'node:https'
 import chalk from 'chalk'
 import { logutil } from '../utils/index.mjs'
-import { DEFAULT_PORT, DEFAULT_HOST } from '../lib/constants.mjs'
+import { DEFAULT_PORT } from '../lib/constants.mjs'
 // According to https://github.com/visionmedia/supertest/issues/111
 // Put this here to make sure it works everywhere
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0
@@ -67,7 +67,7 @@ export default function webserverGenerator (app, config) {
         // and we return this for the main proxy to use
         webserver.listen(
           config.port0 || DEFAULT_PORT, // we could pick a port for test purpose
-          DEFAULT_HOST,
+          // DEFAULT_HOST,
           () => {
             resolve(webserver.address().port)
             // the callback now move to the public server

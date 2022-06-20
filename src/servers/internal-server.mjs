@@ -1,6 +1,5 @@
 // the combine startup server now is here
 import Koa from 'koa'
-import chalk from 'chalk'
 // the 3 main servers
 import webserverGenerator from './webserver.mjs'
 import staticServe from './static-serve.mjs'
@@ -8,7 +7,6 @@ import socketServer from './socket.mjs'
 // the others
 import debuggerServer from '../middlewares/debugger/index.mjs'
 import clientReload from '../middlewares/reload/index.mjs'
-
 // middlewares
 import middlewaresHandler from '../middlewares/index.mjs'
 import { getDebug } from '../utils/index.mjs'
@@ -25,16 +23,6 @@ export default async function createInternalServer (config) {
     startInternal,
     stopInternal
   } = webserverGenerator(app, config)
-  /* all of these callback move to the public facing server
-  const cb = config.callback
-  config.callback = () => {
-    if (typeof cb === 'function') {
-      Reflect.apply(cb, null, [config])
-    }
-    // this need to move
-    // openInBrowser(config) --> moved to src/index.mjs
-  } // end callback
-  */
   // 2018-08-17 unless specify the socket will always be enable
   // 2019-05-01 if we need to proxy out the ws then this socket can not start
   // because we have to hijack it at the higher server.on.upgrade event
@@ -67,14 +55,9 @@ export default async function createInternalServer (config) {
   // @TODO should this return a promise so we know if it works or not?
   // Keep the init of the static serve until the last call
   staticServe(app, config)
-  // Start server @2018-08-13
-  // V.2 we don't start here
-  // if (config.autoStart === true) {
-  //  port0 = await start()
-  // }
   // Call back on close
   webserver.on('close', () => {
-    debug('server on close')
+    debug('webserver on close and clean up')
     // MockServerInstance.close();
     if (io && io.server && io.server.close) {
       io.server.close()
