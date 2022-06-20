@@ -1,7 +1,7 @@
 /**
  * Port from the original gulp-webserver
  */
-import { toArray, extend, get, merge, getDirname } from '../common.mjs'
+import { toArray, extend, get, merge, getDirname, ensureFirstSlash } from '../common.mjs'
 import { join } from 'node:path'
 import fsx from 'fs-extra'
 import { WS_PROXY } from '../../lib/constants.mjs'
@@ -9,6 +9,22 @@ import { WS_PROXY } from '../../lib/constants.mjs'
 const __dirname = getDirname(import.meta.url)
 const pkg = fsx.readJsonSync(join(__dirname, '..', '..', '..', 'package.json'))
 const { version } = pkg
+
+/**
+ * prepare the proxies configuration
+ */
+export function prepareProxies (config) {
+  if (config.proxies && Array.isArray(config.proxies)) {
+    if (config.proxies.length > 0) {
+      config.proxies = config.proxies.map(c => {
+        c.context = ensureFirstSlash(c.context)
+        return c
+      })
+    }
+    return config
+  }
+  throw new Error('Your proxies configuration must be an array!')
+}
 
 /**
  * Make sure the incoming parameter to be array when it's coming out
@@ -84,7 +100,7 @@ const handleSpecialCase = (key, config) => {
  * @param {object} options configuration params pass by the developer
  * @return {object} configuration
  */
-export default function enableMiddlewareShorthand (
+export function enableMiddlewareShorthand (
   defaults,
   props,
   arraySource,

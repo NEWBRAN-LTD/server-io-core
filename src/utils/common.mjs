@@ -209,7 +209,7 @@ export const getSocketConnectionConfig = config => {
  */
 export const ensureIsDir = filePaths => {
   const paths = toArray(filePaths)
-  return _.compact(
+  return compact(
     paths.map(d => {
       return fs.existsSync(d)
         ? fs.lstatSync(d).isDirectory()
@@ -264,7 +264,6 @@ export const readDocument = p => new Promise((resolve, reject) => {
     resolve(data)
   })
 })
-
 
 /**
  * @param {array} files to search
