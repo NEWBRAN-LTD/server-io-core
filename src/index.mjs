@@ -38,7 +38,7 @@ export default async function serverIoCore (config = {}) {
     }
     const { port, hostname } = await startPublic()
     debug('Public proxy server started on ', hostname, port)
-    config.port = port // swap its because it could be a dynamic port now
+    config.port = port // swap the port number because it could be a dynamic port now
     openInBrowser(config)
     startMsg(config)
     // create a table display

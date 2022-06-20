@@ -7,7 +7,39 @@ import http from 'node:http'
 import url from 'node:url'
 import httpProxyLib from 'http-proxy'
 import getDebug from '../utils/debug.mjs'
-import { DEFAULT_KEY, INTERNAL_PORT, DEFAULT_HOST } from '../lib/constants.mjs'
+import { INTERNAL_PORT, DEFAULT_HOST } from '../lib/constants.mjs'
+// breaking up
+function prepareProxiesConfig (config) {
+  const httpProxies = {}
+  const wsProxies = {}
+  config.proxies.forEach(proxyConfig => {
+    debug('proxyConfig', proxyConfig)
+    const { type } = proxyConfig
+    if (type === 'http') {
+      const { context, target } = proxyConfig
+      if (context && target) {
+        httpProxies[context] = [
+          target,
+          httpProxyLib.createProxyServer({})
+        ]
+      } else {
+        debug('mis-config http proxy', proxyConfig)
+      }
+    } else if (type === 'ws') {
+      const { context, target } = proxyConfig
+      if (context && target) {
+        wsProxies[context] = httpProxyLib.createProxyServer({
+          target: target
+        })
+      } else {
+        debug('mis-config ws proxy', proxyConfig)
+      }
+    } else {
+      debug('unknown proxy config', config)
+    }
+  })
+  return { httpProxies, wsProxies }
+}
 // Vars
 const debug = getDebug('public-proxy-server')
 // Main - async is not right too, this should return an observable
@@ -18,88 +50,37 @@ export default async function createPublicProxyServer (config) {
   const publicPortNum = config.port
   const hostname = Array.isArray(config.host) ? config.host[0] : config.host
   const internalPort = config[INTERNAL_PORT]
-  const httpProxies = {}
-  const wsProxies = {}
-  // these proxy to our internal servers
-  const httpProxy = httpProxyLib.createProxyServer({})
-  if (config.socketIsEnabled) {
-    // this ws proxy point back to our own internal socket server
-    wsProxies[DEFAULT_KEY] = httpProxyLib.createProxyServer({
-      target: {
-        host: DEFAULT_HOST,
-        port: internalPort
-      }
-    })
-  }
-  // prepare the routes
-  if (config.proxies.length) {
-    config.proxies.forEach(proxyConfig => {
-      debug('proxyConfig', proxyConfig)
-      const { type } = proxyConfig
-      if (type === 'http') {
-        const { from, target } = proxyConfig
-        if (from && target) {
-          httpProxies[from] = [
-            target,
-            httpProxyLib.createProxyServer({})
-          ]
-        } else {
-          debug('mis-config http proxy', proxyConfig)
-        }
-      } else if (type === 'ws') {
-        const { from, target } = proxyConfig
-        if (from && target) {
-          wsProxies[from] = httpProxyLib.createProxyServer({
-            target: target
-          })
-        } else {
-          debug('mis-config ws proxy', proxyConfig)
-        }
-      } else {
-        debug('unknown proxy config', config)
-      }
-    })
-  }
+  const internalHost = `http://${DEFAULT_HOST}:${internalPort}`
+  debug('internalHost', internalHost)
+  // create proxies
+  const defaultProxy = httpProxyLib.createProxyServer({ target: internalHost })
+  const { httpProxies, wsProxies } = prepareProxiesConfig(config)
   // now construct the public facing server
-  const publicFacingServer = http
-    .createServer((req, res) => {
-      try {
-        const { pathname } = url.parse(req.url)
-        debug(`calling pathname: ${pathname}`)
-        // first we search for route that match
-        if (httpProxies[pathname]) {
-          const [target, proxy] = httpProxies[pathname]
-          debug('found proxy for ', pathname, 'to', target)
-          proxy.web(req, res, { target }, e => {
-            debug('custom proxy', target, 'error:', e)
-          })
-        } else {
-          const internalHost = `http://${DEFAULT_HOST}:${internalPort}`
-          debug('fallback to ', internalHost)
-          httpProxy.web(req, res, { target: internalHost }, e => {
-            debug('internal proxy error', e)
-          })
-        }
-      } catch (e) {
-        debug('some thing else went wrong!', e)
-      }
+  const publicFacingServer = http.createServer(function (req, res) {
+    const { pathname } = url.parse(req.url)
+    debug(`calling pathname: ${pathname}`)
+    // first we search for route that match
+    if (httpProxies[pathname]) {
+      const [target, proxy] = httpProxies[pathname]
+      debug('found proxy for ', pathname, 'to', target)
+      return proxy.web(req, res, { target }, e => {
+        debug('custom proxy', target, 'error:', e)
+      })
+    }
+    defaultProxy.web(req, res, { target: internalHost }, e => {
+      debug('internal proxy error', e)
     })
-    // proxy to the websocket
-    .on('upgrade', (req, socket, head) => {
-      const urlObj = url.parse(req.url)
-      debug('handle the upgrade event', urlObj)
-      debug('head', head.toString())
-      const { pathname } = urlObj
-      if (wsProxies[pathname]) {
-        wsProxies[pathname].ws(req, socket, head)
-      } else if (wsProxies[DEFAULT_KEY]) {
-        // just pass them on
-        wsProxies[DEFAULT_KEY].ws(req, socket, head)
-      }
-    })
-    .on('error', err => {
-      debug('publicProxyServer error', err)
-    })
+  }).on('upgrade', (req, socket, head) => {
+    const { pathname } = url.parse(req.url)
+    debug('head', pathname, head.toString())
+    if (wsProxies[pathname]) {
+      return wsProxies[pathname].ws(req, socket, head)
+    }
+    // just pass them on
+    defaultProxy.ws(req, socket, head)
+  }).on('error', err => {
+    debug('publicProxyServer error', err)
+  })
   // add this point we should return a start, stop function
   return {
     async startPublic () {
@@ -109,8 +90,10 @@ export default async function createPublicProxyServer (config) {
           if (publicPortNum === 0) {
             const port = publicFacingServer.address().port
             // @TODO let the outside know the port number
+            debug('proxy started on ', hostname, port)
             return resolve({ hostname, port })
           }
+          debug('proxy stared on ', hostname, publicPortNum)
           resolve({ hostname, port: publicPortNum })
         })
       })

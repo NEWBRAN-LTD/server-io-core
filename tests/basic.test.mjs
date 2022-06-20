@@ -3,9 +3,8 @@ import test from 'ava'
 import request from 'superkoa'
 import fetch from 'node-fetch'
 import serverSetup from './fixtures/server-setup.mjs'
-import { getDebug } from '../src/utils/index.mjs'
-
-const debug = getDebug('test:basic')
+// import { getDebug } from '../src/utils/index.mjs'
+// const debug = getDebug('test:basic')
 const port = 7990
 
 test.before(async (t) => {
@@ -20,7 +19,7 @@ test.after((t) => {
 
 test('It should start with minimum config option', async t => {
   const res = await request(t.context.app).get('/')
-  debug('result body', res.body)
+  // debug('result body', res.body)
   t.is(res.status, 200)
 })
 

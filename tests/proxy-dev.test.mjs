@@ -14,16 +14,17 @@ const proxyPort = 7001
 const proxyPort1 = 7002
 // wrap in a function
 async function createProxy (target) {
-  const proxy = httpProxy.createProxyServer({})
+  const proxy = httpProxy.createProxyServer({ target })
+  const dummy1 = httpProxy.createProxyServer({ target: `http://localhost:${proxyPort1}` })
   return new Promise(resolve => {
     const srv = http.createServer(function (req, res) {
       const { pathname } = url.parse(req.url)
       debug(`calling pathname: ${pathname}`)
       if (pathname === '/dummy') {
         debug('proxy to dummy')
-        return proxy.web(req, res, { target: `http://localhost:${proxyPort1}` })
+        return dummy1.web(req, res)
       }
-      proxy.web(req, res, { target })
+      proxy.web(req, res)
     }).listen(proxyPort, () => {
       resolve(srv)
     })
