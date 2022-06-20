@@ -9,7 +9,7 @@ import httpProxyLib from 'http-proxy'
 import getDebug from '../utils/debug.mjs'
 import { DEFAULT_KEY, INTERNAL_PORT, DEFAULT_HOST } from '../lib/constants.mjs'
 // Vars
-const debug = getDebug('servers:proxy')
+const debug = getDebug('public-proxy-server')
 // Main - async is not right too, this should return an observable
 export default async function createPublicProxyServer (config) {
   // @NOTE the config is already clear by the time it gets here
