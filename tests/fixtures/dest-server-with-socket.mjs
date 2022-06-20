@@ -18,7 +18,7 @@ const port = options.proxy
 const webserver = http.createServer(
   app.callback(),
   () => {
-    debug('proxy server started on', port)
+    debug('dest server started on', port)
   }
 )
 const io = new Server(webserver)
@@ -38,12 +38,13 @@ nsp.on('connection', socket => {
   socket.emit('news', 'This one is from nsp')
 })
 // export
-export default function (p = null) {
+export default function koaWithSocketIo (p = null) {
   const _port = p || port
   debug(_port)
   webserver.listen(_port)
   return {
     webserver,
+    port0: _port,
     proxyApp: app
   }
 }

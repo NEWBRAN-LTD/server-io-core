@@ -34,6 +34,7 @@ specifiers:
   stacktrace-js: ^2.0.2
   superkoa: ^1.0.3
   through2: ^4.0.2
+  ws: ^8.8.0
 
 dependencies:
   '@to1source/event': 1.5.1
@@ -71,6 +72,7 @@ devDependencies:
   prettier: 2.7.1
   superkoa: 1.0.3
   through2: 4.0.2
+  ws: 8.8.0
 
 packages:
 
@@ -5465,6 +5467,19 @@ packages:
       utf-8-validate:
         optional: true
     dev: false
+
+  /ws/8.8.0:
+    resolution: {integrity: sha512-JDAgSYQ1ksuwqfChJusw1LSJ8BizJ2e/vVu5Lxjq3YvNJNlROv1ui4i+c/kUUrPheBvQl4c5UbERhTwKa6QBJQ==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: ^5.0.2
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+    dev: true
 
   /xmlhttprequest-ssl/2.0.0:
     resolution: {integrity: sha512-QKxVRxiRACQcVuQEYFsI1hhkrMlrXHPegbbd1yn9UHOmRxY+si12nQYzri3vbzt8VdTTRviqcKxcyllFas5z2A==}

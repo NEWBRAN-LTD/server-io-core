@@ -4,18 +4,25 @@ import test from 'ava'
 import http from 'node:http'
 import url from 'node:url'
 import fetch from 'node-fetch'
-import httpProxy from 'http-proxy'
+import HttpProxy from 'http-proxy'
+// import { io } from 'socket.io-client'
 import serverSetup from './fixtures/server-setup.mjs'
+import koaWithSocketIo from './fixtures/dest-server-with-socket.mjs'
 import { getDebug } from '../src/utils/index.mjs'
+import WebSocket, { WebSocketServer } from 'ws'
 const debug = getDebug('test:proxy-dev')
 
 const port = 6001
 const proxyPort = 7001
 const proxyPort1 = 7002
+const port0 = 8999
 // wrap in a function
 async function createProxy (target) {
-  const proxy = httpProxy.createProxyServer({ target })
-  const dummy1 = httpProxy.createProxyServer({ target: `http://localhost:${proxyPort1}` })
+  const proxy = new HttpProxy({ target })
+  const dummy1 = new HttpProxy({ target: `http://localhost:${proxyPort1}` })
+  const dummy2 = new HttpProxy({ target: `http://localhost:${port0}`, ws: true })
+  const dummy3 = new HttpProxy({ target: 'http://localhost:8080', ws: true })
+
   return new Promise(resolve => {
     const srv = http.createServer(function (req, res) {
       const { pathname } = url.parse(req.url)
@@ -23,8 +30,18 @@ async function createProxy (target) {
       if (pathname === '/dummy') {
         debug('proxy to dummy')
         return dummy1.web(req, res)
+      } else if (pathname === '/dest') {
+        return dummy2.web(req, res)
       }
       proxy.web(req, res)
+    }).on('upgrade', (req, socket, head) => {
+      const { pathname } = url.parse(req.url)
+      console.log(`calling pathname: ${pathname}`)
+      console.log('hear the socket connection', head)
+      if (pathname === '/whatever') {
+        return dummy3.ws(req, socket, head)
+      }
+      dummy2.ws(req, socket, head)
     }).listen(proxyPort, () => {
       resolve(srv)
     })
@@ -32,6 +49,17 @@ async function createProxy (target) {
 }
 
 test.before(async (t) => {
+  // create yet another ws server
+  const wss = new WebSocketServer({ port: 8080 })
+  wss.on('connection', function connection (ws) {
+    ws.on('message', data => {
+      console.log('hear the client', data.toString())
+    })
+  })
+  // this is with socket.io
+  const { webserver } = koaWithSocketIo()
+  t.context.destServer = webserver
+
   const { app, start, stop } = await serverSetup({ port, autoStart: false })
   t.context.app = app
   t.context.stop = stop
@@ -53,6 +81,7 @@ test.after((t) => {
   t.context.stop()
   t.context.dummyServer.close()
   t.context.proxyServer.close()
+  t.context.destServer.close()
 })
 
 test('We should able to call the internal server directly', async t => {
@@ -69,4 +98,23 @@ test('We should able to create a proxy and connect to the internal server behind
   // try to call dummy server via proxy
   const res3 = await fetch(`http://localhost:${proxyPort1}/dummy`)
   t.is(200, res3.status)
+})
+
+test('Should able to connect to more proxied server', async t => {
+  const res1 = await fetch(`http://localhost:${proxyPort}/dest`)
+  t.is(200, res1.status)
+  const msg = await res1.text()
+  t.is('This is server-io-core', msg)
+})
+
+test('should able to connect to ws via proxy as well', async t => {
+  const client = new WebSocket(`ws://localhost:${proxyPort}/whatever`)
+  // io(`http://localhost:${proxyPort}`)
+  return new Promise(resolve => {
+    client.on('open', () => {
+      client.send('Hello!')
+      t.pass()
+      resolve()
+    })
+  })
 })
