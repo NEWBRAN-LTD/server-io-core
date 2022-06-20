@@ -5,7 +5,7 @@ import http from 'node:http'
 import url from 'node:url'
 import fetch from 'node-fetch'
 import HttpProxy from 'http-proxy'
-// import { io } from 'socket.io-client'
+import { io } from 'socket.io-client'
 import serverSetup from './fixtures/server-setup.mjs'
 import koaWithSocketIo from './fixtures/dest-server-with-socket.mjs'
 import { getDebug } from '../src/utils/index.mjs'
@@ -41,6 +41,7 @@ async function createProxy (target) {
       if (pathname === '/whatever') {
         return dummy3.ws(req, socket, head)
       }
+      console.log('fall back to dummy2')
       dummy2.ws(req, socket, head)
     }).listen(proxyPort, () => {
       resolve(srv)
@@ -106,10 +107,22 @@ test('Should able to connect to more proxied server', async t => {
   const msg = await res1.text()
   t.is('This is server-io-core', msg)
 })
+// this one just won't work
+test.skip('should also able to connect to a socket.io server', async t => {
+  return new Promise(resolve => {
+    const client = io(`ws://localhost:${proxyPort}/some-namespace`)
+    client.on('connect', () => {
+      client.on('news', msg => {
+        t.truthy(msg)
+        // end
+        resolve(true)
+      })
+    })
+  })
+})
 
-test('should able to connect to ws via proxy as well', async t => {
+test('should able to connect to wss via proxy as well', async t => {
   const client = new WebSocket(`ws://localhost:${proxyPort}/whatever`)
-  // io(`http://localhost:${proxyPort}`)
   return new Promise(resolve => {
     client.on('open', () => {
       client.send('Hello!')

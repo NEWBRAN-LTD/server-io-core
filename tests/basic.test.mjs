@@ -21,6 +21,8 @@ test('It should start with minimum config option', async t => {
   const res = await request(t.context.app).get('/')
   // debug('result body', res.body)
   t.is(res.status, 200)
+  // try again to use just fetch
+  // const res1 = await fetch(`http://localhost:${}`)
 })
 
 test('We should able to access / via the public proxy', async t => {

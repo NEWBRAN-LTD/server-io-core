@@ -21,7 +21,11 @@ const webserver = http.createServer(
     debug('dest server started on', port)
   }
 )
-const io = new Server(webserver)
+const io = new Server(webserver, {
+  cors: {
+    origin: `http://localhost:${port}`
+  }
+})
 
 io.on('connection', socket => {
   socket.on('msg', (data, fn) => {
@@ -41,7 +45,9 @@ nsp.on('connection', socket => {
 export default function koaWithSocketIo (p = null) {
   const _port = p || port
   debug(_port)
-  webserver.listen(_port)
+  webserver.listen(_port, () => {
+    console.log('koaWithSocketIo', _port)
+  })
   return {
     webserver,
     port0: _port,

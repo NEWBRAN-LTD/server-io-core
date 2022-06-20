@@ -36,13 +36,13 @@ export default async function serverIoCore (config = {}) {
     if (typeof configCb === 'function') {
       Reflect.apply(configCb, null, [config])
     }
-    const { port, hostname } = await startPublic()
-    debug('Public proxy server started on ', hostname, port)
+    const { port, address } = await startPublic()
+    debug('Public proxy server started on ', address, port)
     config.port = port // swap the port number because it could be a dynamic port now
     openInBrowser(config)
     startMsg(config)
     // create a table display
-    return [port, port0, hostname]
+    return [port, port0, address]
   }
   // stop all
   const stopAllFn = () => {

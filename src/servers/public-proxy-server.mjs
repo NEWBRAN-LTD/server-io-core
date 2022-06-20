@@ -4,10 +4,48 @@ Then we proxy the connection to the service behind it,
 This server will get call last in the stack - waiting for other service started first
 */
 import http from 'node:http'
-import url from 'node:url'
-import httpProxyLib from 'http-proxy'
-import getDebug from '../utils/debug.mjs'
+// import url from 'node:url'
+import HttpProxy from 'http-proxy'
 import { INTERNAL_PORT, DEFAULT_HOST } from '../lib/constants.mjs'
+
+// Main - async is not right too, this should return an observable
+export default async function createPublicProxyServer (config) {
+  // prepare
+  const publicPort = config.port
+  const publicHost = Array.isArray(config.host) ? config.host[0] : config.host
+  const internalPort = config[INTERNAL_PORT]
+  const internalHost = `http://${DEFAULT_HOST}:${internalPort}`
+  // proxy to internal
+  const proxy = new HttpProxy({ target: internalHost, ws: true })
+  console.log('proxy point to ', internalHost)
+  // create public server
+  const publicServer = http.createServer((req, res) => {
+    proxy.web(req, res)
+  }).on('upgrade', (req, socket, head) => {
+    proxy.ws(req, socket, head)
+  })
+
+  return {
+    startPublic: async () => {
+      return new Promise(resolve => {
+        publicServer.listen(
+          publicPort,
+          publicHost,
+          () => {
+            const info = publicServer.address()
+            console.log('publicServer', info)
+            resolve(publicServer.address())
+          }
+        )
+      })
+    },
+    stopPublic: () => {
+      publicServer.close()
+    }
+  }
+}
+/*
+
 // breaking up
 function prepareProxiesConfig (config) {
   const httpProxies = {}
@@ -40,9 +78,7 @@ function prepareProxiesConfig (config) {
   })
   return { httpProxies, wsProxies }
 }
-// Vars
-const debug = getDebug('public-proxy-server')
-// Main - async is not right too, this should return an observable
+
 export default async function createPublicProxyServer (config) {
   // @NOTE the config is already clear by the time it gets here
   // this is not right yet, we should run through the config
@@ -103,3 +139,4 @@ export default async function createPublicProxyServer (config) {
     }
   }
 }
+*/
