@@ -11,19 +11,10 @@
   "scripts": {
     "test": "ava",
     "prepublishOnly": "nyc ava",
-    "devtest": "DEBUG=server-io-core:test* ava",
+    "test:dev": "DEBUG=server-io-core:test* ava",
     "cli": "DEBUG=server-io-core* node ./cli",
-    "demo": "DEBUG=server-io-core* node ./tests/fixtures/demo",
-    "test:option": "DEBUG=server-io-core* ava ./tests/options.test.js",
-    "test:favicon": "ava ./tests/favicon.test.js",
-    "test:inject": "DEBUG=server-io-core* ava ./tests/inject.test.js",
-    "test:socket": "DEBUG=server-io-core* ava ./tests/proxy-socket.test.js",
-    "test:proxy": "DEBUG=server-io-core* ava ./tests/proxy.test.js",
-    "test:demo": "DEBUG=server-io-core* node ./tests/fixtures/run.js",
-    "run:proxied": "DEBUG=server-io-core* node ./tests/fixtures/proxy.js",
-    "start:server": "DEBUG=server-io-core* node ./tests/fixtures/test-proxy.js",
-    "start:client": "DEBUG=server-io-core* node ./tests/fixtures/test-client.js",
-    "qunit": "DEBUG=server-io-core:* node ./tests/qunit/run-qunit.mjs"
+    "test:qunit": "DEBUG=server-io-core:* node ./tests/qunit/run-qunit.mjs",
+    "test:rollup": "rollup -c ./rollup.config.mjs"
   },
   "repository": {
     "type": "git",
@@ -65,6 +56,9 @@
     "stacktrace-js": "^2.0.2"
   },
   "devDependencies": {
+    "@rollup/plugin-buble": "^0.21.3",
+    "@rollup/plugin-commonjs": "^22.0.0",
+    "@rollup/plugin-node-resolve": "^13.3.0",
     "ava": "^4.3.0",
     "debug": "^4.3.4",
     "eslint": "^8.18.0",
@@ -76,16 +70,16 @@
     "node-fetch": "^3.2.6",
     "nyc": "^15.1.0",
     "prettier": "^2.7.1",
+    "qunit": "^2.19.1",
+    "rollup": "^2.75.7",
     "superkoa": "^1.0.3",
     "through2": "^4.0.2",
-    "ws": "^8.8.0",
-    "qunit": "^2.19.1"
+    "ws": "^8.8.0"
   },
   "ava": {
     "files": [
       "tests/**/*.test.mjs",
-      "!tests/qunit/*.*",
-      "!tests/qunit/*.*"
+      "dev/**/*.test.mjs"
     ],
     "require": [
       "esm"
