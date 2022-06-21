@@ -23,7 +23,7 @@
     "run:proxied": "DEBUG=server-io-core* node ./tests/fixtures/proxy.js",
     "start:server": "DEBUG=server-io-core* node ./tests/fixtures/test-proxy.js",
     "start:client": "DEBUG=server-io-core* node ./tests/fixtures/test-client.js",
-    "qunit": "node ./tests/qunit/run-qunit.cjs"
+    "qunit": "node ./tests/qunit/run-qunit.mjs"
   },
   "repository": {
     "type": "git",
@@ -84,6 +84,7 @@
   "ava": {
     "files": [
       "tests/**/*.test.mjs",
+      "!tests/qunit/*.*",
       "!tests/qunit/*.*"
     ],
     "require": [
