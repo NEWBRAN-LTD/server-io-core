@@ -21,12 +21,14 @@ const webserver = http.createServer(
     debug('dest server started on', port)
   }
 )
-const io = new Server(webserver, {
+const io = new Server(webserver)
+/*
+, {
   cors: {
     origin: `http://localhost:${port}`
   }
 })
-
+*/
 io.on('connection', socket => {
   socket.on('msg', (data, fn) => {
     debug('message', data)

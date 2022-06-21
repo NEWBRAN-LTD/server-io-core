@@ -4,6 +4,7 @@ import fsx from 'fs-extra'
 import { join } from 'node:path'
 // import request from 'superkoa'
 import fetch from 'node-fetch'
+import { WSClient } from '../src/lib/socket-io.mjs'
 import serverSetup from './fixtures/server-setup.mjs'
 import koaWithSocketIo from './fixtures/dest-server-with-socket.mjs'
 import { getDirname } from '../src/utils/index.mjs'
@@ -24,6 +25,11 @@ test.before(async (t) => {
         type: 'http',
         context: 'proxy',
         target: `http://localhost:${port0}`
+      },
+      {
+        type: 'ws',
+        context: 'socket',
+        target: `http://localhost:${port0}`
       }
     ]
   })
@@ -42,8 +48,20 @@ test(`It should able to connect to server on ${port0}`, async t => {
   t.is(options.message.banner, text)
 })
 
-test(`It should able to connect to server from ${port} proxy to ${port}`, async t => {
+test(`It should able to connect to server from ${port} proxy to ${port0}`, async t => {
   const res = await fetch(`http://localhost:${port}/proxy`)
   const text = await res.text()
   t.is(options.message.banner, text)
+})
+
+test(`Should able to connect to socket server via ${port0}`, async t => {
+  return new Promise(resolve => {
+    const client = WSClient(`ws://localhost:${port0}`)
+    client.on('connect', () => {
+      client.on('news', news => {
+        t.is(news, 'Hello world!')
+        resolve()
+      })
+    })
+  })
 })
