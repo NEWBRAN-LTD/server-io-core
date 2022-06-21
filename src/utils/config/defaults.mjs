@@ -1,6 +1,7 @@
 // Move from the app.js to here
 import { join } from 'node:path'
 import { getServingIpforOS, getDirname } from '../common.mjs'
+import { version } from 'process'
 const __dirname = getDirname(import.meta.url)
 const src = join(__dirname, '..', '..')
 const defaultProperties = [
@@ -15,6 +16,7 @@ const defaultProperties = [
 ]
 const arraySource = ['middlewares', 'proxies']
 const defaultOptions = {
+  NODE_VERSION: version, // 2022-06-21 discover v18 has bug with the http.createServer!
   /**
    * Basic options
    */

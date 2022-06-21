@@ -21,7 +21,7 @@ test('It should serve up a stock favicon via the internal server', async t => {
   t.is(200, res.status)
 })
 
-test('We should able to access the same favicon via the public proxy', async t => {
+test('We should able to access the same favicon via the public proxy @ ' + `http://localhost:${port}`, async t => {
   const res = await fetch(`http://localhost:${port}/favicon.ico`)
   t.is(200, res.status)
 })

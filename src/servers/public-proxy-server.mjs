@@ -20,28 +20,21 @@ export default async function createPublicProxyServer (config) {
   const proxy = new HttpProxy({ target: internalHost, ws: true })
   debug('proxy point to ', internalHost)
   // prepare the other proxies
-  // const { httpProxies, wsProxies } = prepareProxiesConfig(config)
+  const { httpProxies, wsProxies } = prepareProxiesConfig(config)
   // create public server
   const publicServer = http.createServer((req, res) => {
-    console.log('called???')
-    // const { pathname } = url.parse(req.url)
-    // debug(pathname)
-    /*
     const { pathname } = url.parse(req.url)
     if (httpProxies[pathname]) {
       debug('http proxy catched', pathname)
       return httpProxies[pathname].web(req, res)
-    } */
-    res.end('died')
-    // proxy.web(req, res)
+    }
+    proxy.web(req, res)
   }).on('upgrade', (req, socket, head) => {
-    // const { pathname } = url.parse(req.url)
-    // debug('ws', pathname)
-    /*
+    const { pathname } = url.parse(req.url)
     if (wsProxies[pathname]) {
       debug('ws proxy catched', pathname)
       return wsProxies[pathname].ws(req, socket, head)
-    } */
+    }
     proxy.ws(req, socket, head)
   })
 

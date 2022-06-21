@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url'
 import log from 'fancy-log'
 import { DEFAULT_HOST_IP } from '../lib/constants.mjs'
 import template from 'lodash.template'
-
+import { version } from 'process'
 const IS_TEST = process.env.NODE_ENV === 'test'
 
 export { template }
@@ -111,6 +111,10 @@ export const isWindoze = () => (os.platform().indexOf('win') === 0)
  * @return {string} ip address
  */
 export const getServingIpforOS = () => {
+  const hasBug = version.indexOf('v18') > -1
+  if (hasBug) {
+    return ['localhost'] // V.18 has bug that can not bind to ip but localhost
+  }
   const ip = getLocalIp()
   if (isWindoze()) {
     return ip
