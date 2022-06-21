@@ -2,7 +2,7 @@
 // We create a custom namespace that allow a third party module to call it
 // then pass a callback to handle this calls
 // also pass this to the callback for the developer to use
-import socketIoClient from 'socket.io-client'
+import { WSClient } from '../lib/socket-io.mjs'
 // main
 export default function socketCb (io, namespace) {
   const ctn = namespace.length
@@ -13,7 +13,7 @@ export default function socketCb (io, namespace) {
       callback && typeof callback === 'function'
     ) {
       const nsp = io.of(path)
-      callback(nsp, io, socketIoClient)
+      callback(nsp, io, WSClient)
     }
   }
 }

@@ -25,3 +25,6 @@ export const DEFAULT_HOST = 'localhost'
 
 export const DEFAULT_KEY = '__default__'
 export const INTERNAL_PORT = '__internal_port__'
+
+export const CONTEXT_KEY = 'context'
+export const TARGET_KEY = 'target'

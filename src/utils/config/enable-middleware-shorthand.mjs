@@ -4,7 +4,7 @@
 import { toArray, extend, get, merge, getDirname, ensureFirstSlash } from '../common.mjs'
 import { join } from 'node:path'
 import fsx from 'fs-extra'
-import { WS_PROXY } from '../../lib/constants.mjs'
+import { WS_PROXY, CONTEXT_KEY } from '../../lib/constants.mjs'
 
 const __dirname = getDirname(import.meta.url)
 const pkg = fsx.readJsonSync(join(__dirname, '..', '..', '..', 'package.json'))
@@ -17,7 +17,7 @@ export function prepareProxies (config) {
   if (config.proxies && Array.isArray(config.proxies)) {
     if (config.proxies.length > 0) {
       config.proxies = config.proxies.map(c => {
-        c.context = ensureFirstSlash(c.context)
+        c[CONTEXT_KEY] = ensureFirstSlash(c[CONTEXT_KEY])
         return c
       })
     }
