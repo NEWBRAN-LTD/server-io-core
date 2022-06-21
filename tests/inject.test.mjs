@@ -67,7 +67,7 @@ test.serial('It should able to read html apart from index', async t => {
 
 test.serial('It should able to inject files according to the inject object', async t => {
   const res = await request(t.context.app).get('/dummy.html')
-  console.log('return body', res.text)
+  // console.log('return body', res.text)
   const result = res.text
 
   t.truthy(result)

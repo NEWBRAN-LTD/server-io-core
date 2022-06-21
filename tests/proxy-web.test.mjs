@@ -6,9 +6,9 @@ import { join } from 'node:path'
 import fetch from 'node-fetch'
 import serverSetup from './fixtures/server-setup.mjs'
 import koaWithSocketIo from './fixtures/dest-server-with-socket.mjs'
-import { getDebug, getDirname } from '../src/utils/index.mjs'
+import { getDirname } from '../src/utils/index.mjs'
 // vars
-const debug = getDebug('test:proxy-web')
+// const debug = getDebug('test:proxy-web')
 const __dirname = getDirname(import.meta.url)
 const options = fsx.readJsonSync(join(__dirname, 'fixtures', 'options.json'))
 const port0 = 10001

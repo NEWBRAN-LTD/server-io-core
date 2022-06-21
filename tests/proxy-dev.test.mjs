@@ -36,12 +36,12 @@ async function createProxy (target) {
       proxy.web(req, res)
     }).on('upgrade', (req, socket, head) => {
       const { pathname } = url.parse(req.url)
-      console.log(`calling pathname: ${pathname}`)
-      console.log('hear the socket connection', head)
+      // console.log(`calling pathname: ${pathname}`)
+      // console.log('hear the socket connection', head)
       if (pathname === '/whatever') {
         return dummy3.ws(req, socket, head)
       }
-      console.log('fall back to dummy2')
+      // console.log('fall back to dummy2')
       dummy2.ws(req, socket, head)
     }).listen(proxyPort, () => {
       resolve(srv)
@@ -54,7 +54,7 @@ test.before(async (t) => {
   const wss = new WebSocketServer({ port: 8080 })
   wss.on('connection', function connection (ws) {
     ws.on('message', data => {
-      console.log('hear the client', data.toString())
+      debug('hear the client', data.toString())
     })
   })
   // this is with socket.io
