@@ -16,10 +16,12 @@ const { version } = pkg
 export function prepareProxies (config) {
   if (config.proxies && Array.isArray(config.proxies)) {
     if (config.proxies.length > 0) {
-      config.proxies = config.proxies.map(c => {
-        c[CONTEXT_KEY] = ensureFirstSlash(c[CONTEXT_KEY])
-        return c
-      })
+      config.proxies = config.proxies
+        .filter(c => c.type && c.context && c.target)
+        .map(c => {
+          c[CONTEXT_KEY] = ensureFirstSlash(c[CONTEXT_KEY])
+          return c
+        })
     }
     return config
   }
