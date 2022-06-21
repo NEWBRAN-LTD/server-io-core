@@ -5,7 +5,7 @@ import http from 'node:http'
 import url from 'node:url'
 import fetch from 'node-fetch'
 import HttpProxy from 'http-proxy'
-import { io } from 'socket.io-client'
+import { WSClient } from '../src/lib/socket-io.mjs'
 import serverSetup from './fixtures/server-setup.mjs'
 import koaWithSocketIo from './fixtures/dest-server-with-socket.mjs'
 import { getDebug } from '../src/utils/index.mjs'
@@ -107,10 +107,10 @@ test('Should able to connect to more proxied server', async t => {
   const msg = await res1.text()
   t.is('This is server-io-core', msg)
 })
-// this one just won't work
-test.skip('should also able to connect to a socket.io server', async t => {
+
+test('should also able to connect to a socket.io server', async t => {
   return new Promise(resolve => {
-    const client = io(`ws://localhost:${proxyPort}/some-namespace`)
+    const client = WSClient(`ws://localhost:${proxyPort}/some-namespace`)
     client.on('connect', () => {
       client.on('news', msg => {
         t.truthy(msg)
