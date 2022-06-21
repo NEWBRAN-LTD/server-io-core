@@ -22,7 +22,8 @@
     "test:demo": "DEBUG=server-io-core* node ./tests/fixtures/run.js",
     "run:proxied": "DEBUG=server-io-core* node ./tests/fixtures/proxy.js",
     "start:server": "DEBUG=server-io-core* node ./tests/fixtures/test-proxy.js",
-    "start:client": "DEBUG=server-io-core* node ./tests/fixtures/test-client.js"
+    "start:client": "DEBUG=server-io-core* node ./tests/fixtures/test-client.js",
+    "qunit": "node ./tests/qunit/run-qunit.cjs"
   },
   "repository": {
     "type": "git",
@@ -77,11 +78,13 @@
     "prettier": "^2.7.1",
     "superkoa": "^1.0.3",
     "through2": "^4.0.2",
-    "ws": "^8.8.0"
+    "ws": "^8.8.0",
+    "qunit": "^2.19.1"
   },
   "ava": {
     "files": [
-      "tests/**/*.test.mjs"
+      "tests/**/*.test.mjs",
+      "!tests/qunit/*.*"
     ],
     "require": [
       "esm"
