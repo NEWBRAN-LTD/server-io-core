@@ -12,6 +12,10 @@ const IS_TEST = process.env.NODE_ENV === 'test'
 
 export { template }
 
+export function objLength (obj) {
+  return Object.keys(obj).length
+}
+
 /** import.meta.url */
 export function getDirname (url) {
   const __filename = fileURLToPath(url)

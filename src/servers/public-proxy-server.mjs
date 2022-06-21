@@ -7,7 +7,7 @@ import http from 'node:http'
 import url from 'node:url'
 import HttpProxy from 'http-proxy'
 import { INTERNAL_PORT, DEFAULT_HOST } from '../lib/constants.mjs'
-import { logutil, getDebug } from '../utils/index.mjs'
+import { logutil, getDebug, objLength } from '../utils/index.mjs'
 const debug = getDebug('publix-proxy-server')
 // Main - async is not right too, this should return an observable
 export default async function createPublicProxyServer (config) {
@@ -95,5 +95,6 @@ function prepareProxiesConfig ({ proxies }) {
       debug('unknown proxy config', proxyConfig)
     }
   })
+  debug('proxies http:', objLength(httpProxies), 'ws:', objLength(wsProxies))
   return { httpProxies, wsProxies }
 }
