@@ -96,8 +96,8 @@ export const getLocalIp = () => (
   Object.values(os.networkInterfaces()).filter(net => {
     return net[0].address !== '127.0.0.1'
   }).reduce((last, next) => {
-    return next[0].address
-  }, '')
+    return last.concat([next[0].address])
+  }, [])
 )
 
 /**
@@ -113,9 +113,9 @@ export const isWindoze = () => (os.platform().indexOf('win') === 0)
 export const getServingIpforOS = () => {
   const ip = getLocalIp()
   if (isWindoze()) {
-    return [ip, ip]
+    return ip
   }
-  return [DEFAULT_HOST_IP, ip]
+  return [DEFAULT_HOST_IP].concat(ip)
 }
 
 // Const debug = process.env.DEBUG;

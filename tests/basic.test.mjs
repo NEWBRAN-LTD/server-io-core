@@ -25,7 +25,7 @@ test('It should start with minimum config option', async t => {
   // const res1 = await fetch(`http://localhost:${}`)
 })
 
-test('We should able to access / via the public proxy', async t => {
+test('We should able to access / via the public proxy ' + `http://localhost:${port}`, async t => {
   const res = await fetch(`http://localhost:${port}`)
   t.is(200, res.status)
 })
