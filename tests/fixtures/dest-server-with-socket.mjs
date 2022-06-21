@@ -46,7 +46,7 @@ export default function koaWithSocketIo (p = null) {
   const _port = p || port
   debug(_port)
   webserver.listen(_port, () => {
-    console.log('koaWithSocketIo', _port)
+    // console.log('koaWithSocketIo', _port)
   })
   return {
     webserver,
