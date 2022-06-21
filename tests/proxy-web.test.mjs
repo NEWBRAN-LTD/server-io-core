@@ -59,7 +59,6 @@ test(`Should able to connect via websocket behind the proxy on ${port0}`, async 
     const io = WSClient(`ws://localhost:${port}`)
     io.on('connect', () => {
       io.on('news', news => {
-        console.log('got news', news)
         t.truthy(news)
         resolve(true)
       })
