@@ -22,9 +22,7 @@ const webserver = http.createServer(
   }
 )
 const io = new Server(webserver, {
-  cors: {
-    origin: `http://localhost:${port}`
-  }
+  transport: ['websocket']
 })
 
 io.on('connection', socket => {

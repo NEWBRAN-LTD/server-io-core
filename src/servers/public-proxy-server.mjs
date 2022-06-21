@@ -31,6 +31,7 @@ export default async function createPublicProxyServer (config) {
     proxy.web(req, res)
   }).on('upgrade', (req, socket, head) => {
     const { pathname } = url.parse(req.url)
+    debug('ws pathname', pathname)
     if (wsProxies[pathname]) {
       debug('ws proxy catched', pathname)
       return wsProxies[pathname].ws(req, socket, head)

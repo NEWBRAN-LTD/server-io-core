@@ -7,6 +7,7 @@ import fetch from 'node-fetch'
 import serverSetup from './fixtures/server-setup.mjs'
 import koaWithSocketIo from './fixtures/dest-server-with-socket.mjs'
 import { getDebug, getDirname } from '../src/utils/index.mjs'
+import { WSClient } from '../src/lib/socket-io.mjs'
 // vars
 const debug = getDebug('test:proxy-web')
 const __dirname = getDirname(import.meta.url)
@@ -24,6 +25,11 @@ test.before(async (t) => {
         type: 'http',
         context: 'proxy',
         target: `http://localhost:${port0}`
+      },
+      {
+        type: 'ws',
+        context: '/socket.io/',
+        target: `ws://localhost:${port0}`
       }
     ]
   })
@@ -42,8 +48,20 @@ test(`It should able to connect to server on ${port0}`, async t => {
   t.is(options.message.banner, text)
 })
 
-test(`It should able to connect to server from ${port} proxy to ${port}`, async t => {
+test(`It should able to connect to server from ${port} proxy to ${port0}`, async t => {
   const res = await fetch(`http://localhost:${port}/proxy`)
   const text = await res.text()
   t.is(options.message.banner, text)
+})
+
+test(`Should able to connect via websocket behind the proxy on ${port0}`, async t => {
+  return new Promise(resolve => {
+    const io = WSClient(`ws://localhost:${port}`)
+    io.on('connect', () => {
+      io.on('news', news => {
+        t.truthy(news)
+        resolve(true)
+      })
+    })
+  })
 })
