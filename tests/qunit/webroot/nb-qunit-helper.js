@@ -16,6 +16,7 @@
         url: window.location.pathname
       }
       errors = []
+      console.log(data)
       console.debug(data)
     }
   })

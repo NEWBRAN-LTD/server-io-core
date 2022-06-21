@@ -47,6 +47,15 @@ export const parseObj = data => {
     return data
   }
 }
+
+const callColor = (color, arg) => {
+  if (typeof chalk[color] === 'function') {
+    Reflect.apply(chalk[color], null, [arg])
+  } else {
+    chalk.magenta(arg) // show a stock color
+  }
+}
+
 // Encap to one func
 export const displayError = e => {
   // This is required so we just do a simple test here
@@ -72,9 +81,13 @@ export const displayError = e => {
       msgToArr.forEach(a => {
         if (typeof a === 'object') {
           rows.push(lb)
+          let rowCtn = 1
           forEach(a, (v, k) => {
-            toShow = isObject(v) ? util.inspect(v, false, null) : v
-            rows.push([chalk.white(k + ':'), chalk[color](toShow)].join(' '))
+            if (v) {
+              toShow = isObject(v) ? util.inspect(v, false, null) : v
+              rows.push([chalk.white(rowCtn + ':'), callColor(color, toShow)].join(' '))
+              ++rowCtn
+            }
           })
         } else {
           rows.push(a)

@@ -18,5 +18,7 @@ export default function startMsg (config) {
   ].join('')
   list.internal = `http://${DEFAULT_HOST}:${config.port0}`
   // show table
-  console.table(list)
+  if (process.env.DEBUG) {
+    console.table(list) // need more work
+  }
 }

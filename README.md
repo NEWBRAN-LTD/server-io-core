@@ -16,10 +16,11 @@ $ server-io-core /path/to/your/web/root
 
 [English Manual](https://gitlab.com/newbranltd/server-io-core/blob/master/_EN.md)
 
-## Update 2022
+## V.2 Update
 
-V.2 is completely rewritten in ESM. With a branch new micro-service like structure.
-That will allows us to take this further in the future releases.
+V.2 is a complete rewrite in `ESM` (which means it won't run on pre 14-lts version of node.js).
+With a new micro-service like internal structure.
+This will allows us to take this further in the future releases.
 
 ---
 
