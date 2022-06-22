@@ -1,6 +1,7 @@
 
 import runQunitSetup from './run-qunit-setup.mjs'
 const config = {
+  qunit: true,
   port: 0,
   webroot: [
     '/home/joel/Projects/github/server-io-core/tests/qunit/webroot',

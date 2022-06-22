@@ -190,7 +190,7 @@ export function renderScriptsMiddleware (config) {
           }
           break
         default:
-          // @2018-08-20 new feature in alpha.12 @TODO
+          // @2018-08-20 started @2022-06-22 additional features added
           if ((await hasExtraVirtualOverwrite(ctx, config)) === true) {
             debug('catch hasExtraVirtualOverwrite')
           }

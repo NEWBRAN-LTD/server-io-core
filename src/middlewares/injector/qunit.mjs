@@ -1,8 +1,6 @@
 // This is a special qunit helper to replace the external load qunit files to the local serve files
 /*
 https://code.jquery.com/qunit/
-qunit-2.19.1.css
-qunit-2.19.1.js
 */
 import { join } from 'node:path'
 import {
@@ -10,7 +8,8 @@ import {
 } from '../../utils/index.mjs'
 import {
   success,
-  failed
+  failed,
+  debug
 } from './helpers.mjs'
 // setup
 const projectRoot = process.cwd()
@@ -27,7 +26,9 @@ export async function serveQunit (ctx, config) {
   if (found.length > 0) {
     try {
       const file = found[0].split('/')[1]
-      const doc = await readDocument(join(nodeModulesDir, dir, file))
+      const target = join(nodeModulesDir, dir, file)
+      debug('qunit target', target)
+      const doc = await readDocument(target)
       success(ctx, doc)
       return true
     } catch (e) {
