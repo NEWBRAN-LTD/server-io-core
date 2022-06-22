@@ -24,8 +24,8 @@ export default function rollupServerIoCorePlugin (options = {}) {
   let running
   // Return
   return {
-    name: 'serverIo',
-    ongenerate () {
+    name: 'server-io-core',
+    generateBundle () {
       if (!running) {
         running = true
         start()

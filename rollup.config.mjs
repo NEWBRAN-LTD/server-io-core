@@ -4,8 +4,10 @@ import commonjs from '@rollup/plugin-commonjs'
 import node from '@rollup/plugin-node-resolve'
 import buble from '@rollup/plugin-buble'
 import { terser } from 'rollup-plugin-terser'
-import scss from 'rollup-plugin-scss'
+// import scss from 'rollup-plugin-scss'
 import css from 'rollup-plugin-import-css'
+// import cssOnly from 'rollup-plugin-css-only'
+// import badCSS from './plugins/rollup-plugin-bad-css.mjs'
 import { getDirname } from './src/utils/index.mjs'
 const __dirname = getDirname(import.meta.url)
 const buildDir = join(__dirname, 'dev', 'rollup', 'build')
@@ -16,36 +18,35 @@ const buildDir = join(__dirname, 'dev', 'rollup', 'build')
 export default [{
   input: join(__dirname, 'dev', 'rollup', 'app', 'src', 'index.js'),
   output: [{
-    // intro: environmentMode,
-    exports: 'none',
-    format: 'esm',
+    name: 'testApp',
+    // exports: 'default',
+    format: 'iife',
     file: join(buildDir, 'app.js'),
     sourcemap: true,
     plugins: [
-      node({
-        jsnext: true,
-        main: true,
-        browser: true,
-        module: true
-      }),
-      commonjs({
-        include: ['node_modules/**'],
-        ignoreGlobals: true,
-        sourceMap: true
-      }),
-      css({
-        output: join(buildDir, 'app.css')
-      }),
-      scss({
-        output: join(buildDir, 'app.scss.css')
-      }),
-      buble({
-        jsx: 'h',
-        exclude: 'node_modules/!**',
-        transforms: { modules: false }
-      }),
       terser()
     ],
     globals: ['fs', 'path', 'readline']
-  }]
+  }],
+  plugins: [
+    node({
+      jsnext: true,
+      main: true,
+      browser: true,
+      module: true
+    }),
+    commonjs({
+      include: ['node_modules/**'],
+      ignoreGlobals: true,
+      sourceMap: true
+    }),
+    css({
+      output: join(buildDir, 'app.css')
+    }),
+    buble({
+      jsx: 'h',
+      exclude: 'node_modules/!**',
+      transforms: { modules: false }
+    })
+  ]
 }]
