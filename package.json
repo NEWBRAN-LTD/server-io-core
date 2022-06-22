@@ -1,6 +1,6 @@
 {
   "name": "server-io-core",
-  "version": "2.0.0",
+  "version": "2.0.1-beta.1",
   "description": "Developement server using Koa with Socket.io reload and Javascript remote debugger",
   "main": "index.js",
   "module": "index.mjs",
@@ -110,7 +110,7 @@
     "failFast": true
   },
   "bin": {
-    "server-io-core": "./cli.mjs",
+    "server-io-core": "./cli.js",
     "serverio": "./cli.mjs"
   }
 }
