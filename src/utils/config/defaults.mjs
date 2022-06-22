@@ -34,6 +34,7 @@ const defaultOptions = {
   headers: {},
   middlewares: [],
   favicon: null, // Pass a string path then we search for favicon, false disable it
+  qunit: false, // serve up qunit unit files locally
   // Middleware: Proxy
   // @NOTE 2022-06-17
   // there is one way to fix the proxy with socket
