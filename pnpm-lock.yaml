@@ -3,6 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@rollup/plugin-buble': ^0.21.3
   '@rollup/plugin-commonjs': ^22.0.0
+  '@rollup/plugin-json': ^4.1.0
   '@rollup/plugin-node-resolve': ^13.3.0
   '@rollup/pluginutils': ^4.2.1
   '@to1source/event': ^1.5.3
@@ -81,6 +82,7 @@ dependencies:
 devDependencies:
   '@rollup/plugin-buble': 0.21.3_rollup@2.75.7
   '@rollup/plugin-commonjs': 22.0.0_rollup@2.75.7
+  '@rollup/plugin-json': 4.1.0_rollup@2.75.7
   '@rollup/plugin-node-resolve': 13.3.0_rollup@2.75.7
   '@rollup/pluginutils': 4.2.1
   ava: 4.3.0
@@ -1900,6 +1902,15 @@ packages:
       is-reference: 1.2.1
       magic-string: 0.25.9
       resolve: 1.22.1
+      rollup: 2.75.7
+    dev: true
+
+  /@rollup/plugin-json/4.1.0_rollup@2.75.7:
+    resolution: {integrity: sha512-yfLbTdNS6amI/2OpmbiBoW12vngr5NW2jCJVZSBEz+H5KfUJZ2M7sDjk0U6GOOdCWFVScShte29o9NezJ53TPw==}
+    peerDependencies:
+      rollup: ^1.20.0 || ^2.0.0
+    dependencies:
+      '@rollup/pluginutils': 3.1.0_rollup@2.75.7
       rollup: 2.75.7
     dev: true
 
