@@ -8,15 +8,16 @@ import { terser } from 'rollup-plugin-terser'
 import css from 'rollup-plugin-import-css'
 // import cssOnly from 'rollup-plugin-css-only'
 // import badCSS from './plugins/rollup-plugin-bad-css.mjs'
-import { getDirname } from './src/utils/index.mjs'
+import { getDirname } from '../src/utils/index.mjs'
 const __dirname = getDirname(import.meta.url)
-const buildDir = join(__dirname, 'dev', 'rollup', 'build')
+const appDir = join(__dirname, 'rollup')
+const buildDir = join(appDir, 'build')
 // import progress from 'rollup-plugin-progress'
 // import visualizer from 'rollup-plugin-visualizer'
 // import uglify from 'rollup-plugin-uglify'
 // const environmentMode = 'const process = { env: { NODE_ENV: \'development\' } }'
 export default [{
-  input: join(__dirname, 'dev', 'rollup', 'app', 'src', 'index.js'),
+  input: join(appDir, 'app', 'src', 'index.js'),
   output: [{
     name: 'testApp',
     // exports: 'default',

@@ -15,6 +15,7 @@
     "test:dev": "DEBUG=server-io-core:test* ava",
     "cli": "DEBUG=server-io-core* node ./cli",
     "test:qunit": "DEBUG=server-io-core:* node ./tests/qunit/run-qunit.mjs",
+    "test:dev:rollup": "rollup -c ./dev/rollup.config.mjs",
     "test:rollup": "rollup -c ./rollup.config.mjs"
   },
   "repository": {
