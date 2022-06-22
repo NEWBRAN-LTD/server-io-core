@@ -8,11 +8,11 @@ import buble from '@rollup/plugin-buble'
 const environmentMode = 'const process = { env: { NODE_ENV: \'development\' } }'
 
 export default {
-  entry: 'dev/rollup/src/app.js',
+  entry: 'dev/rollup/src/app/index.js',
   intro: environmentMode,
   exports: 'none',
   format: 'iife',
-  dest: 'dev/rollup/dist/app-bundle.js',
+  dest: 'dev/rollup/build/app.js',
   sourceMap: true,
   plugins: [
     node({
