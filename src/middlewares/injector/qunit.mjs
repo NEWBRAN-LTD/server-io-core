@@ -19,7 +19,19 @@ const js = 'qunit.js'
 const css = 'qunit.css'
 const qunitJs = [dir, js].join('/')
 const qunitCss = [dir, css].join('/')
-const targets = [qunitJs, qunitCss]
+
+export function prepareQunit (config) {
+  if (config.qunit !== false) {
+    return targets
+      .map(file => ({
+        ['/' + file]: serveQunit
+      }))
+      .reduce((a, b) => Object.assign(a, b), {})
+  }
+  return {}
+}
+
+export const targets = [qunitJs, qunitCss]
 // Main method
 export async function serveQunit (ctx, config) {
   const found = targets.filter(url => ctx.url === '/' + url)

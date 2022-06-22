@@ -4,18 +4,15 @@
  */
 import fs from 'node:fs'
 import { join } from 'node:path'
-import chalk from 'chalk'
 import {
   getSocketConnectionConfig,
   readDocument,
-  isString,
   template,
   getDirname
 } from '../../utils/index.mjs'
 import {
   stacktraceName,
-  dummyJs,
-  cordovaJs
+  dummyJs
 } from '../../lib/constants.mjs'
 import {
   debug,
@@ -24,14 +21,12 @@ import {
   getCacheVer
 } from './helpers.mjs'
 import {
-  serveCordova
+  prepareCordova
 } from './cordova.mjs'
 import {
-  serveQunit
+  prepareQunit
 } from './qunit.mjs'
-
 const __dirname = getDirname(import.meta.url)
-
 /**
  * Get scripts paths
  * @param {object} config the main config object
@@ -90,14 +85,12 @@ export const searchStacktraceSrc = () => {
  * @return {boolean} true has false not
  */
 export async function hasExtraVirtualOverwrite (ctx, config) {
-  const features = {
-    cordova: serveCordova,
-    qunit: serveQunit
-  }
-  for (const key in features) {
-    if (config[key] !== false) {
-      await features[key](ctx, config)
-    }
+  const features = [prepareCordova, prepareQunit]
+    .map(fn => fn(config))
+    .reduce((a, b) => Object.assign(a, b), {})
+  const key = ctx.url
+  if (features[key]) {
+    return await features[key](ctx, config)
   }
   return false
 }
@@ -124,6 +117,7 @@ export function renderScriptsMiddleware (config) {
     // Only catch certain methods
     if (ctx.method === 'GET') {
       const url = ctx.url
+      debug('render-scripts-middleware', url)
       switch (url) {
         // Without the {} will get a Unexpected lexical declaration in case block  no-case-declarations
         case dummyJs: {
@@ -162,7 +156,7 @@ export function renderScriptsMiddleware (config) {
           }
           return // Terminate it
         }
-        case debuggerJs:
+        case debuggerJs: {
           try {
             const body = await readDocument(
               join(__dirname, '..', 'debugger', 'client.tpl')
@@ -188,7 +182,8 @@ export function renderScriptsMiddleware (config) {
           } catch (e) {
             failed(ctx, e, 'Error reading io-debugger-client file')
           }
-          break
+          return // Terminate it
+        }
         default:
           // @2018-08-20 started @2022-06-22 additional features added
           if ((await hasExtraVirtualOverwrite(ctx, config)) === true) {

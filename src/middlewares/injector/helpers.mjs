@@ -42,6 +42,6 @@ export const failed = (ctx, e, msg) => {
  * @return {string} html document
  */
 export const getCacheVer = doc => {
-  debug('getCacheVer', doc)
+  // debug('getCacheVer', doc)
   return doc
 }

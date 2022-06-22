@@ -12,8 +12,19 @@ import {
 import {
   cordovaJs
 } from '../../lib/constants.mjs'
-
 const __dirname = getDirname(import.meta.url)
+// if this is enable then return the mapped object
+export function prepareCordova (config) {
+  if (config.cordova !== false) {
+    const cordovaTargets = targets
+      .map(file => ({ ['/' + file]: serveCordova }))
+      .reduce((a, b) => Object.assign(a, b), {})
+    return cordovaTargets
+  }
+  return {}
+}
+
+export const targets = [cordovaJs]
 // main method
 export async function serveCordova (ctx, config) {
   if (ctx.url === '/' + cordovaJs) {

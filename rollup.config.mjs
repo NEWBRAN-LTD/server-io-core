@@ -22,12 +22,6 @@ export default [{
     file: join(buildDir, 'app.js'),
     sourcemap: true,
     plugins: [
-      css({
-        output: join(buildDir, 'app.css')
-      }),
-      scss({
-        output: join(buildDir, 'app.scss.css')
-      }),
       node({
         jsnext: true,
         main: true,
@@ -38,6 +32,12 @@ export default [{
         include: ['node_modules/**'],
         ignoreGlobals: true,
         sourceMap: true
+      }),
+      css({
+        output: join(buildDir, 'app.css')
+      }),
+      scss({
+        output: join(buildDir, 'app.scss.css')
       }),
       buble({
         jsx: 'h',
