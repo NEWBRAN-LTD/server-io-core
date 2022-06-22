@@ -3,7 +3,6 @@
 import { join, resolve } from 'node:path'
 import glob from 'glob'
 import serverIoCore from '../../index.mjs'
-
 /**
  * @param {object} config configuration
  * @return {object} promise resolve the config for server-io-core
@@ -18,6 +17,7 @@ const getConfig = (config) => {
       }
       // now start the server
       const opts = {
+        qunit: config.qunit,
         port: config.port,
         webroot: config.webroot,
         open: config.open,

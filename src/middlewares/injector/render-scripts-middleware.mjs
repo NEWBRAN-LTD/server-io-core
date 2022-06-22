@@ -4,27 +4,29 @@
  */
 import fs from 'node:fs'
 import { join } from 'node:path'
-import chalk from 'chalk'
 import {
-  logutil,
   getSocketConnectionConfig,
   readDocument,
-  getDocLen,
-  getDebug,
-  isString,
   template,
   getDirname
 } from '../../utils/index.mjs'
 import {
   stacktraceName,
-  contentType,
-  dummyJs,
-  cordovaJs
+  dummyJs
 } from '../../lib/constants.mjs'
-
-const debug = getDebug('render-scripts')
+import {
+  debug,
+  success,
+  failed,
+  getCacheVer
+} from './helpers.mjs'
+import {
+  prepareCordova
+} from './cordova.mjs'
+import {
+  prepareQunit
+} from './qunit.mjs'
 const __dirname = getDirname(import.meta.url)
-
 /**
  * Get scripts paths
  * @param {object} config the main config object
@@ -77,64 +79,18 @@ export const searchStacktraceSrc = () => {
 }
 
 /**
- * Success output
- * @param {object} ctx koa app
- * @param {string} doc rendered html
- * @return {undefined} nothing
- */
-export const success = (ctx, doc) => {
-  ctx.status = 200
-  ctx.type = contentType
-  ctx.length = getDocLen(doc)
-  ctx.body = doc
-}
-
-/**
- * Group all the fail call
- * @param {object} ctx koa app
- * @param {object} e Error
- * @param {string} msg to throw
- * @return {undefined} nothing
- */
-export const failed = (ctx, e, msg) => {
-  logutil(chalk.red(msg), chalk.yellow(e))
-  ctx.throw(404, msg)
-}
-
-/**
- * @TODO caching the document
- * @param {string} doc html
- * @return {string} html document
- */
-export const getCacheVer = doc => {
-  return doc
-}
-
-/**
  * Allow user supply overwrite files
  * @param {object} ctx koa
  * @param {object} config options
  * @return {boolean} true has false not
  */
 export async function hasExtraVirtualOverwrite (ctx, config) {
-  // Fake cordova.js @alpha.12
-  if (config.cordova !== false) {
-    if (ctx.url === '/' + cordovaJs) {
-      if (config.cordova === true) {
-        const doc = await readDocument(join(__dirname, 'cordova.js.tpl'))
-        success(ctx, doc)
-        return true
-      }
-
-      if (isString(config.cordova)) {
-        try {
-          success(ctx, await readDocument(config.cordova))
-          return true
-        } catch (e) {
-          failed(ctx, e, config.cordova + ' Not found!')
-        }
-      }
-    }
+  const features = [prepareCordova, prepareQunit]
+    .map(fn => fn(config))
+    .reduce((a, b) => Object.assign(a, b), {})
+  const key = ctx.url
+  if (features[key]) {
+    return await features[key](ctx, config)
   }
   return false
 }
@@ -159,8 +115,9 @@ export function renderScriptsMiddleware (config) {
   return async function middleware (ctx, next) {
     await next()
     // Only catch certain methods
-    if (ctx.method === 'GET' || ctx.method === 'HEAD') {
+    if (ctx.method === 'GET') {
       const url = ctx.url
+      // debug('render-scripts-middleware', url)
       switch (url) {
         // Without the {} will get a Unexpected lexical declaration in case block  no-case-declarations
         case dummyJs: {
@@ -199,7 +156,7 @@ export function renderScriptsMiddleware (config) {
           }
           return // Terminate it
         }
-        case debuggerJs:
+        case debuggerJs: {
           try {
             const body = await readDocument(
               join(__dirname, '..', 'debugger', 'client.tpl')
@@ -225,9 +182,10 @@ export function renderScriptsMiddleware (config) {
           } catch (e) {
             failed(ctx, e, 'Error reading io-debugger-client file')
           }
-          break
+          return // Terminate it
+        }
         default:
-          // @2018-08-20 new feature in alpha.12 @TODO
+          // @2018-08-20 started @2022-06-22 additional features added
           if ((await hasExtraVirtualOverwrite(ctx, config)) === true) {
             debug('catch hasExtraVirtualOverwrite')
           }

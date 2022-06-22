@@ -5,6 +5,8 @@ export const DEBUG_MAIN_KEY = 'server-io-core'
  */
 export const stacktraceName = 'stacktrace.js'
 export const contentType = 'application/javascript; charset=utf-8'
+export const CSS_CONTENT_TYPE = 'text/css; charset=utf8'
+
 export const dummyJs = '/server-io-core-dummy.js'
 export const DEFAULT_HOST_IP = '0.0.0.0'
 export const cordovaJs = 'cordova.js'

@@ -8,6 +8,7 @@ const config = {
   ],
   open: true,
   reload: true,
+  qunit: true,
   testFilePattern: '*.qunit.js',
   baseDir: '/home/joel/Projects/github/server-io-core/tests'
 }
