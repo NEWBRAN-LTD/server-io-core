@@ -16,25 +16,39 @@ const outplugins = [
   buble()
 ]
 
-export default [{
-  external: /node_modules/,
-  input: join(__dirname, 'index.mjs'),
-  output: [{
-    exports: 'default',
-    format: 'cjs',
-    file: join(__dirname, 'index.js'),
-    sourcemap: true,
-    plugins: outplugins
-  }],
-  plugins
-}, {
-  external: /node_modules/,
-  input: join(__dirname, 'cli.mjs'),
-  output: [{
-    format: 'cjs',
-    file: join(__dirname, 'cli.js'),
-    sourcemap: false,
-    plugins: outplugins
-  }],
-  plugins
-}]
+export default [
+  {
+    external: /node_modules/,
+    input: join(__dirname, 'index.mjs'),
+    output: [{
+      exports: 'default',
+      format: 'cjs',
+      file: join(__dirname, 'index.js'),
+      sourcemap: true,
+      plugins: outplugins
+    }],
+    plugins
+  },
+  {
+    external: /node_modules/,
+    input: join(__dirname, 'cli.mjs'),
+    output: [{
+      format: 'cjs',
+      file: join(__dirname, 'cli.js'),
+      sourcemap: false,
+      plugins: outplugins
+    }],
+    plugins
+  },
+  {
+    external: /node_modules/,
+    input: join(__dirname, 'helper.mjs'),
+    output: [{
+      format: 'cjs',
+      file: join(__dirname, 'helper.js'),
+      sourcemap: false,
+      plugins: outplugins
+    }],
+    plugins
+  }
+]

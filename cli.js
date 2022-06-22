@@ -13,7 +13,6 @@ var process$1 = require('process');
 var Koa = require('koa');
 var http = require('node:http');
 var https = require('node:https');
-var chalk = require('chalk');
 var debugFn = require('debug');
 var open = require('open');
 var send = require('koa-send');
@@ -41,7 +40,6 @@ var template__default = /*#__PURE__*/_interopDefaultLegacy(template);
 var Koa__default = /*#__PURE__*/_interopDefaultLegacy(Koa);
 var http__default = /*#__PURE__*/_interopDefaultLegacy(http);
 var https__default = /*#__PURE__*/_interopDefaultLegacy(https);
-var chalk__default = /*#__PURE__*/_interopDefaultLegacy(chalk);
 var debugFn__default = /*#__PURE__*/_interopDefaultLegacy(debugFn);
 var open__default = /*#__PURE__*/_interopDefaultLegacy(open);
 var send__default = /*#__PURE__*/_interopDefaultLegacy(send);
@@ -736,7 +734,7 @@ function webserverGenerator (app, config) {
         };
       } else {
         msg = 'The key or cert you provide via the https configuration can not be found!';
-        logutil(chalk__default["default"].white('[https Error]'), chalk__default["default"].red(msg));
+        logutil('[https Error]', msg);
         throw new Error(msg)
       }
     } else if (config.https.pfx && config.https.passphrase) {
@@ -747,7 +745,7 @@ function webserverGenerator (app, config) {
         };
       } else {
         msg = 'The pfx you prvide via the https configuration can not be found!';
-        logutil(chalk__default["default"].white('[https Error]'), chalk__default["default"].red(msg));
+        logutil('[https Error]', msg);
         throw new Error(msg)
       }
     } else {
@@ -937,30 +935,7 @@ function socketIoGenerator (server, config) {
  */
 
 const keys = ['browser', 'location'];
-const lb = chalk__default["default"].white('-'.repeat(90));
-const colorTable = { debug: 'red', info: 'magenta', warning: 'yellow' };
-
-/**
- * Just getting some color configuration
- * @param {object} data from config
- * @return {string} color
- */
-function getColor (data) {
-  const dc = 'cyan';
-  const str = data.color ? data.color
-    : data.from
-      ? data.from : dc;
-  if (str === dc) {
-    return str // Default
-  }
-  if (colorTable[str]) {
-    return table[str]
-  }
-  if (chalk__default["default"][str]) {
-    return str
-  }
-  return dc
-}
+const lb = '-'.repeat(90);
 
 // Ditch the npm:table
 const table = rows => {
@@ -979,36 +954,27 @@ const parseObj = data => {
   }
 };
 
-const callColor = (color, arg) => {
-  if (typeof chalk__default["default"][color] === 'function') {
-    Reflect.apply(chalk__default["default"][color], null, [arg]);
-  } else {
-    chalk__default["default"].magenta(arg); // show a stock color
-  }
-};
-
 // Encap to one func
 const displayError = e => {
   // This is required so we just do a simple test here
   // logutil('check typeof ' + data.toString());
-  const color = getColor(e);
   const rows = [];
-  if (e.from && e.color) {
-    rows.push(chalk__default["default"].white(`FROM: ${e.from}`));
+  if (e.from) {
+    rows.push(`FROM: ${e.from}`);
   }
   keys.forEach((key) => {
     if (e[key]) {
-      rows.push([chalk__default["default"].white(key + ':'), chalk__default["default"].cyan(e[key])].join(' '));
+      rows.push([key + ':', e[key]].join(' '));
     }
   });
   const _msg = parseObj(e.msg);
   if (isString(_msg)) {
-    rows.push([chalk__default["default"].white('MESSAGE:'), chalk__default["default"][color](e.msg)].join(' '));
+    rows.push(['MESSAGE:', e.msg].join(' '));
   } else {
     let toShow;
     const msgToArr = isString(_msg) ? parseObj(_msg) : _msg;
     if (Array.isArray(msgToArr)) {
-      rows.push(chalk__default["default"].white('MESSAGE(S):'));
+      rows.push('MESSAGE(S):');
       msgToArr.forEach(a => {
         if (typeof a === 'object') {
           rows.push(lb);
@@ -1016,7 +982,7 @@ const displayError = e => {
           forEach(a, (v, k) => {
             if (v) {
               toShow = isObject(v) ? util__default["default"].inspect(v, false, null) : v;
-              rows.push([chalk__default["default"].white(rowCtn + ':'), callColor(color, toShow)].join(' '));
+              rows.push([rowCtn + ':', toShow].join(' '));
               ++rowCtn;
             }
           });
@@ -1028,13 +994,13 @@ const displayError = e => {
     } else if (isObject(_msg)) {
       rows.push(lb);
       forEach(_msg, (v, k) => {
-        rows.push([chalk__default["default"].white(k + ':'), chalk__default["default"][color](v)].join(' '));
+        rows.push([k + ':', v].join(' '));
       });
       rows.push([lb + 'END'].join(' '));
     } else {
       // This is to accomdate the integration with other logging system sending back different messages
       rows.push(
-        [chalk__default["default"].white('MESSAGES:'), chalk__default["default"][color](util__default["default"].inspect(_msg, false, null))].join(
+        ['MESSAGES:', util__default["default"].inspect(_msg, false, null)].join(
           ' '
         )
       );
@@ -1057,11 +1023,11 @@ const debug$9 = getDebug('debugger');
 function debuggerServer (config, io) {
   // Show if this is running
   logutil(
-    chalk__default["default"].white('[debugger] ') +
-      chalk__default["default"].yellow('server is running') +
+    '[debugger] ' +
+      'server is running' +
       ' ' +
-      chalk__default["default"].white(config.version) +
-      (config.debugger.broadcast ? chalk__default["default"].green('[broadcasting]') : '')
+      config.version +
+      (config.debugger.broadcast ? '[broadcasting]' : '')
   );
   // Run
   const nsp = io.of(config.debugger.namespace);
@@ -1075,22 +1041,22 @@ function debuggerServer (config, io) {
         // Console log output
         const time = new Date().toString();
         // Output to console
-        logutil(chalk__default["default"].yellow('io debugger msg @ ' + time));
+        logutil('io debugger msg @ ' + time);
         const error = parseObj(data);
         if (config.debugger.broadcast) {
           nsp.emit('broadcastdebug', { time, error });
         }
 
         if (typeof error === 'string') {
-          table([chalk__default["default"].yellow('STRING TYPE ERROR'), chalk__default["default"].red(error)]);
+          table(['STRING TYPE ERROR', error]);
         } else if (typeof error === 'object') {
           // Will always be a object anyway
           displayError(error);
         } else {
           // Dump the content out
           table([
-            chalk__default["default"].cyan('UNKNOWN ERROR TYPE'),
-            chalk__default["default"].red(util__default["default"].inspect(data, false, 2))
+            'UNKNOWN ERROR TYPE',
+            util__default["default"].inspect(data, false, 2)
           ]);
         }
       } catch (e) {
@@ -1139,14 +1105,14 @@ function watcher (config) {
     props.send({ type: 'start', config });
     debug$8('[Watcher][start]', config.filePaths);
     if (config.verbose) {
-      logutil(chalk__default["default"].yellow('[Watcher][start]', config.filePaths));
+      logutil('[Watcher][start]', config.filePaths);
     }
     // V1.0.3 we add back the kefir here to regulate the socket callback
     stream = kefir__default["default"].stream(emitter => {
       // Listen to the channel
       props.on('message', opt => {
         if (config.verbose) {
-          logutil(chalk__default["default"].yellow(`[Watcher][${opt.type}]`), opt);
+          logutil(`[Watcher][${opt.type}]`, opt);
         }
         lastChangeFiles.add(opt);
         emitter.emit(lastChangeFiles);
@@ -1215,7 +1181,7 @@ function reload (filePaths, io, config) {
   // Return a unwatch callback
   return () => {
     if (config.verbose) {
-      logutil(chalk__default["default"].yellow('[reload][exit]'));
+      logutil('[reload][exit]');
     }
     watcherCb(false);
     // Exit the namespace
@@ -1252,7 +1218,7 @@ const success = (ctx, doc, otherContentType = false) => {
  * @return {undefined} nothing
  */
 const failed = (ctx, e, msg) => {
-  logutil(chalk__default["default"].red(msg), chalk__default["default"].yellow(e));
+  logutil(msg, e);
   ctx.throw(404, msg);
 };
 
@@ -1674,7 +1640,7 @@ const getFilesToInject = function (config) {
       // Display an error inline here
       const msg = '[inject] Configuration is incorrect for injector to work!';
       debug$5('injector error', msg);
-      logutil(chalk__default["default"].red(msg), config);
+      logutil(msg, config);
     }
     return { js: '', css: '' }
   }
