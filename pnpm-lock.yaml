@@ -4,6 +4,7 @@ specifiers:
   '@rollup/plugin-buble': ^0.21.3
   '@rollup/plugin-commonjs': ^22.0.0
   '@rollup/plugin-node-resolve': ^13.3.0
+  '@rollup/pluginutils': ^4.2.1
   '@to1source/event': ^1.5.3
   ava: ^4.3.0
   chalk: ^5.0.1
@@ -43,6 +44,7 @@ specifiers:
   prettier: ^2.7.1
   qunit: ^2.19.1
   rollup: ^2.75.7
+  rollup-plugin-css-only: ^3.1.0
   rollup-plugin-import-css: ^3.0.3
   rollup-plugin-scss: ^3.0.0
   rollup-plugin-terser: ^7.0.2
@@ -80,6 +82,7 @@ devDependencies:
   '@rollup/plugin-buble': 0.21.3_rollup@2.75.7
   '@rollup/plugin-commonjs': 22.0.0_rollup@2.75.7
   '@rollup/plugin-node-resolve': 13.3.0_rollup@2.75.7
+  '@rollup/pluginutils': 4.2.1
   ava: 4.3.0
   debug: 4.3.4
   enzyme: 3.11.0
@@ -102,6 +105,7 @@ devDependencies:
   prettier: 2.7.1
   qunit: 2.19.1
   rollup: 2.75.7
+  rollup-plugin-css-only: 3.1.0_rollup@2.75.7
   rollup-plugin-import-css: 3.0.3_rollup@2.75.7
   rollup-plugin-scss: 3.0.0
   rollup-plugin-terser: 7.0.2_rollup@2.75.7
@@ -11985,6 +11989,16 @@ packages:
     dependencies:
       hash-base: 3.1.0
       inherits: 2.0.4
+    dev: true
+
+  /rollup-plugin-css-only/3.1.0_rollup@2.75.7:
+    resolution: {integrity: sha512-TYMOE5uoD76vpj+RTkQLzC9cQtbnJNktHPB507FzRWBVaofg7KhIqq1kGbcVOadARSozWF883Ho9KpSPKH8gqA==}
+    engines: {node: '>=10.12.0'}
+    peerDependencies:
+      rollup: 1 || 2
+    dependencies:
+      '@rollup/pluginutils': 4.2.1
+      rollup: 2.75.7
     dev: true
 
   /rollup-plugin-import-css/3.0.3_rollup@2.75.7:

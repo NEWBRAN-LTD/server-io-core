@@ -52,8 +52,9 @@ const defaultOptions = {
   },
   https: {
     enable: false,
-    devKeyPem: join(src, 'certs', 'cert.pem'),
-    devCrtPem: join(src, 'certs', 'cert.crt')
+    // for security reason we are NOT going to supply any pre-build certs
+    devKeyPem: 'cert.pem',
+    devCrtPem: 'cert.crt'
   },
   /**
    * NOTE:

@@ -1,22 +1,10 @@
 /**
  * Try out all the different koa functions here
  */
-/*
-const { webserverGenerator, staticServe } = require('../src/lib/server');
-const open = require('../src/lib/utils/open');
-const { createConfiguration } = require('../src/lib/options');
-const { scriptsInjectorMiddleware, renderScriptsMiddleware } = require('../src/lib/injector');
-const { dummyJs } = require('../src/lib/utils/constants');
-*/
 const serverIoCore = require('../../../index');
 const { join } = require('path');
 const debug = require('debug')('server-io-core:dev');
-const proxySrv = require('../proxy');
 const options = require('../options.json');
-
-const port = options.proxy.port;
-// Start the proxySrv
-const proxySrvApp = proxySrv();
 
 // Options
 const config = {

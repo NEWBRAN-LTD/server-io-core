@@ -3,6 +3,10 @@
 import serverIoCore from './index.mjs'
 // @TODO
 export default function rollupServerIoCorePlugin (options = {}) {
+  // if no port specified, we set it to random
+  if (!('port' in options)) {
+    options.port = 0
+  }
   // Force these options on config
   const config = Object.assign(options, {
     autoStart: false, // We must overwrite this for the plugin to work
@@ -24,8 +28,8 @@ export default function rollupServerIoCorePlugin (options = {}) {
   let running
   // Return
   return {
-    name: 'serverIo',
-    ongenerate () {
+    name: 'server-io',
+    generateBundle () {
       if (!running) {
         running = true
         start()
