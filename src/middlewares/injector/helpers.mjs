@@ -16,9 +16,9 @@ export const debug = getDebug('render-scripts')
  * @param {string} doc rendered html
  * @return {undefined} nothing
  */
-export const success = (ctx, doc) => {
+export const success = (ctx, doc, otherContentType = false) => {
   ctx.status = 200
-  ctx.type = contentType
+  ctx.type = otherContentType || contentType
   ctx.length = getDocLen(doc)
   ctx.body = doc
 }

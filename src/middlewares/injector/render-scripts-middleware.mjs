@@ -117,7 +117,7 @@ export function renderScriptsMiddleware (config) {
     // Only catch certain methods
     if (ctx.method === 'GET') {
       const url = ctx.url
-      debug('render-scripts-middleware', url)
+      // debug('render-scripts-middleware', url)
       switch (url) {
         // Without the {} will get a Unexpected lexical declaration in case block  no-case-declarations
         case dummyJs: {

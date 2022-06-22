@@ -7,6 +7,9 @@ import {
   readDocument
 } from '../../utils/index.mjs'
 import {
+  CSS_CONTENT_TYPE
+} from '../../lib/constants.mjs'
+import {
   success,
   failed,
   debug
@@ -41,7 +44,8 @@ export async function serveQunit (ctx, config) {
       const target = join(nodeModulesDir, dir, file)
       debug('qunit target', target)
       const doc = await readDocument(target)
-      success(ctx, doc)
+      const contentType = target.indexOf('.css') > -1 ? CSS_CONTENT_TYPE : false
+      success(ctx, doc, contentType)
       return true
     } catch (e) {
       failed(ctx, e, 'search for qunit file failed')
