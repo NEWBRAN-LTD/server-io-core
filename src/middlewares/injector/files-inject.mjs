@@ -2,7 +2,6 @@
 import cheerio from 'cheerio'
 import glob from 'glob'
 import fsx from 'fs-extra'
-import chalk from 'chalk'
 import { logutil, getDebug, isString } from '../../utils/index.mjs'
 
 const debug = getDebug('files-inject')
@@ -165,7 +164,7 @@ export const getFilesToInject = function (config) {
       // Display an error inline here
       const msg = '[inject] Configuration is incorrect for injector to work!'
       debug('injector error', msg)
-      logutil(chalk.red(msg), config)
+      logutil(msg, config)
     }
     return { js: '', css: '' }
   }

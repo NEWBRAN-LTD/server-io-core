@@ -40,7 +40,6 @@
   "homepage": "https://github.com/NEWBRAN-LTD/server-io-core#README",
   "dependencies": {
     "@to1source/event": "^1.5.3",
-    "chalk": "^5.0.1",
     "cheerio": "^1.0.0-rc.11",
     "chokidar": "^3.5.3",
     "fancy-log": "^2.0.0",

@@ -2,34 +2,10 @@
  * Take out a bunch of functions from the original debugger setup
  */
 import util from 'node:util'
-import chalk from 'chalk'
 import { logutil, forEach, isString, isObject } from '../../utils/common.mjs'
 
 const keys = ['browser', 'location']
-const lb = chalk.white('-'.repeat(90))
-const colorTable = { debug: 'red', info: 'magenta', warning: 'yellow' }
-
-/**
- * Just getting some color configuration
- * @param {object} data from config
- * @return {string} color
- */
-export function getColor (data) {
-  const dc = 'cyan'
-  const str = data.color ? data.color
-    : data.from
-      ? data.from : dc
-  if (str === dc) {
-    return str // Default
-  }
-  if (colorTable[str]) {
-    return table[str]
-  }
-  if (chalk[str]) {
-    return str
-  }
-  return dc
-}
+const lb = '-'.repeat(90)
 
 // Ditch the npm:table
 export const table = rows => {
@@ -48,36 +24,27 @@ export const parseObj = data => {
   }
 }
 
-const callColor = (color, arg) => {
-  if (typeof chalk[color] === 'function') {
-    Reflect.apply(chalk[color], null, [arg])
-  } else {
-    chalk.magenta(arg) // show a stock color
-  }
-}
-
 // Encap to one func
 export const displayError = e => {
   // This is required so we just do a simple test here
   // logutil('check typeof ' + data.toString());
-  const color = getColor(e)
   const rows = []
-  if (e.from && e.color) {
-    rows.push(chalk.white(`FROM: ${e.from}`))
+  if (e.from) {
+    rows.push(`FROM: ${e.from}`)
   }
   keys.forEach((key) => {
     if (e[key]) {
-      rows.push([chalk.white(key + ':'), chalk.cyan(e[key])].join(' '))
+      rows.push([key + ':', e[key]].join(' '))
     }
   })
   const _msg = parseObj(e.msg)
   if (isString(_msg)) {
-    rows.push([chalk.white('MESSAGE:'), chalk[color](e.msg)].join(' '))
+    rows.push(['MESSAGE:', e.msg].join(' '))
   } else {
     let toShow
     const msgToArr = isString(_msg) ? parseObj(_msg) : _msg
     if (Array.isArray(msgToArr)) {
-      rows.push(chalk.white('MESSAGE(S):'))
+      rows.push('MESSAGE(S):')
       msgToArr.forEach(a => {
         if (typeof a === 'object') {
           rows.push(lb)
@@ -85,7 +52,7 @@ export const displayError = e => {
           forEach(a, (v, k) => {
             if (v) {
               toShow = isObject(v) ? util.inspect(v, false, null) : v
-              rows.push([chalk.white(rowCtn + ':'), callColor(color, toShow)].join(' '))
+              rows.push([rowCtn + ':', toShow].join(' '))
               ++rowCtn
             }
           })
@@ -97,13 +64,13 @@ export const displayError = e => {
     } else if (isObject(_msg)) {
       rows.push(lb)
       forEach(_msg, (v, k) => {
-        rows.push([chalk.white(k + ':'), chalk[color](v)].join(' '))
+        rows.push([k + ':', v].join(' '))
       })
       rows.push([lb + 'END'].join(' '))
     } else {
       // This is to accomdate the integration with other logging system sending back different messages
       rows.push(
-        [chalk.white('MESSAGES:'), chalk[color](util.inspect(_msg, false, null))].join(
+        ['MESSAGES:', util.inspect(_msg, false, null)].join(
           ' '
         )
       )

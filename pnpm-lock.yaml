@@ -8,7 +8,6 @@ specifiers:
   '@rollup/pluginutils': ^4.2.1
   '@to1source/event': ^1.5.3
   ava: ^4.3.0
-  chalk: ^5.0.1
   cheerio: ^1.0.0-rc.11
   chokidar: ^3.5.3
   debug: ^4.3.4
@@ -59,7 +58,6 @@ specifiers:
 
 dependencies:
   '@to1source/event': 1.5.3
-  chalk: 5.0.1
   cheerio: 1.0.0-rc.11
   chokidar: 3.5.3
   fancy-log: 2.0.0
@@ -3835,6 +3833,7 @@ packages:
   /chalk/5.0.1:
     resolution: {integrity: sha512-Fo07WOYGqMfCWHOzSXOt2CxDbC6skS/jO9ynEcmpANMoPrD+W1r1K6Vx7iNm+AQmETU1Xr2t+n8nzkV9t6xh3w==}
     engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
+    dev: true
 
   /char-regex/1.0.2:
     resolution: {integrity: sha512-kWWXztvZ5SBQV+eRgKFeh8q5sLuZY2+8WUIzlxWVTg+oGwY14qylx1KbKzHd8P6ZYkAg0xyIDU9JMHhyJMZ1jw==}

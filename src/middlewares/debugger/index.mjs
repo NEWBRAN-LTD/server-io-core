@@ -2,7 +2,6 @@
  * The socket.io server and reporting
  */
 import util from 'node:util'
-import chalk from 'chalk'
 import { logutil, getDebug } from '../../utils/index.mjs'
 import { table, parseObj, displayError } from './helpers.mjs'
 const debug = getDebug('debugger')
@@ -16,11 +15,11 @@ const debug = getDebug('debugger')
 export default function debuggerServer (config, io) {
   // Show if this is running
   logutil(
-    chalk.white('[debugger] ') +
-      chalk.yellow('server is running') +
+    '[debugger] ' +
+      'server is running' +
       ' ' +
-      chalk.white(config.version) +
-      (config.debugger.broadcast ? chalk.green('[broadcasting]') : '')
+      config.version +
+      (config.debugger.broadcast ? '[broadcasting]' : '')
   )
   // Run
   const nsp = io.of(config.debugger.namespace)
@@ -34,22 +33,22 @@ export default function debuggerServer (config, io) {
         // Console log output
         const time = new Date().toString()
         // Output to console
-        logutil(chalk.yellow('io debugger msg @ ' + time))
+        logutil('io debugger msg @ ' + time)
         const error = parseObj(data)
         if (config.debugger.broadcast) {
           nsp.emit('broadcastdebug', { time, error })
         }
 
         if (typeof error === 'string') {
-          table([chalk.yellow('STRING TYPE ERROR'), chalk.red(error)])
+          table(['STRING TYPE ERROR', error])
         } else if (typeof error === 'object') {
           // Will always be a object anyway
           displayError(error)
         } else {
           // Dump the content out
           table([
-            chalk.cyan('UNKNOWN ERROR TYPE'),
-            chalk.red(util.inspect(data, false, 2))
+            'UNKNOWN ERROR TYPE',
+            util.inspect(data, false, 2)
           ])
         }
       } catch (e) {

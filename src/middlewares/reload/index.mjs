@@ -1,5 +1,4 @@
 // watcher
-import chalk from 'chalk'
 import { logutil, getDebug, extend } from '../../utils/index.mjs'
 import { EVENT_NAME } from '../../lib/constants.mjs'
 import watcher from '../watcher/index.mjs'
@@ -30,7 +29,7 @@ export default function reload (filePaths, io, config) {
   // Return a unwatch callback
   return () => {
     if (config.verbose) {
-      logutil(chalk.yellow('[reload][exit]'))
+      logutil('[reload][exit]')
     }
     watcherCb(false)
     // Exit the namespace

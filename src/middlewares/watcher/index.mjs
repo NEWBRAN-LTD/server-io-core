@@ -6,7 +6,6 @@ import EventEmitter from 'node:events'
 import { fork } from 'node:child_process'
 import { join } from 'node:path'
 import kefir from 'kefir'
-import chalk from 'chalk'
 import { logutil, getDebug, getDirname } from '../../utils/index.mjs'
 import { EVENT_NAME, DEFAULT_WAIT } from '../../lib/constants.mjs'
 // setup
@@ -26,14 +25,14 @@ export default function watcher (config) {
     props.send({ type: 'start', config })
     debug('[Watcher][start]', config.filePaths)
     if (config.verbose) {
-      logutil(chalk.yellow('[Watcher][start]', config.filePaths))
+      logutil('[Watcher][start]', config.filePaths)
     }
     // V1.0.3 we add back the kefir here to regulate the socket callback
     stream = kefir.stream(emitter => {
       // Listen to the channel
       props.on('message', opt => {
         if (config.verbose) {
-          logutil(chalk.yellow(`[Watcher][${opt.type}]`), opt)
+          logutil(`[Watcher][${opt.type}]`, opt)
         }
         lastChangeFiles.add(opt)
         emitter.emit(lastChangeFiles)

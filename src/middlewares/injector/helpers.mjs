@@ -2,7 +2,6 @@
 import {
   contentType
 } from '../../lib/constants.mjs'
-import chalk from 'chalk'
 import {
   logutil,
   getDocLen,
@@ -31,7 +30,7 @@ export const success = (ctx, doc, otherContentType = false) => {
  * @return {undefined} nothing
  */
 export const failed = (ctx, e, msg) => {
-  logutil(chalk.red(msg), chalk.yellow(e))
+  logutil(msg, e)
   ctx.throw(404, msg)
 }
 

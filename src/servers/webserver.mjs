@@ -4,7 +4,6 @@
 import fs from 'node:fs'
 import http from 'node:http'
 import https from 'node:https'
-import chalk from 'chalk'
 import { logutil } from '../utils/index.mjs'
 import { DEFAULT_PORT } from '../lib/constants.mjs'
 // According to https://github.com/visionmedia/supertest/issues/111
@@ -28,7 +27,7 @@ export default function webserverGenerator (app, config) {
         }
       } else {
         msg = 'The key or cert you provide via the https configuration can not be found!'
-        logutil(chalk.white('[https Error]'), chalk.red(msg))
+        logutil('[https Error]', msg)
         throw new Error(msg)
       }
     } else if (config.https.pfx && config.https.passphrase) {
@@ -39,7 +38,7 @@ export default function webserverGenerator (app, config) {
         }
       } else {
         msg = 'The pfx you prvide via the https configuration can not be found!'
-        logutil(chalk.white('[https Error]'), chalk.red(msg))
+        logutil('[https Error]', msg)
         throw new Error(msg)
       }
     } else {
