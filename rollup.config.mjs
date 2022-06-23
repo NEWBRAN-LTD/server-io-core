@@ -33,6 +33,17 @@ export default [
   },
   {
     external: /node_modules/,
+    input: join(__dirname, 'src', 'lib', 'cli.mjs'),
+    output: [{
+      format: 'cjs',
+      file: join(__dirname, 'cjs', 'lib', 'cli.mjs.js'),
+      sourcemap: false,
+      plugins: outplugins
+    }],
+    plugins
+  },
+  {
+    external: /node_modules/,
     input: join(__dirname, 'helper.mjs'),
     output: [{
       format: 'cjs',
