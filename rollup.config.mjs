@@ -15,7 +15,7 @@ const plugins = [
 const outplugins = [
   buble()
 ]
-// const intro = 'const ENVIRONMENT = \'cjs\';'
+
 export default [
   {
     external: /node_modules/,

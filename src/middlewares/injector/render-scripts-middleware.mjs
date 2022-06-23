@@ -20,12 +20,11 @@ import {
   failed,
   getCacheVer
 } from './helpers.mjs'
-import {
-  prepareCordova
-} from './cordova.mjs'
-import {
-  prepareQunit
-} from './qunit.mjs'
+import { reloadTpl } from '../reload/index.mjs'
+import { debuggerClientTpl } from '../debugger/index.mjs'
+import { prepareCordova } from './cordova.mjs'
+import { prepareQunit } from './qunit.mjs'
+// get where are we
 const __dirname = getDirname(import.meta.url)
 /**
  * Get scripts paths
@@ -127,10 +126,10 @@ export function renderScriptsMiddleware (config) {
         }
         case reloadJs: {
           try {
-            const body = await readDocument(
-              join(__dirname, '..', 'reload', 'reload.tpl')
+            const body = await Promise.resolve(
+              reloadTpl
             ).then(data => {
-              const clientFileFn = template(data.toString())
+              const clientFileFn = template(data)
               const connectionOptions = getSocketConnectionConfig(config)
               return getCacheVer(
                 clientFileFn({
@@ -158,8 +157,8 @@ export function renderScriptsMiddleware (config) {
         }
         case debuggerJs: {
           try {
-            const body = await readDocument(
-              join(__dirname, '..', 'debugger', 'client.tpl')
+            const body = await Promise.resolve(
+              debuggerClientTpl
             ).then(data => {
               // If they want to ping the server back on init
               const ping =
