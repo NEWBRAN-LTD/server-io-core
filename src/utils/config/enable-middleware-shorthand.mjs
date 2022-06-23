@@ -1,14 +1,33 @@
 /**
  * Port from the original gulp-webserver
  */
-import { toArray, extend, get, merge, getDirname, ensureFirstSlash } from '../common.mjs'
+import {
+  toArray,
+  extend,
+  get,
+  merge,
+  getDirname,
+  ensureFirstSlash,
+  getDebug
+} from '../index.mjs'
 import { join } from 'node:path'
 import fsx from 'fs-extra'
 import { WS_PROXY, CONTEXT_KEY } from '../../lib/constants.mjs'
-
+const debug = getDebug('enable-middleware-shorthand')
 const __dirname = getDirname(import.meta.url)
-const pkg = fsx.readJsonSync(join(__dirname, '..', '..', '..', 'package.json'))
-const { version } = pkg
+
+/** wrap this one function because there is case the __dirname is wrong! */
+function getPkgInfo () {
+  const pkgFile = join(__dirname, '..', '..', '..', 'package.json')
+  if (fsx.existsSync(pkgFile)) {
+    return fsx.readJsonSync(pkgFile)
+  }
+  debug('__dirname', __dirname)
+  debug('NOT FOUND!', pkgFile)
+  return { version: 'UNKNOWN' }
+}
+
+const { version } = getPkgInfo()
 
 /**
  * prepare the proxies configuration
