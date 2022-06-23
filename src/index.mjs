@@ -5,7 +5,7 @@ import { createPublicProxyServer } from './servers/public-proxy-server.mjs'
 import { openInBrowser } from './utils/open.mjs'
 import { INTERNAL_PORT } from './lib/constants.mjs'
 import { getDebug } from './utils/index.mjs'
-import startMsg from './utils/start-msg.mjs'
+import { startMsg } from './utils/start-msg.mjs'
 const debug = getDebug('main')
 // Main
 export async function serverIoCore (config = {}) {

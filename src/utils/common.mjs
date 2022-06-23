@@ -31,13 +31,12 @@ export function objLength (obj) {
   @BUG the cjs version return one level up cause all sorts of porblem
 */
 export function getDirname (url) {
-  console.log(url)
   try {
     console.log('cjs', __dirname)
     return __dirname
   } catch (e) {
     const __filename = fileURLToPath(url)
-    console.log(__filename)
+    // console.log(__filename)
     return path.dirname(__filename)
   }
 }
