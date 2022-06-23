@@ -26,8 +26,6 @@ import { prepareCordova } from './cordova.mjs'
 import { prepareQunit } from './qunit.mjs'
 // get where are we
 const __dirname = getDirname(import.meta.url)
-// pnpm screw this up this time?
-// debug('__dirname', __dirname)
 /**
  * Get scripts paths
  * @param {object} config the main config object
@@ -69,7 +67,6 @@ export const searchStacktraceSrc = () => {
     'dist',
     'stacktrace-with-promises-and-json-polyfills.js'
   )
-  // file:///home/joel/Projects/gitee/create-qunit/node_modules/.pnpm/server-io-core@2.1.0-beta.3_debug@4.3.4/node_modules/server-io-core/src/utils/common.mjs:287:6
   const projectRoot = join(__dirname, '..', '..', '..')
   const here = resolve('./')
   const fullPath = join(projectRoot, 'node_modules', stacktraceFile)
