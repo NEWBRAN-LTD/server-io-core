@@ -1,4 +1,5 @@
 // Cli interface in ESM
-import { cli, serve } from './src/lib/cli.mjs'
+import { serve } from './src/lib/cli.mjs'
+import { serverIoCore } from './src/index.mjs'
 // Run
-serve(cli)
+serve(serverIoCore)
