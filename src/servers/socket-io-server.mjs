@@ -1,8 +1,8 @@
 /**
  * Socket server generator
  */
-import { WSServer } from '../lib/socket-io.mjs'
-import { socketCb } from './socket-cb.mjs'
+import { WSClient, WSServer } from '../lib/socket-io.mjs'
+
 /**
  * @param {object} server http server instance
  * @param {object} config full config options
@@ -25,4 +25,21 @@ export function socketIoGenerator (server, config) {
   }
   // Export it again
   return io
+}
+// V1.0.2
+// We create a custom namespace that allow a third party module to call it
+// then pass a callback to handle this calls
+// also pass this to the callback for the developer to use
+function socketCb (io, namespace) {
+  const ctn = namespace.length
+  for (let i = 0; i < ctn; ++i) {
+    const { path, callback } = namespace[i]
+    if (
+      path && typeof path === 'string' &&
+      callback && typeof callback === 'function'
+    ) {
+      const nsp = io.of(path)
+      callback(nsp, io, WSClient)
+    }
+  }
 }
