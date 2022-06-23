@@ -1,6 +1,6 @@
 {
   "name": "server-io-core",
-  "version": "2.1.0-beta.3",
+  "version": "2.1.0-beta.4",
   "description": "Developement server using Koa with Socket.io reload and Javascript remote debugger",
   "main": "index.js",
   "module": "index.mjs",

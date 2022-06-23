@@ -29,7 +29,8 @@ var template__default = /*#__PURE__*/_interopDefaultLegacy(template);
  */
 // get where are we
 const __dirname$1 = common.getDirname((typeof document === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : (document.currentScript && document.currentScript.src || new URL('middlewares/injector/render-scripts-middleware.mjs.js', document.baseURI).href)));
-helpers.debug('__dirname', __dirname$1);
+// pnpm screw this up this time?
+// debug('__dirname', __dirname)
 /**
  * Get scripts paths
  * @param {object} config the main config object
@@ -67,14 +68,14 @@ const getFeatureScripts = function (config) {
 const searchStacktraceSrc = () => {
   // @NOTE this is problematic
   const stacktraceFile = path.join(
-    'node_modules',
     'stacktrace-js',
     'dist',
     'stacktrace-with-promises-and-json-polyfills.js'
   );
-  const fullPath = path.join(__dirname$1, '..', '..', '..', stacktraceFile);
-  helpers.debug(fullPath);
-  return [fullPath, stacktraceFile]
+  const projectRoot = path.join(__dirname$1, '..', '..', '..');
+  const fullPath = path.join(projectRoot, 'node_modules', stacktraceFile);
+  const libPath = path.join(projectRoot, 'lib', stacktraceFile);
+  return [libPath, fullPath, path.join('node_modules', stacktraceFile)]
     .filter(f => {
       return fs__default["default"].existsSync(f)
     })
