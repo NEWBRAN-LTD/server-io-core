@@ -24,9 +24,6 @@ import { reloadTpl } from '../reload/index.mjs'
 import { debuggerClientTpl } from '../debugger/index.mjs'
 import { prepareCordova } from './cordova.mjs'
 import { prepareQunit } from './qunit.mjs'
-
-const here = resolve('./')
-debug('HERE?', here)
 // get where are we
 const __dirname = getDirname(import.meta.url)
 // pnpm screw this up this time?
@@ -74,10 +71,10 @@ export const searchStacktraceSrc = () => {
   )
   // file:///home/joel/Projects/gitee/create-qunit/node_modules/.pnpm/server-io-core@2.1.0-beta.3_debug@4.3.4/node_modules/server-io-core/src/utils/common.mjs:287:6
   const projectRoot = join(__dirname, '..', '..', '..')
-  debug('project root', projectRoot)
+  const here = resolve('./')
   const fullPath = join(projectRoot, 'node_modules', stacktraceFile)
   const libPath = join(projectRoot, 'lib', stacktraceFile)
-  const searchPaths = [libPath, fullPath, join('node_modules', stacktraceFile)]
+  const searchPaths = [libPath, fullPath, join(here, 'node_modules', stacktraceFile)]
   debug('searchPaths', searchPaths)
   return searchPaths
     .filter(f => {
