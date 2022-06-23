@@ -5,7 +5,7 @@ import bodyParser from 'koa-bodyparser'
 import { scriptsInjectorMiddleware, renderScriptsMiddleware } from './injector/index.mjs'
 import { faviconMiddlewareGenerator } from './favicon/index.mjs'
 // main
-export default function registerMiddlewares (app, config) {
+export function registerMiddlewares (app, config) {
   let addDebugger = false
   const addReload = config.reload.enable
   let middlewares = [bodyParser()]

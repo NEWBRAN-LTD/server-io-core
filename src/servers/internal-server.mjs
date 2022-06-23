@@ -1,16 +1,16 @@
 // the combine startup server now is here
 import Koa from 'koa'
 // the 3 main servers
-import webserverGenerator from './webserver.mjs'
-import staticServe from './static-serve.mjs'
-import socketServer from './socket.mjs'
+import { webserverGenerator } from './webserver.mjs'
+import { staticServe } from './static-serve.mjs'
+import { socketIoGenerator } from './socket-io-server.mjs'
 // the others
-import debuggerServer from '../middlewares/debugger/index.mjs'
-import clientReload from '../middlewares/reload/index.mjs'
+import { debuggerServer } from '../middlewares/debugger/index.mjs'
+import { reloadGenerator } from '../middlewares/reload/index.mjs'
 // middlewares
-import middlewaresHandler from '../middlewares/index.mjs'
+import { registerMiddlewares } from '../middlewares/index.mjs'
 import { getDebug } from '../utils/index.mjs'
-const debug = getDebug('serverIoCore')
+const debug = getDebug('createInternalServer')
 // main
 export async function createInternalServer (config) {
   let io = null
@@ -32,7 +32,7 @@ export async function createInternalServer (config) {
     (config.debugger.enable && config.debugger.server === true)
   ) {
     socketIsEnabled = true
-    io = socketServer(webserver, config)
+    io = socketIoGenerator(webserver, config)
   }
   // @TODO we need to combine the two socket server into one
   // 1. check if those modules that require a socket server is needed
@@ -41,7 +41,7 @@ export async function createInternalServer (config) {
   // Run the watcher, return an unwatch function
   if (config.reload.enable) {
     // Limiting the config options
-    unwatchFn.push(clientReload(config.webroot, io, config.reload))
+    unwatchFn.push(reloadGenerator(config.webroot, io, config.reload))
     namespaceInUsed.push(config.reload.namespace)
   }
   // Debugger server start
@@ -51,7 +51,7 @@ export async function createInternalServer (config) {
   }
   // Enable the injectors here, if socket server is enable that means
   // The injector related function need to be activated
-  middlewaresHandler(app, config)
+  registerMiddlewares(app, config)
   // @TODO should this return a promise so we know if it works or not?
   // Keep the init of the static serve until the last call
   staticServe(app, config)
