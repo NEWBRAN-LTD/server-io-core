@@ -1,5 +1,14 @@
+import { getConfigForQunit } from '../../helper.mjs'
+import serverIoCore from '../../index.mjs'
+// export it
+async function runQunitSetup (userConfig) {
+  return getConfigForQunit(userConfig)
+    .then(serverIoCore)
+    .catch(err => {
+      console.error(err)
+    })
+}
 
-import runQunitSetup from './run-qunit-setup.mjs'
 const config = {
   port: 0,
   webroot: [
