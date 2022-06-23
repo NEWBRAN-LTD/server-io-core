@@ -10,11 +10,11 @@ var os = require('node:os');
 var url = require('node:url');
 var template = require('lodash.template');
 var process$1 = require('process');
+var debugFn = require('debug');
+var open = require('open');
 var Koa = require('koa');
 var http = require('node:http');
 var https = require('node:https');
-var debugFn = require('debug');
-var open = require('open');
 var send = require('koa-send');
 var socket_ioClient = require('socket.io-client');
 var socket_io = require('socket.io');
@@ -37,11 +37,11 @@ var fs__default = /*#__PURE__*/_interopDefaultLegacy(fs);
 var os__default = /*#__PURE__*/_interopDefaultLegacy(os);
 var url__default = /*#__PURE__*/_interopDefaultLegacy(url);
 var template__default = /*#__PURE__*/_interopDefaultLegacy(template);
+var debugFn__default = /*#__PURE__*/_interopDefaultLegacy(debugFn);
+var open__default = /*#__PURE__*/_interopDefaultLegacy(open);
 var Koa__default = /*#__PURE__*/_interopDefaultLegacy(Koa);
 var http__default = /*#__PURE__*/_interopDefaultLegacy(http);
 var https__default = /*#__PURE__*/_interopDefaultLegacy(https);
-var debugFn__default = /*#__PURE__*/_interopDefaultLegacy(debugFn);
-var open__default = /*#__PURE__*/_interopDefaultLegacy(open);
 var send__default = /*#__PURE__*/_interopDefaultLegacy(send);
 var EventEmitter__default = /*#__PURE__*/_interopDefaultLegacy(EventEmitter);
 var kefir__default = /*#__PURE__*/_interopDefaultLegacy(kefir);
@@ -78,7 +78,16 @@ const INTERNAL_PORT = '__internal_port__';
 const CONTEXT_KEY = 'context';
 
 // Utils
+
 const IS_TEST = process.env.NODE_ENV === 'test';
+
+/** wrap this one function because there is case the __dirname is wrong! */
+function getPkgInfo (pkgFile) {
+  if (fsx__default["default"].existsSync(pkgFile)) {
+    return fsx__default["default"].readJsonSync(pkgFile)
+  }
+  return { version: 'UNKNOWN' }
+}
 
 function objLength (obj) {
   return Object.keys(obj).length
@@ -443,13 +452,108 @@ const defaultOptions = {
   }
 };
 
+// main
+function getDebug (key) {
+  return debugFn__default["default"]([DEBUG_MAIN_KEY, key].join(':'))
+}
+
+// Open in browser
+
+const debug$b = getDebug('open');
+
+/**
+ * Get hostname to open
+ * @param {string} hostname config.hostname
+ * @return {string} modified hostname
+ */
+const getHostname = hostname => {
+  const h = Array.isArray(hostname) ? hostname[0] : hostname;
+  return isWindoze() ? h : h === DEFAULT_HOST_IP ? DEFAULT_HOSTNAME : h
+};
+
+/**
+ * Construct the open url
+ * @param {object} config full configuration
+ * @return {string} url
+ */
+const constructUrl = config => {
+  return [
+    'http' + (config.https.enable === false ? '' : 's'),
+    '//' + getHostname(config.host),
+    config.port
+  ].join(':')
+};
+
+/**
+ * Add try catch because sometime if its enable and try this from the server
+ * and it will throw error
+ * @param {object} config options
+ * @return {boolean} true on open false on failed
+ */
+function openInBrowser (config) {
+  try {
+    debug$b('[open configuration]', config.open);
+    let multiple = false;
+    const args = [constructUrl(config)];
+    // If there is just the true option then we need to construct the link
+    if (config.open.browser) {
+      if (isString(config.open.browser)) {
+        args.push({ app: config.open.browser });
+      } else if (Array.isArray(config.open.browser)) {
+        multiple = config.open.browser.map(browser => {
+          return { app: browser }
+        });
+      }
+    }
+    // Push this down for the nyc to do coverage deeper
+    if (process.env.NODE_ENV === 'test' || config.open.enable === false) {
+      return args
+    }
+
+    if (multiple === false) {
+      debug$b('[open]', args);
+      Reflect.apply(open__default["default"], open__default["default"], args);
+    } else {
+      // Open multiple browsers at once
+      multiple.forEach(browser => {
+        debug$b('[open]', browser, args);
+        Reflect.apply(open__default["default"], open__default["default"], args.concat([browser]));
+      });
+    }
+    return true
+  } catch (e) {
+    debug$b('[open] error:', e);
+    return false
+  }
+}
+
+// use the console.table to show some fancy output
+
+function startMsg (config) {
+  if (process.env.NODE_ENV === 'test') {
+    return // do nothing
+  }
+  const list = {};
+  list.banner = `server-io-core (${config.version})`;
+  const displayHost = Array.isArray(config.host) ? config.host[1] : config.host;
+  list.hostname = [
+    'http',
+    config.https.enable ? 's' : '',
+    '://',
+    displayHost,
+    ':',
+    config.port
+  ].join('');
+  list.internal = `http://${DEFAULT_HOST}:${config.port0}`;
+  // show table
+  if (process.env.DEBUG) {
+    console.table(list); // need more work
+  }
+}
+
 /**
  * Port from the original gulp-webserver
  */
-
-const __dirname$4 = getDirname((typeof document === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : (document.currentScript && document.currentScript.src || new URL('cli.js', document.baseURI).href)));
-const pkg = fsx__default["default"].readJsonSync(path.join(__dirname$4, '..', '..', '..', 'package.json'));
-const { version } = pkg;
 
 /**
  * prepare the proxies configuration
@@ -592,8 +696,6 @@ function enableMiddlewareShorthand (
       config[prop] = merge({}, originalDefaults[prop], { enable: false });
     }
   }
-  // Here we add things that we don't want to get overwritten
-  config.version = version;
   // Change from sessionId to timestamp, just for reference not in use anywhere
   config.timestamp = Date.now();
   return config
@@ -609,105 +711,6 @@ function createConfiguration (options = {}) {
     options
   );
   return prepareProxies(config)
-}
-
-// main
-function getDebug (key) {
-  return debugFn__default["default"]([DEBUG_MAIN_KEY, key].join(':'))
-}
-
-// Open in browser
-
-const debug$b = getDebug('open');
-
-/**
- * Get hostname to open
- * @param {string} hostname config.hostname
- * @return {string} modified hostname
- */
-const getHostname = hostname => {
-  const h = Array.isArray(hostname) ? hostname[0] : hostname;
-  return isWindoze() ? h : h === DEFAULT_HOST_IP ? DEFAULT_HOSTNAME : h
-};
-
-/**
- * Construct the open url
- * @param {object} config full configuration
- * @return {string} url
- */
-const constructUrl = config => {
-  return [
-    'http' + (config.https.enable === false ? '' : 's'),
-    '//' + getHostname(config.host),
-    config.port
-  ].join(':')
-};
-
-/**
- * Add try catch because sometime if its enable and try this from the server
- * and it will throw error
- * @param {object} config options
- * @return {boolean} true on open false on failed
- */
-function openInBrowser (config) {
-  try {
-    debug$b('[open configuration]', config.open);
-    let multiple = false;
-    const args = [constructUrl(config)];
-    // If there is just the true option then we need to construct the link
-    if (config.open.browser) {
-      if (isString(config.open.browser)) {
-        args.push({ app: config.open.browser });
-      } else if (Array.isArray(config.open.browser)) {
-        multiple = config.open.browser.map(browser => {
-          return { app: browser }
-        });
-      }
-    }
-    // Push this down for the nyc to do coverage deeper
-    if (process.env.NODE_ENV === 'test' || config.open.enable === false) {
-      return args
-    }
-
-    if (multiple === false) {
-      debug$b('[open]', args);
-      Reflect.apply(open__default["default"], open__default["default"], args);
-    } else {
-      // Open multiple browsers at once
-      multiple.forEach(browser => {
-        debug$b('[open]', browser, args);
-        Reflect.apply(open__default["default"], open__default["default"], args.concat([browser]));
-      });
-    }
-    return true
-  } catch (e) {
-    debug$b('[open] error:', e);
-    return false
-  }
-}
-
-// use the console.table to show some fancy output
-
-function startMsg (config) {
-  if (process.env.NODE_ENV === 'test') {
-    return // do nothing
-  }
-  const list = {};
-  list.banner = `server-io-core (${config.version})`;
-  const displayHost = Array.isArray(config.host) ? config.host[1] : config.host;
-  list.hostname = [
-    'http',
-    config.https.enable ? 's' : '',
-    '://',
-    displayHost,
-    ':',
-    config.port
-  ].join('');
-  list.internal = `http://${DEFAULT_HOST}:${config.port0}`;
-  // show table
-  if (process.env.DEBUG) {
-    console.table(list); // need more work
-  }
 }
 
 /**
@@ -1089,8 +1092,8 @@ function debuggerServer (config, io) {
  * And communicate back via the subprocess.send
  */
 // setup
-const __dirname$3 = getDirname((typeof document === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : (document.currentScript && document.currentScript.src || new URL('cli.js', document.baseURI).href)));
-const watcherFile = path.join(__dirname$3, 'fork.mjs');
+const __dirname$4 = getDirname((typeof document === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : (document.currentScript && document.currentScript.src || new URL('cli.js', document.baseURI).href)));
+const watcherFile = path.join(__dirname$4, 'fork.mjs');
 const debug$8 = getDebug('watchers');
 const lastChangeFiles = new Set();
 class WatcherCls extends EventEmitter__default["default"] {}
@@ -1234,7 +1237,7 @@ const getCacheVer = doc => {
 };
 
 // move out from the render-scripts-middleware
-const __dirname$2 = getDirname((typeof document === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : (document.currentScript && document.currentScript.src || new URL('cli.js', document.baseURI).href)));
+const __dirname$3 = getDirname((typeof document === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : (document.currentScript && document.currentScript.src || new URL('cli.js', document.baseURI).href)));
 // if this is enable then return the mapped object
 function prepareCordova (config) {
   if (config.cordova !== false) {
@@ -1251,7 +1254,7 @@ const targets$1 = [cordovaJs];
 async function serveCordova (ctx, config) {
   if (ctx.url === '/' + cordovaJs) {
     if (config.cordova === true) {
-      const doc = await readDocument(path.join(__dirname$2, 'cordova.js.tpl'));
+      const doc = await readDocument(path.join(__dirname$3, 'cordova.js.tpl'));
       success(ctx, doc);
       return true
     }
@@ -1310,7 +1313,7 @@ async function serveQunit (ctx, config) {
  * This will combine debugger and reload client file overwrite in one place
  * there will be just one middleware to handle them
  */
-const __dirname$1 = getDirname((typeof document === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : (document.currentScript && document.currentScript.src || new URL('cli.js', document.baseURI).href)));
+const __dirname$2 = getDirname((typeof document === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : (document.currentScript && document.currentScript.src || new URL('cli.js', document.baseURI).href)));
 /**
  * Get scripts paths
  * @param {object} config the main config object
@@ -1353,7 +1356,7 @@ const searchStacktraceSrc = () => {
     'dist',
     'stacktrace-with-promises-and-json-polyfills.js'
   );
-  return [path.join(__dirname$1, '..', '..', '..', stacktraceFile), stacktraceFile]
+  return [path.join(__dirname$2, '..', '..', '..', stacktraceFile), stacktraceFile]
     .filter(f => {
       return fs__default["default"].existsSync(f)
     })
@@ -1412,7 +1415,7 @@ function renderScriptsMiddleware (config) {
         case reloadJs: {
           try {
             const body = await readDocument(
-              path.join(__dirname$1, '..', 'reload', 'reload.tpl')
+              path.join(__dirname$2, '..', 'reload', 'reload.tpl')
             ).then(data => {
               const clientFileFn = template__default["default"](data.toString());
               const connectionOptions = getSocketConnectionConfig(config);
@@ -1443,7 +1446,7 @@ function renderScriptsMiddleware (config) {
         case debuggerJs: {
           try {
             const body = await readDocument(
-              path.join(__dirname$1, '..', 'debugger', 'client.tpl')
+              path.join(__dirname$2, '..', 'debugger', 'client.tpl')
             ).then(data => {
               // If they want to ping the server back on init
               const ping =
@@ -2129,6 +2132,7 @@ async function serverIoCore (config = {}) {
 // serverIoCore main
 
 const debug = getDebug('index');
+const __dirname$1 = getDirname((typeof document === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : (document.currentScript && document.currentScript.src || new URL('cli.js', document.baseURI).href)));
 
 /**
  * Main entry point for server-io-core
@@ -2138,8 +2142,12 @@ const debug = getDebug('index');
  */
 async function serverIoCorePublic (config = {}) {
   const configCopy = merge({}, config);
+
   const opts = createConfiguration(configCopy);
   opts.webroot = toArray(opts.webroot).map(dir => path.resolve(dir));
+  const { version } = getPkgInfo(path.join(__dirname$1, 'package.json'));
+  opts.version = version;
+
   opts.__processed__ = true;
 
   debug('user supplied config', configCopy);
