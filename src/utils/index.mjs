@@ -1,7 +1,7 @@
 // utils main
-import getDebug from './debug.mjs'
-import openInBrowser from './open.mjs'
-import startMsg from './start-msg.mjs'
+export { getDebug } from './debug.mjs'
+export { openInBrowser } from './open.mjs'
+export { startMsg } from './start-msg.mjs'
 export {
   getPkgInfo,
   objLength,
@@ -39,8 +39,3 @@ export {
   defaultProperties,
   createConfiguration
 } from './config/index.mjs'
-export {
-  getDebug,
-  openInBrowser,
-  startMsg
-}
