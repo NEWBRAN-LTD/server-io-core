@@ -2,13 +2,13 @@
  * Socket server generator
  */
 import { WSServer } from '../lib/socket-io.mjs'
-import socketCb from './socket-cb.mjs'
+import { socketCb } from './socket-cb.mjs'
 /**
  * @param {object} server http server instance
  * @param {object} config full config options
  * @return {object} io instance
  */
-export default function socketIoGenerator (server, config) {
+export function socketIoGenerator (server, config) {
   // Force the socket.io server to use websocket protocol only
   let socketConfig = ['websocket']
   // if we want to use different protocol

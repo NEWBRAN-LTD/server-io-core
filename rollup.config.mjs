@@ -15,26 +15,18 @@ const plugins = [
 const outplugins = [
   buble()
 ]
+// const intro = 'const ENVIRONMENT = \'cjs\';'
 
 export default [
   {
     external: /node_modules/,
     input: join(__dirname, 'index.mjs'),
     output: [{
-      exports: 'default',
+      // intro,
+      dir: 'dist',
+      // exports: 'default',
+      preserveModules: true,
       format: 'cjs',
-      file: join(__dirname, 'index.js'),
-      sourcemap: true,
-      plugins: outplugins
-    }],
-    plugins
-  },
-  {
-    external: /node_modules/,
-    input: join(__dirname, 'cli.mjs'),
-    output: [{
-      format: 'cjs',
-      file: join(__dirname, 'cli.js'),
       sourcemap: false,
       plugins: outplugins
     }],

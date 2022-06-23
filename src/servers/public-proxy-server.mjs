@@ -10,7 +10,7 @@ import { INTERNAL_PORT, DEFAULT_HOST } from '../lib/constants.mjs'
 import { logutil, getDebug, objLength } from '../utils/index.mjs'
 const debug = getDebug('publix-proxy-server')
 // Main - async is not right too, this should return an observable
-export default async function createPublicProxyServer (config) {
+export async function createPublicProxyServer (config) {
   // prepare
   const publicPort = config.port
   const publicHost = Array.isArray(config.host) ? config.host[0] : config.host

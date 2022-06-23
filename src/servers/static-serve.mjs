@@ -11,7 +11,7 @@ const debug = getDebug('static-serve')
  * @return {function} to call
  * @api public
  */
-export default function serverStatic (app, config) {
+export function serverStatic (app, config) {
   const dirs = toArray(config.webroot)
   const opts = { defer: true }
   if (config.index) {

@@ -8,7 +8,7 @@ import { getDebug } from './utils/index.mjs'
 import startMsg from './utils/start-msg.mjs'
 const debug = getDebug('main')
 // Main
-export default async function serverIoCore (config = {}) {
+export async function serverIoCore (config = {}) {
   // first start our internal
   const {
     webserver,

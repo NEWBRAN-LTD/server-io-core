@@ -1,4 +1,4 @@
-(function()
+export const reloadTpl = `(function()
 {
   'use strict'
   var nsp = io('<%= reloadNamespace %>', {
@@ -20,5 +20,4 @@
     <% } %>
     window.location.reload(true)
   })
-
-})()
+})()`

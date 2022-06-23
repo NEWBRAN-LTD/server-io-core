@@ -1,7 +1,6 @@
 // move out from the render-scripts-middleware
 import { join } from 'node:path'
 import {
-  getDirname,
   readDocument,
   isString
 } from '../../utils/index.mjs'
@@ -12,7 +11,9 @@ import {
 import {
   cordovaJs
 } from '../../lib/constants.mjs'
-const __dirname = getDirname(import.meta.url)
+import {
+  cordovaTpl
+} from './templates.tpl.mjs'
 // if this is enable then return the mapped object
 export function prepareCordova (config) {
   if (config.cordova !== false) {
@@ -29,8 +30,7 @@ export const targets = [cordovaJs]
 export async function serveCordova (ctx, config) {
   if (ctx.url === '/' + cordovaJs) {
     if (config.cordova === true) {
-      const doc = await readDocument(join(__dirname, 'cordova.js.tpl'))
-      success(ctx, doc)
+      success(ctx, cordovaTpl)
       return true
     }
     if (isString(config.cordova)) {

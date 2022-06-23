@@ -4,7 +4,7 @@
 // also pass this to the callback for the developer to use
 import { WSClient } from '../lib/socket-io.mjs'
 // main
-export default function socketCb (io, namespace) {
+export function socketCb (io, namespace) {
   const ctn = namespace.length
   for (let i = 0; i < ctn; ++i) {
     const { path, callback } = namespace[i]

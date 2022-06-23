@@ -12,7 +12,7 @@ import middlewaresHandler from '../middlewares/index.mjs'
 import { getDebug } from '../utils/index.mjs'
 const debug = getDebug('serverIoCore')
 // main
-export default async function createInternalServer (config) {
+export async function createInternalServer (config) {
   let io = null
   let socketIsEnabled = false
   const app = new Koa()

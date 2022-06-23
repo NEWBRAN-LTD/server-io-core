@@ -14,7 +14,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0
  * @param {object} config options
  * @return {object} http(s) webserver, (fn) start, (fn) stop
  */
-export default function webserverGenerator (app, config) {
+export function webserverGenerator (app, config) {
   let webserver
   if (config.https.enable) {
     let opts
