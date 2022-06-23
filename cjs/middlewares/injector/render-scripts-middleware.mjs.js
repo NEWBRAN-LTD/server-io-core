@@ -29,8 +29,6 @@ var template__default = /*#__PURE__*/_interopDefaultLegacy(template);
  */
 // get where are we
 const __dirname$1 = common.getDirname((typeof document === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : (document.currentScript && document.currentScript.src || new URL('middlewares/injector/render-scripts-middleware.mjs.js', document.baseURI).href)));
-// pnpm screw this up this time?
-// debug('__dirname', __dirname)
 /**
  * Get scripts paths
  * @param {object} config the main config object
@@ -72,7 +70,6 @@ const searchStacktraceSrc = () => {
     'dist',
     'stacktrace-with-promises-and-json-polyfills.js'
   );
-  // file:///home/joel/Projects/gitee/create-qunit/node_modules/.pnpm/server-io-core@2.1.0-beta.3_debug@4.3.4/node_modules/server-io-core/src/utils/common.mjs:287:6
   const projectRoot = path.join(__dirname$1, '..', '..', '..');
   const here = path.resolve('./');
   const fullPath = path.join(projectRoot, 'node_modules', stacktraceFile);
