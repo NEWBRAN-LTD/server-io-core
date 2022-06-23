@@ -2,7 +2,7 @@
 import { join, resolve } from 'node:path'
 import { inspect } from 'node:util'
 import { createConfiguration } from './src/utils/config/index.mjs'
-import serverIoCore from './src/index.mjs'
+import { serverIoCore } from './src/index.mjs'
 import { toArray, getDebug, merge, getDirname, getPkgInfo } from './src/utils/index.mjs'
 
 const debug = getDebug('index')

@@ -1,8 +1,8 @@
 // V.2 using ESM
 // with a cjs build for other,let's give it a try
-import createInternalServer from './servers/internal-server.mjs'
-import createPublicProxyServer from './servers/public-proxy-server.mjs'
-import openInBrowser from './utils/open.mjs'
+import { createInternalServer } from './servers/internal-server.mjs'
+import { createPublicProxyServer } from './servers/public-proxy-server.mjs'
+import { openInBrowser } from './utils/open.mjs'
 import { INTERNAL_PORT } from './lib/constants.mjs'
 import { getDebug } from './utils/index.mjs'
 import startMsg from './utils/start-msg.mjs'

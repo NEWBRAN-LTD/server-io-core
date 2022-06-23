@@ -38,7 +38,7 @@ const constructUrl = config => {
  * @param {object} config options
  * @return {boolean} true on open false on failed
  */
-export default function openInBrowser (config) {
+export function openInBrowser (config) {
   try {
     debug('[open configuration]', config.open)
     let multiple = false

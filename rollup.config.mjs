@@ -16,14 +16,13 @@ const outplugins = [
   buble()
 ]
 // const intro = 'const ENVIRONMENT = \'cjs\';'
-
 export default [
   {
     external: /node_modules/,
-    input: join(__dirname, 'index.mjs'),
+    input: join(__dirname, 'src', 'index.mjs'), // V2.1.0 only build the src to cjs
     output: [{
       // intro,
-      dir: 'dist',
+      dir: 'cjs',
       // exports: 'default',
       preserveModules: true,
       format: 'cjs',
