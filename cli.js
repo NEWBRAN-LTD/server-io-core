@@ -10,11 +10,11 @@ var os = require('node:os');
 var url = require('node:url');
 var template = require('lodash.template');
 var process$1 = require('process');
-var debugFn = require('debug');
-var open = require('open');
 var Koa = require('koa');
 var http = require('node:http');
 var https = require('node:https');
+var debugFn = require('debug');
+var open = require('open');
 var send = require('koa-send');
 var socket_ioClient = require('socket.io-client');
 var socket_io = require('socket.io');
@@ -37,11 +37,11 @@ var fs__default = /*#__PURE__*/_interopDefaultLegacy(fs);
 var os__default = /*#__PURE__*/_interopDefaultLegacy(os);
 var url__default = /*#__PURE__*/_interopDefaultLegacy(url);
 var template__default = /*#__PURE__*/_interopDefaultLegacy(template);
-var debugFn__default = /*#__PURE__*/_interopDefaultLegacy(debugFn);
-var open__default = /*#__PURE__*/_interopDefaultLegacy(open);
 var Koa__default = /*#__PURE__*/_interopDefaultLegacy(Koa);
 var http__default = /*#__PURE__*/_interopDefaultLegacy(http);
 var https__default = /*#__PURE__*/_interopDefaultLegacy(https);
+var debugFn__default = /*#__PURE__*/_interopDefaultLegacy(debugFn);
+var open__default = /*#__PURE__*/_interopDefaultLegacy(open);
 var send__default = /*#__PURE__*/_interopDefaultLegacy(send);
 var EventEmitter__default = /*#__PURE__*/_interopDefaultLegacy(EventEmitter);
 var kefir__default = /*#__PURE__*/_interopDefaultLegacy(kefir);
@@ -93,10 +93,17 @@ function objLength (obj) {
   return Object.keys(obj).length
 }
 
-/** import.meta.url */
+/**
+  url --> import.meta.url
+  @BUG the cjs version return one level up cause all sorts of porblem
+*/
 function getDirname (url$1) {
-  const __filename = url.fileURLToPath(url$1);
-  return path__default["default"].dirname(__filename)
+  try {
+    return __dirname
+  } catch (e) {
+    const __filename = url.fileURLToPath(url$1);
+    return path__default["default"].dirname(__filename)
+  }
 }
 
 /** should get rip of all the lodash crap long time ago */
@@ -452,105 +459,6 @@ const defaultOptions = {
   }
 };
 
-// main
-function getDebug (key) {
-  return debugFn__default["default"]([DEBUG_MAIN_KEY, key].join(':'))
-}
-
-// Open in browser
-
-const debug$b = getDebug('open');
-
-/**
- * Get hostname to open
- * @param {string} hostname config.hostname
- * @return {string} modified hostname
- */
-const getHostname = hostname => {
-  const h = Array.isArray(hostname) ? hostname[0] : hostname;
-  return isWindoze() ? h : h === DEFAULT_HOST_IP ? DEFAULT_HOSTNAME : h
-};
-
-/**
- * Construct the open url
- * @param {object} config full configuration
- * @return {string} url
- */
-const constructUrl = config => {
-  return [
-    'http' + (config.https.enable === false ? '' : 's'),
-    '//' + getHostname(config.host),
-    config.port
-  ].join(':')
-};
-
-/**
- * Add try catch because sometime if its enable and try this from the server
- * and it will throw error
- * @param {object} config options
- * @return {boolean} true on open false on failed
- */
-function openInBrowser (config) {
-  try {
-    debug$b('[open configuration]', config.open);
-    let multiple = false;
-    const args = [constructUrl(config)];
-    // If there is just the true option then we need to construct the link
-    if (config.open.browser) {
-      if (isString(config.open.browser)) {
-        args.push({ app: config.open.browser });
-      } else if (Array.isArray(config.open.browser)) {
-        multiple = config.open.browser.map(browser => {
-          return { app: browser }
-        });
-      }
-    }
-    // Push this down for the nyc to do coverage deeper
-    if (process.env.NODE_ENV === 'test' || config.open.enable === false) {
-      return args
-    }
-
-    if (multiple === false) {
-      debug$b('[open]', args);
-      Reflect.apply(open__default["default"], open__default["default"], args);
-    } else {
-      // Open multiple browsers at once
-      multiple.forEach(browser => {
-        debug$b('[open]', browser, args);
-        Reflect.apply(open__default["default"], open__default["default"], args.concat([browser]));
-      });
-    }
-    return true
-  } catch (e) {
-    debug$b('[open] error:', e);
-    return false
-  }
-}
-
-// use the console.table to show some fancy output
-
-function startMsg (config) {
-  if (process.env.NODE_ENV === 'test') {
-    return // do nothing
-  }
-  const list = {};
-  list.banner = `server-io-core (${config.version})`;
-  const displayHost = Array.isArray(config.host) ? config.host[1] : config.host;
-  list.hostname = [
-    'http',
-    config.https.enable ? 's' : '',
-    '://',
-    displayHost,
-    ':',
-    config.port
-  ].join('');
-  list.internal = `http://${DEFAULT_HOST}:${config.port0}`;
-  // show table
-  if (process.env.DEBUG) {
-    console.table(list); // need more work
-  }
-}
-
 /**
  * Port from the original gulp-webserver
  */
@@ -711,6 +619,105 @@ function createConfiguration (options = {}) {
     options
   );
   return prepareProxies(config)
+}
+
+// main
+function getDebug (key) {
+  return debugFn__default["default"]([DEBUG_MAIN_KEY, key].join(':'))
+}
+
+// Open in browser
+
+const debug$b = getDebug('open');
+
+/**
+ * Get hostname to open
+ * @param {string} hostname config.hostname
+ * @return {string} modified hostname
+ */
+const getHostname = hostname => {
+  const h = Array.isArray(hostname) ? hostname[0] : hostname;
+  return isWindoze() ? h : h === DEFAULT_HOST_IP ? DEFAULT_HOSTNAME : h
+};
+
+/**
+ * Construct the open url
+ * @param {object} config full configuration
+ * @return {string} url
+ */
+const constructUrl = config => {
+  return [
+    'http' + (config.https.enable === false ? '' : 's'),
+    '//' + getHostname(config.host),
+    config.port
+  ].join(':')
+};
+
+/**
+ * Add try catch because sometime if its enable and try this from the server
+ * and it will throw error
+ * @param {object} config options
+ * @return {boolean} true on open false on failed
+ */
+function openInBrowser (config) {
+  try {
+    debug$b('[open configuration]', config.open);
+    let multiple = false;
+    const args = [constructUrl(config)];
+    // If there is just the true option then we need to construct the link
+    if (config.open.browser) {
+      if (isString(config.open.browser)) {
+        args.push({ app: config.open.browser });
+      } else if (Array.isArray(config.open.browser)) {
+        multiple = config.open.browser.map(browser => {
+          return { app: browser }
+        });
+      }
+    }
+    // Push this down for the nyc to do coverage deeper
+    if (process.env.NODE_ENV === 'test' || config.open.enable === false) {
+      return args
+    }
+
+    if (multiple === false) {
+      debug$b('[open]', args);
+      Reflect.apply(open__default["default"], open__default["default"], args);
+    } else {
+      // Open multiple browsers at once
+      multiple.forEach(browser => {
+        debug$b('[open]', browser, args);
+        Reflect.apply(open__default["default"], open__default["default"], args.concat([browser]));
+      });
+    }
+    return true
+  } catch (e) {
+    debug$b('[open] error:', e);
+    return false
+  }
+}
+
+// use the console.table to show some fancy output
+
+function startMsg (config) {
+  if (process.env.NODE_ENV === 'test') {
+    return // do nothing
+  }
+  const list = {};
+  list.banner = `server-io-core (${config.version})`;
+  const displayHost = Array.isArray(config.host) ? config.host[1] : config.host;
+  list.hostname = [
+    'http',
+    config.https.enable ? 's' : '',
+    '://',
+    displayHost,
+    ':',
+    config.port
+  ].join('');
+  list.internal = `http://${DEFAULT_HOST}:${config.port0}`;
+  // show table
+  if (process.env.DEBUG) {
+    console.table(list); // need more work
+  }
 }
 
 /**

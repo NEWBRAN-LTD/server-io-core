@@ -7,7 +7,7 @@ import {
   get,
   merge,
   ensureFirstSlash
-} from '../index.mjs'
+} from '../common.mjs'
 import { WS_PROXY, CONTEXT_KEY } from '../../lib/constants.mjs'
 
 /**
