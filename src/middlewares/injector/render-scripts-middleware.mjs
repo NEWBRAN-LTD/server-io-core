@@ -26,6 +26,7 @@ import { prepareCordova } from './cordova.mjs'
 import { prepareQunit } from './qunit.mjs'
 // get where are we
 const __dirname = getDirname(import.meta.url)
+debug('__dirname', __dirname)
 /**
  * Get scripts paths
  * @param {object} config the main config object
@@ -68,7 +69,9 @@ export const searchStacktraceSrc = () => {
     'dist',
     'stacktrace-with-promises-and-json-polyfills.js'
   )
-  return [join(__dirname, '..', '..', '..', stacktraceFile), stacktraceFile]
+  const fullPath = join(__dirname, '..', '..', '..', stacktraceFile)
+  debug(fullPath)
+  return [fullPath, stacktraceFile]
     .filter(f => {
       return fs.existsSync(f)
     })
