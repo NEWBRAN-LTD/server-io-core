@@ -26,10 +26,17 @@ export function objLength (obj) {
   return Object.keys(obj).length
 }
 
-/** import.meta.url */
+/**
+  url --> import.meta.url
+  @BUG the cjs version return one level up cause all sorts of porblem
+*/
 export function getDirname (url) {
-  const __filename = fileURLToPath(url)
-  return path.dirname(__filename)
+  try {
+    return __dirname
+  } catch (e) {
+    const __filename = fileURLToPath(url)
+    return path.dirname(__filename)
+  }
 }
 
 /** should get rip of all the lodash crap long time ago */
