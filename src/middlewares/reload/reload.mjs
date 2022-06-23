@@ -1,7 +1,7 @@
 // watcher
 import { logutil, getDebug, extend } from '../../utils/index.mjs'
 import { EVENT_NAME } from '../../lib/constants.mjs'
-import watcher from '../watcher/index.mjs'
+import { watcherGenerator } from '../watcher/index.mjs'
 const debug = getDebug('reload')
 
 /**
@@ -15,7 +15,7 @@ const debug = getDebug('reload')
  * @return {function} unwatch callback
  */
 export function reloadGenerator (filePaths, io, config) {
-  const watcherCb = watcher(extend({ filePaths }, config))
+  const watcherCb = watcherGenerator(extend({ filePaths }, config))
   const props = watcherCb(true)
   // First setup the socket io namespace
   // debug('[reload][setup]', 'setup namespace', config.namespace);

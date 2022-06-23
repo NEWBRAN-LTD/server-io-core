@@ -2,7 +2,7 @@
 import Koa from 'koa'
 // the 3 main servers
 import { webserverGenerator } from './webserver.mjs'
-import { staticServe } from './static-serve.mjs'
+import { serverStatic } from './serve-static.mjs'
 import { socketIoGenerator } from './socket-io-server.mjs'
 // the others
 import { debuggerServer } from '../middlewares/debugger/index.mjs'
@@ -54,7 +54,7 @@ export async function createInternalServer (config) {
   registerMiddlewares(app, config)
   // @TODO should this return a promise so we know if it works or not?
   // Keep the init of the static serve until the last call
-  staticServe(app, config)
+  serverStatic(app, config)
   // Call back on close
   webserver.on('close', () => {
     debug('webserver on close and clean up')
