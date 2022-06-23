@@ -26,7 +26,8 @@ import { prepareCordova } from './cordova.mjs'
 import { prepareQunit } from './qunit.mjs'
 // get where are we
 const __dirname = getDirname(import.meta.url)
-debug('__dirname', __dirname)
+// pnpm screw this up this time?
+// debug('__dirname', __dirname)
 /**
  * Get scripts paths
  * @param {object} config the main config object
@@ -64,14 +65,14 @@ export const getFeatureScripts = function (config) {
 export const searchStacktraceSrc = () => {
   // @NOTE this is problematic
   const stacktraceFile = join(
-    'node_modules',
     'stacktrace-js',
     'dist',
     'stacktrace-with-promises-and-json-polyfills.js'
   )
-  const fullPath = join(__dirname, '..', '..', '..', stacktraceFile)
-  debug(fullPath)
-  return [fullPath, stacktraceFile]
+  const projectRoot = join(__dirname, '..', '..', '..')
+  const fullPath = join(projectRoot, 'node_modules', stacktraceFile)
+  const libPath = join(projectRoot, 'lib', stacktraceFile)
+  return [libPath, fullPath, join('node_modules', stacktraceFile)]
     .filter(f => {
       return fs.existsSync(f)
     })

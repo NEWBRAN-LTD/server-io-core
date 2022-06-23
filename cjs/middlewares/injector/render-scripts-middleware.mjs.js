@@ -29,6 +29,7 @@ var template__default = /*#__PURE__*/_interopDefaultLegacy(template);
  */
 // get where are we
 const __dirname$1 = common.getDirname((typeof document === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : (document.currentScript && document.currentScript.src || new URL('middlewares/injector/render-scripts-middleware.mjs.js', document.baseURI).href)));
+helpers.debug('__dirname', __dirname$1);
 /**
  * Get scripts paths
  * @param {object} config the main config object
@@ -71,7 +72,9 @@ const searchStacktraceSrc = () => {
     'dist',
     'stacktrace-with-promises-and-json-polyfills.js'
   );
-  return [path.join(__dirname$1, '..', '..', '..', stacktraceFile), stacktraceFile]
+  const fullPath = path.join(__dirname$1, '..', '..', '..', stacktraceFile);
+  helpers.debug(fullPath);
+  return [fullPath, stacktraceFile]
     .filter(f => {
       return fs__default["default"].existsSync(f)
     })
