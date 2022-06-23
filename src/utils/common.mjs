@@ -8,9 +8,19 @@ import log from 'fancy-log'
 import { DEFAULT_HOST_IP } from '../lib/constants.mjs'
 import template from 'lodash.template'
 import { version } from 'process'
+import fsx from 'fs-extra'
+
 const IS_TEST = process.env.NODE_ENV === 'test'
 
 export { template }
+
+/** wrap this one function because there is case the __dirname is wrong! */
+export function getPkgInfo (pkgFile) {
+  if (fsx.existsSync(pkgFile)) {
+    return fsx.readJsonSync(pkgFile)
+  }
+  return { version: 'UNKNOWN' }
+}
 
 export function objLength (obj) {
   return Object.keys(obj).length

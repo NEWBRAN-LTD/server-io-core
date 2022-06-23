@@ -6,28 +6,9 @@ import {
   extend,
   get,
   merge,
-  getDirname,
-  ensureFirstSlash,
-  getDebug
+  ensureFirstSlash
 } from '../index.mjs'
-import { join } from 'node:path'
-import fsx from 'fs-extra'
 import { WS_PROXY, CONTEXT_KEY } from '../../lib/constants.mjs'
-const debug = getDebug('enable-middleware-shorthand')
-const __dirname = getDirname(import.meta.url)
-
-/** wrap this one function because there is case the __dirname is wrong! */
-function getPkgInfo () {
-  const pkgFile = join(__dirname, '..', '..', '..', 'package.json')
-  if (fsx.existsSync(pkgFile)) {
-    return fsx.readJsonSync(pkgFile)
-  }
-  debug('__dirname', __dirname)
-  debug('NOT FOUND!', pkgFile)
-  return { version: 'UNKNOWN' }
-}
-
-const { version } = getPkgInfo()
 
 /**
  * prepare the proxies configuration
@@ -170,8 +151,6 @@ export function enableMiddlewareShorthand (
       config[prop] = merge({}, originalDefaults[prop], { enable: false })
     }
   }
-  // Here we add things that we don't want to get overwritten
-  config.version = version
   // Change from sessionId to timestamp, just for reference not in use anywhere
   config.timestamp = Date.now()
   return config

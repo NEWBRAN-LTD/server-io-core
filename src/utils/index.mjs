@@ -3,6 +3,7 @@ import getDebug from './debug.mjs'
 import openInBrowser from './open.mjs'
 import startMsg from './start-msg.mjs'
 export {
+  getPkgInfo,
   objLength,
   template,
   getDirname,

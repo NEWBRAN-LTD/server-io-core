@@ -1,6 +1,6 @@
 {
   "name": "server-io-core",
-  "version": "2.0.1-beta.3",
+  "version": "2.0.1-beta.4",
   "description": "Developement server using Koa with Socket.io reload and Javascript remote debugger",
   "main": "index.js",
   "module": "index.mjs",
@@ -16,7 +16,7 @@
   ],
   "scripts": {
     "test": "ava",
-    "prepublishOnly": "nyc ava",
+    "prepublishOnly": "npm run build:rollup && nyc ava",
     "test:dev": "DEBUG=server-io-core:test* ava",
     "cli": "DEBUG=server-io-core* node ./cli",
     "test:qunit": "DEBUG=server-io-core:* node ./tests/qunit/run-qunit.mjs",
