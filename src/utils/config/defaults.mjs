@@ -81,6 +81,8 @@ const defaultOptions = {
   inject: {
     enable: false,
     insertBefore: true,
+    dir: [], // V.2.2.0 features search a directories
+    excluded: [], // V.2.2.0 excluding this files from the search directory
     target: {}, // List of files to inject with head or body
     source: [], // List of files to get inject
     options: {}, // Reversed for future use
