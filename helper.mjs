@@ -3,7 +3,7 @@ import { join, resolve } from 'node:path'
 import glob from 'glob'
 
 /** taken out from the searchFiles and run mutliple search */
-const searchDir = (dest) => new Promise((resolve) => {
+const searchDir = (dest, baseDir) => new Promise((resolve) => {
   glob(dest, function (err, files) {
     if (err) {
       console.log('Some thing went wrong', err)
@@ -11,7 +11,7 @@ const searchDir = (dest) => new Promise((resolve) => {
       return resolve([])
       // return reject(err)
     }
-    resolve(files)
+    resolve(files.map(file => file.replace(baseDir, '')))
   })
 })
 
@@ -25,9 +25,9 @@ const getMiddlewares = (config) => {
 }
 
 /** just a wrapper of glob to make it async */
-export async function searchFiles (dests) {
+export async function searchFiles (dests, baseDirs) {
   return Promise
-    .all(dests.map(searchDir))
+    .all(dests.map((dest, i) => searchDir(dest, baseDirs[i])))
     .then(results => results.flatMap(a => a))
 }
 
@@ -43,7 +43,7 @@ export const getConfigForQunit = (config) => {
   return searchFiles([
     join(webrootDir, config.libFilePattern),
     join(baseDir, config.testFilePattern)
-  ])
+  ], [webrootDir, baseDir])
     .then(files => (
       {
         qunit: true, // MUST SET TO TRUE
@@ -56,7 +56,7 @@ export const getConfigForQunit = (config) => {
         inject: {
           insertBefore: false,
           target: {
-            body: files.map(file => file.replace(baseDir, ''))
+            body: files
           }
         }
       }
