@@ -12,10 +12,13 @@ var glob__default = /*#__PURE__*/_interopDefaultLegacy(glob);
 // export extra methods to help with other things
 
 /** taken out from the searchFiles and run mutliple search */
-const searchDir = (dest) => new Promise((resolve, reject) => {
+const searchDir = (dest) => new Promise((resolve) => {
   glob__default["default"](dest, function (err, files) {
-    if (err || !files.length) {
-      return reject(err)
+    if (err) {
+      console.log('Some thing went wrong', err);
+      // we don't want to reject it just let it run
+      return resolve([])
+      // return reject(err)
     }
     resolve(files);
   });
