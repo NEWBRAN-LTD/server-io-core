@@ -10,19 +10,18 @@ function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'defau
 var glob__default = /*#__PURE__*/_interopDefaultLegacy(glob);
 
 // export extra methods to help with other things
-/** just a wrapper of glob to make it async */
-async function searchFiles (dest) {
-  return new Promise((resolve, reject) => {
-    glob__default["default"](dest, function (err, files) {
-      if (err || !files.length) {
-        return reject(err)
-      }
-      resolve(files);
-    });
-  })
-}
 
-// just grab the middlewares if any
+/** taken out from the searchFiles and run mutliple search */
+const searchDir = (dest) => new Promise((resolve, reject) => {
+  glob__default["default"](dest, function (err, files) {
+    if (err || !files.length) {
+      return reject(err)
+    }
+    resolve(files);
+  });
+});
+
+/** just grab the middlewares if any */
 const getMiddlewares = (config) => {
   const { middlewares } = config;
   if (middlewares) {
@@ -31,13 +30,26 @@ const getMiddlewares = (config) => {
   return []
 };
 
+/** just a wrapper of glob to make it async */
+async function searchFiles (dests) {
+  return Promise
+    .all(dests.map(searchDir))
+    .then(results => results.flatMap(a => a))
+}
+
 /**
  * @param {object} config configuration
  * @return {object} promise resolve the config for server-io-core
  */
 const getConfigForQunit = (config) => {
-  const baseDir = node_path.resolve(node_path.join(config.baseDir, 'qunit', 'files'));
-  return searchFiles(node_path.join(baseDir, config.testFilePattern))
+  const qunitDir = node_path.resolve(node_path.join(config.baseDir, 'qunit'));
+  const baseDir = node_path.join(qunitDir, 'files');
+  const webrootDir = node_path.join(qunitDir, 'webroot');
+
+  return searchFiles([
+    node_path.join(webrootDir, config.libFilePattern),
+    node_path.join(baseDir, config.testFilePattern)
+  ])
     .then(files => (
       {
         qunit: true, // MUST SET TO TRUE
@@ -58,3 +70,4 @@ const getConfigForQunit = (config) => {
 };
 
 exports.getConfigForQunit = getConfigForQunit;
+exports.searchFiles = searchFiles;
