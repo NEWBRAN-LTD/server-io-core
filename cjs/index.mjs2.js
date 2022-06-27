@@ -61,6 +61,16 @@ async function serverIoCore (config = {}) {
   if (config.autoStart) {
     await startAllFn();
   }
+  /*
+  V.2.2.0 feature restart the server
+  retain the previous config stop --> start
+  using the previous public port but not re-open the browser
+  instead we need to add feature to the browser loaded code to
+  be able to know the server is restarting
+  const restart = () => {
+    console.log('@TODO V2.2.0')
+  }
+  */
   // return all the references
   return {
     webserver,

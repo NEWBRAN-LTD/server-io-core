@@ -36,8 +36,8 @@ const cli = meow__default["default"](
      $ srvio <root>
 
    Options
-     -p, --port Port number (default 8000)
-     -h, --host host name (default localhost)
+     -p, --port Port number (default 0 - dynamic)
+     -h, --host host name (default 0.0.0.0)
      -s, --https use https using snake oil cert (default to false)
      -c, --config pass a config json file (default '')
 
@@ -54,7 +54,10 @@ const cli = meow__default["default"](
    The configuration option is the same as in README
    * When using --config (-c) flag, all the other flag will be ignore
  `,
-  { alias }
+  { 
+    alias, 
+    importMeta: ({ url: (typeof document === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : (document.currentScript && document.currentScript.src || new URL('cli.mjs.js', document.baseURI).href)) }) // ESM required crap
+  }
 );
 // we change the passing function from cli to serverIoCore that construct this on the root level
 const serve = serverIoCore => {
