@@ -20,7 +20,8 @@
     "test": "ava",
     "prepublishOnly": "npm run build && nyc ava",
     "build": "rollup -c ./rollup.config.mjs",
-    "cli": "DEBUG=server-io-core* node ./cli",
+    "cli": "DEBUG=server-io-core* node ./cli.mjs",
+    "cli:cjs": "DEBUG=server-io-core* node ./cli.js",
     "test:dev": "DEBUG=server-io-core:test* ava",
     "test:qunit": "DEBUG=server-io-core:* node ./tests/qunit/run-qunit.mjs",
     "test:dev:rollup": "rollup -c ./dev/rollup.config.mjs"
