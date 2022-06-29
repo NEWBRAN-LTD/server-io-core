@@ -32,7 +32,6 @@ const __dirname = getDirname(import.meta.url)
  * @return {object} parse file paths
  */
 export const getFeatureScripts = function (config) {
-  // @TODO this will be replace with ws next
   const socketIoJs = '/socket.io/socket.io.js'
   // Debugger
   const debuggerPath = config.debugger.namespace

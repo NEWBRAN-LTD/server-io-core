@@ -1,9 +1,9 @@
 // Move from the app.js to here
 import { join } from 'node:path'
-import { getServingIpforOS, getDirname } from '../common.mjs'
+import { getServingIpforOS } from '../common.mjs'
 import { version } from 'process'
-const __dirname = getDirname(import.meta.url)
-const src = join(__dirname, '..', '..')
+// const __dirname = getDirname(import.meta.url)
+// const src = join(__dirname, '..', '..')
 const defaultProperties = [
   'reload',
   'debugger',
@@ -67,7 +67,8 @@ const defaultOptions = {
     socketOnly: true,
     transportConfig: ['websocket'],
     proxy: false,
-    namespace: [] // New on v1.0.2
+    namespace: [], // New in v1.0.2
+    path: '/server-io-core-ws/' // new in v2.2.0
   },
   /**
    * MIDDLEWARE DEFAULTS

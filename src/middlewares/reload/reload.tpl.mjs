@@ -10,7 +10,7 @@ export const reloadTpl = `(function()
   })
 
   nsp.on('error', function(err) {
-    console.error('error', error);
+    console.error('error', error)
   })
 
   nsp.on('<%= eventName %>', function(payload) {

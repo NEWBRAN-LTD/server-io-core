@@ -19,7 +19,10 @@ export function socketIoGenerator (server, config) {
     socketConfig = config.socket.transportConfig
   }
   // Need to take this constructor out and re-use with the reload
-  const io = new WSServer(server, { transports: socketConfig })
+  const io = new WSServer(server, {
+    transports: socketConfig
+    // path: config.socket.path // @TODO custom path new in V2.2.0
+  })
   if (Array.isArray(config.namespace) && config.namespace.length) {
     socketCb(io, config.namespace)
   }
