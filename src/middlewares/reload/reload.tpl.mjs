@@ -2,7 +2,7 @@ export const reloadTpl = `(function()
 {
   'use strict'
   var nsp = io('<%= reloadNamespace %>', {
-    transports: ['websocket']
+    transports: ['websocket'] {0}
   })
 
   nsp.on('hello', function(msg) {

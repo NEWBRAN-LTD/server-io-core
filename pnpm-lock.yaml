@@ -1,14 +1,15 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@jsonql/utils': ^1.0.1
   '@rollup/plugin-buble': ^0.21.3
-  '@rollup/plugin-commonjs': ^22.0.0
+  '@rollup/plugin-commonjs': ^22.0.1
   '@rollup/plugin-json': ^4.1.0
   '@rollup/plugin-node-resolve': ^13.3.0
   '@rollup/pluginutils': ^4.2.1
-  '@to1source/event': ^1.5.3
+  '@to1source/event': ^1.5.4
   ava: ^4.3.0
-  cheerio: ^1.0.0-rc.11
+  cheerio: ^1.0.0-rc.12
   chokidar: ^3.5.3
   debug: ^4.3.4
   enzyme: ^3.11.0
@@ -37,7 +38,7 @@ specifiers:
   node-fetch: ^3.2.6
   nyc: ^15.1.0
   open: ^8.4.0
-  preact: ^10.8.1
+  preact: ^10.8.2
   preact-cli: ^3.3.5
   preact-render-to-string: ^5.2.0
   preact-router: ^4.0.1
@@ -57,8 +58,9 @@ specifiers:
   ws: ^8.8.0
 
 dependencies:
-  '@to1source/event': 1.5.3
-  cheerio: 1.0.0-rc.11
+  '@jsonql/utils': 1.0.1
+  '@to1source/event': 1.5.4
+  cheerio: 1.0.0-rc.12
   chokidar: 3.5.3
   fancy-log: 2.0.0
   fs-extra: 10.1.0
@@ -79,14 +81,14 @@ dependencies:
 
 devDependencies:
   '@rollup/plugin-buble': 0.21.3_rollup@2.75.7
-  '@rollup/plugin-commonjs': 22.0.0_rollup@2.75.7
+  '@rollup/plugin-commonjs': 22.0.1_rollup@2.75.7
   '@rollup/plugin-json': 4.1.0_rollup@2.75.7
   '@rollup/plugin-node-resolve': 13.3.0_rollup@2.75.7
   '@rollup/pluginutils': 4.2.1
   ava: 4.3.0
   debug: 4.3.4
   enzyme: 3.11.0
-  enzyme-adapter-preact-pure: 4.0.1_v3226raxqtmawfjgx523ng37um
+  enzyme-adapter-preact-pure: 4.0.1_oodvls4exrzn4l2zndr7fkydni
   eslint: 8.18.0
   eslint-config-preact: 1.3.0_eslint@8.18.0+jest@28.1.1
   eslint-config-xo: 0.41.0_eslint@8.18.0
@@ -94,14 +96,14 @@ devDependencies:
   gulp: 4.0.2
   husky: 8.0.1
   jest: 28.1.1
-  jest-preset-preact: 4.0.5_7rit2iyibqejhpqtpaic7t6j4a
+  jest-preset-preact: 4.0.5_gcqdlqyeyi765aw5rzadz5ex3m
   koa-socket-2: 2.0.0
   node-fetch: 3.2.6
   nyc: 15.1.0
-  preact: 10.8.1
-  preact-cli: 3.3.5_76bqgiuffohbci76ugxjtfswxi
-  preact-render-to-string: 5.2.0_preact@10.8.1
-  preact-router: 4.0.1_preact@10.8.1
+  preact: 10.8.2
+  preact-cli: 3.3.5_ulsokr3cnvs5uuitibwutrp2hq
+  preact-render-to-string: 5.2.0_preact@10.8.2
+  preact-router: 4.0.1_preact@10.8.2
   prettier: 2.7.1
   qunit: 2.19.1
   rollup: 2.75.7
@@ -1765,6 +1767,10 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.13
     dev: true
 
+  /@jsonql/utils/1.0.1:
+    resolution: {integrity: sha512-v97Fe5+K3sQdXrCJst+qW4b7Oo1EZ53U1wLHTX/lktgTE6pQ2RFuQTuElOmREnRLR1YF6C8vrb9dJLSg8X7wMg==}
+    dev: false
+
   /@leichtgewicht/ip-codec/2.0.4:
     resolution: {integrity: sha512-Hcv+nVC0kZnQ3tD9GVu5xSMR4VVYOteQIr/hwFPVEvPdlXqgGEuRjiheChHgdM+JyqdgNcmzZOX/tnl0JOiI7A==}
     dev: true
@@ -1817,7 +1823,7 @@ packages:
     resolution: {integrity: sha512-a5Sab1C4/icpTZVzZc5Ghpz88yQtGOyNqYXcZgOssB2uuAr+wF/MvN6bgtW32q7HHrvBki+BsZ0OuNv6EV3K9g==}
     dev: true
 
-  /@preact/async-loader/3.0.1_preact@10.8.1:
+  /@preact/async-loader/3.0.1_preact@10.8.2:
     resolution: {integrity: sha512-BoUN24hxEfAQYnWjliAmkZLuliv+ONQi7AWn+/+VOJHTIHmbFiXrvmSxITf7PDkKiK0a5xy4OErZtVVLlk96Tg==}
     engines: {node: '>=8'}
     peerDependencies:
@@ -1825,26 +1831,26 @@ packages:
     dependencies:
       kleur: 4.1.4
       loader-utils: 2.0.2
-      preact: 10.8.1
+      preact: 10.8.2
     dev: true
 
   /@prefresh/babel-plugin/0.4.3:
     resolution: {integrity: sha512-fYAWbU1WDSLn108kKY4eDaaeUcnszFqXjgaGKYXNZ5NLulpRTpsrY+Sbfo9q8LDpWrBpqIgzjrwNnvglWI1xNQ==}
     dev: true
 
-  /@prefresh/core/1.3.4_preact@10.8.1:
+  /@prefresh/core/1.3.4_preact@10.8.2:
     resolution: {integrity: sha512-s7iNsnyJ3lZEUrYIgmVIB/hKtp4U6mdD91a31Zg7Q8M49O0x2KThrbrMQYraoDDrs4STdFB8Zv6bceUguOoX1A==}
     peerDependencies:
       preact: ^10.0.0
     dependencies:
-      preact: 10.8.1
+      preact: 10.8.2
     dev: true
 
   /@prefresh/utils/1.1.3:
     resolution: {integrity: sha512-Mb9abhJTOV4yCfkXrMrcgFiFT7MfNOw8sDa+XyZBdq/Ai2p4Zyxqsb3EgHLOEdHpMj6J9aiZ54W8H6FTam1u+A==}
     dev: true
 
-  /@prefresh/webpack/3.3.3_s3za6nlz2hs4vyb3dketf3dlta:
+  /@prefresh/webpack/3.3.3_szwc4nqvr25zmliaxeqepji27a:
     resolution: {integrity: sha512-uT+A7ZuA7fuuUPNEde6Gmzr4oFnzreW9xw6iqw01nPpDiv46o6YWq1j0oGCbdffzHl3fBpcgkPuY07vIfmZ9Lg==}
     peerDependencies:
       '@prefresh/babel-plugin': ^0.4.0
@@ -1852,9 +1858,9 @@ packages:
       webpack: ^4.0.0 || ^5.0.0
     dependencies:
       '@prefresh/babel-plugin': 0.4.3
-      '@prefresh/core': 1.3.4_preact@10.8.1
+      '@prefresh/core': 1.3.4_preact@10.8.2
       '@prefresh/utils': 1.1.3
-      preact: 10.8.1
+      preact: 10.8.2
       webpack: 4.46.0
     dev: true
 
@@ -1887,8 +1893,8 @@ packages:
       rollup: 2.75.7
     dev: true
 
-  /@rollup/plugin-commonjs/22.0.0_rollup@2.75.7:
-    resolution: {integrity: sha512-Ktvf2j+bAO+30awhbYoCaXpBcyPmJbaEUYClQns/+6SNCYFURbvBiNbWgHITEsIgDDWCDUclWRKEuf8cwZCFoQ==}
+  /@rollup/plugin-commonjs/22.0.1_rollup@2.75.7:
+    resolution: {integrity: sha512-dGfEZvdjDHObBiP5IvwTKMVeq/tBZGMBHZFMdIV1ClMM/YoWS34xrHFGfag9SN2ZtMgNZRFruqvxZQEa70O6nQ==}
     engines: {node: '>= 12.0.0'}
     peerDependencies:
       rollup: ^2.68.0
@@ -2013,8 +2019,8 @@ packages:
       defer-to-connect: 1.1.3
     dev: true
 
-  /@to1source/event/1.5.3:
-    resolution: {integrity: sha512-dyqIoOm42danWjt7496QAvGvlRMIQQU4uUI7K/JfC2RFqUCi2rfOjjwS7Xf4SlowSlgqPaZsg3eaBFYmY0QJKw==}
+  /@to1source/event/1.5.4:
+    resolution: {integrity: sha512-ZvJdq+8O+QGJRvsHk3ORgMh0Crl+uAc5v3+GGQ1WOB3tf2eTD/+3W2KtB/IayuxxDR13rY5Y0gUZVXPauwLubA==}
     dev: false
 
   /@trysound/sax/0.2.0:
@@ -3855,8 +3861,8 @@ packages:
       domhandler: 5.0.3
       domutils: 3.0.1
 
-  /cheerio/1.0.0-rc.11:
-    resolution: {integrity: sha512-bQwNaDIBKID5ts/DsdhxrjqFXYfLw4ste+wMKqWA8DyKcS4qwsPP4Bk8ZNaTJjvpiX/qW3BT4sU7d6Bh5i+dag==}
+  /cheerio/1.0.0-rc.12:
+    resolution: {integrity: sha512-VqR8m68vM46BNnuZ5NtnGBKIE/DfN0cRIzg9n40EIq9NOv90ayxLBXA8fXC5gquFRGJSTRqBq25Jt2ECLR431Q==}
     engines: {node: '>= 6'}
     dependencies:
       cheerio-select: 2.1.0
@@ -3866,7 +3872,6 @@ packages:
       htmlparser2: 8.0.1
       parse5: 7.0.0
       parse5-htmlparser2-tree-adapter: 7.0.0
-      tslib: 2.4.0
 
   /chokidar/2.1.8:
     resolution: {integrity: sha512-ZmZUazfOzf0Nve7duiCKD23PFSCs4JPoYyccjUFF3aQkQadqBhfzhjkwBH2mNOG9cTBwhamM37EIsIkZw3nRgg==}
@@ -5402,14 +5407,14 @@ packages:
     hasBin: true
     dev: true
 
-  /enzyme-adapter-preact-pure/4.0.1_v3226raxqtmawfjgx523ng37um:
+  /enzyme-adapter-preact-pure/4.0.1_oodvls4exrzn4l2zndr7fkydni:
     resolution: {integrity: sha512-bNrUQhj/mHi5hmO0vV3PHfWi+fHAZ04Hrk09UBh1+L8Msm3ihJ2JshBhQg71wMpusNp03B19NPIXL+RSOCTWRg==}
     peerDependencies:
       enzyme: ^3.11.0
       preact: ^10.0.0
     dependencies:
       enzyme: 3.11.0
-      preact: 10.8.1
+      preact: 10.8.2
     dev: true
 
   /enzyme-shallow-equal/1.0.4:
@@ -5423,7 +5428,7 @@ packages:
     resolution: {integrity: sha512-Dw8/Gs4vRjxY6/6i9wU0V+utmQO9kvh9XLnz3LIudviOnVYDEe2ec+0k+NQoMamn1VrjKgCUOWj5jG/5M5M0Qw==}
     dependencies:
       array.prototype.flat: 1.3.0
-      cheerio: 1.0.0-rc.11
+      cheerio: 1.0.0-rc.12
       enzyme-shallow-equal: 1.0.4
       function.prototype.name: 1.1.5
       has: 1.0.3
@@ -8178,7 +8183,7 @@ packages:
       jest-resolve: 28.1.1
     dev: true
 
-  /jest-preset-preact/4.0.5_7rit2iyibqejhpqtpaic7t6j4a:
+  /jest-preset-preact/4.0.5_gcqdlqyeyi765aw5rzadz5ex3m:
     resolution: {integrity: sha512-MnU7mfpnwopJkdx0WoEyRmrNDIvRN+w6sOur0zEhaRYYMo0gJM7UdZHWTV8k6uo0+ypY+m0kQW6kMukUx4v8JQ==}
     peerDependencies:
       jest: 26.x || 27.x
@@ -8195,8 +8200,8 @@ packages:
       isomorphic-unfetch: 3.1.0
       jest: 28.1.1
       jest-watch-typeahead: 0.6.5_jest@28.1.1
-      preact: 10.8.1
-      preact-render-to-string: 5.2.0_preact@10.8.1
+      preact: 10.8.2
+      preact-render-to-string: 5.2.0_preact@10.8.2
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -11032,7 +11037,7 @@ packages:
       source-map-js: 1.0.2
     dev: true
 
-  /preact-cli/3.3.5_76bqgiuffohbci76ugxjtfswxi:
+  /preact-cli/3.3.5_ulsokr3cnvs5uuitibwutrp2hq:
     resolution: {integrity: sha512-qtIk8WtheEoY192UoKFQD14cw5CoUnYs9A+gIL95H/WT4aw8Z4CvxsB6+eELMZnsruakkq7OQMd0xRrfyoZNgA==}
     engines: {node: '>=12'}
     hasBin: true
@@ -11059,9 +11064,9 @@ packages:
       '@babel/plugin-transform-react-jsx': 7.17.12_@babel+core@7.18.5
       '@babel/preset-env': 7.18.2_@babel+core@7.18.5
       '@babel/preset-typescript': 7.17.12_@babel+core@7.18.5
-      '@preact/async-loader': 3.0.1_preact@10.8.1
+      '@preact/async-loader': 3.0.1_preact@10.8.2
       '@prefresh/babel-plugin': 0.4.3
-      '@prefresh/webpack': 3.3.3_s3za6nlz2hs4vyb3dketf3dlta
+      '@prefresh/webpack': 3.3.3_szwc4nqvr25zmliaxeqepji27a
       '@types/webpack': 4.41.32
       autoprefixer: 10.4.7_postcss@8.4.14
       babel-esm-plugin: 0.9.0_webpack@4.46.0
@@ -11098,8 +11103,8 @@ packages:
       postcss: 8.4.14
       postcss-load-config: 3.1.4_postcss@8.4.14
       postcss-loader: 4.3.0_ions4wax6g3rrwsmfluivu3biu
-      preact: 10.8.1
-      preact-render-to-string: 5.2.0_preact@10.8.1
+      preact: 10.8.2
+      preact-render-to-string: 5.2.0_preact@10.8.2
       progress-bar-webpack-plugin: 2.1.0_webpack@4.46.0
       promise-polyfill: 8.2.3
       prompts: 2.4.2
@@ -11144,25 +11149,25 @@ packages:
       - webpack-command
     dev: true
 
-  /preact-render-to-string/5.2.0_preact@10.8.1:
+  /preact-render-to-string/5.2.0_preact@10.8.2:
     resolution: {integrity: sha512-+RGwSW78Cl+NsZRUbFW1MGB++didsfqRk+IyRVTaqy+3OjtpKK/6HgBtfszUX0YXMfo41k2iaQSseAHGKEwrbg==}
     peerDependencies:
       preact: '>=10'
     dependencies:
-      preact: 10.8.1
+      preact: 10.8.2
       pretty-format: 3.8.0
     dev: true
 
-  /preact-router/4.0.1_preact@10.8.1:
+  /preact-router/4.0.1_preact@10.8.2:
     resolution: {integrity: sha512-xPyHVLouc5oKIlKu9iEElplNygJYkOn/vfXfZhcoOFqzfAZHZMmT3FsQb0yyPkdt1rwTLFAxek6/5CFkofocSQ==}
     peerDependencies:
       preact: '>=10'
     dependencies:
-      preact: 10.8.1
+      preact: 10.8.2
     dev: true
 
-  /preact/10.8.1:
-    resolution: {integrity: sha512-p5CKQ0MCEXTGKGOHiFaNE2V2nDq2hvDHykXvIlz+4lbfJ9umLZr8JS/fa1bXUwRcHXK+Ljk8zqmDhr25n0LtVg==}
+  /preact/10.8.2:
+    resolution: {integrity: sha512-AKGt0BsDSiAYzVS78jZ9qRwuorY2CoSZtf1iOC6gLb/3QyZt+fLT09aYJBjRc/BEcRc4j+j3ggERMdNE43i1LQ==}
     dev: true
 
   /prelude-ls/1.1.2:
@@ -13427,9 +13432,6 @@ packages:
   /tslib/1.14.1:
     resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
     dev: true
-
-  /tslib/2.4.0:
-    resolution: {integrity: sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==}
 
   /tsscmp/1.0.6:
     resolution: {integrity: sha512-LxhtAkPDTkVCMQjt2h6eBVY28KCjikZqZfMcC15YBeNjkgUpdCfBu5HoiOTDu86v6smE8yOjyEktJ8hlbANHQA==}
