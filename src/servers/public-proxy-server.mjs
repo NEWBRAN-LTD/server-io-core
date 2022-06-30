@@ -36,6 +36,7 @@ export async function createPublicProxyServer (config) {
       debug('ws proxy catched', pathname)
       return wsProxies[pathname].ws(req, socket, head)
     }
+    // default proxy catch anything
     proxy.ws(req, socket, head)
   })
 

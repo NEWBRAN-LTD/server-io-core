@@ -4,6 +4,7 @@
  */
 import fs from 'node:fs'
 import { join, resolve } from 'node:path'
+import { formatStr } from '@jsonql/utils'
 import {
   getSocketConnectionConfig,
   readDocument,
@@ -26,6 +27,13 @@ import { prepareCordova } from './cordova.mjs'
 import { prepareQunit } from './qunit.mjs'
 // get where are we
 const __dirname = getDirname(import.meta.url)
+/**
+ * V2.2.0 add addtional config to the socket templates
+ */
+export const prepareSocketClient = (str, config) => {
+  return formatStr(str, `, path: '${config.socket.path}'`)
+}
+
 /**
  * Get scripts paths
  * @param {object} config the main config object
@@ -131,7 +139,7 @@ export function renderScriptsMiddleware (config) {
         case reloadJs: {
           try {
             const body = await Promise.resolve(
-              reloadTpl
+              prepareSocketClient(reloadTpl, config)
             ).then(data => {
               const clientFileFn = template(data)
               const connectionOptions = getSocketConnectionConfig(config)
@@ -162,7 +170,7 @@ export function renderScriptsMiddleware (config) {
         case debuggerJs: {
           try {
             const body = await Promise.resolve(
-              debuggerClientTpl
+              prepareSocketClient(debuggerClientTpl, config)
             ).then(data => {
               // If they want to ping the server back on init
               const ping =
