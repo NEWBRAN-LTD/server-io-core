@@ -40,7 +40,7 @@ export const prepareSocketClient = (str, config) => {
  * @return {object} parse file paths
  */
 export const getFeatureScripts = function (config) {
-  const socketIoJs = '/socket.io/socket.io.js'
+  const socketIoJs = [config.socket.path, 'socket.io.js'].join('')
   // Debugger
   const debuggerPath = config.debugger.namespace
   const eventName = config.debugger.eventName

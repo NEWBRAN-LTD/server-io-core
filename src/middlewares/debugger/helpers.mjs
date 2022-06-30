@@ -2,7 +2,7 @@
  * Take out a bunch of functions from the original debugger setup
  */
 import util from 'node:util'
-import { logutil, forEach, isString, isObject } from '../../utils/common.mjs'
+import { logutil, isString, isObject } from '../../utils/common.mjs'
 
 const keys = ['browser', 'location']
 const lb = '-'.repeat(90)
@@ -48,14 +48,13 @@ export const displayError = e => {
       msgToArr.forEach(a => {
         if (typeof a === 'object') {
           rows.push(lb)
-          let rowCtn = 1
-          forEach(a, (v, k) => {
+          for (const k in a) {
+            const v = a[k]
             if (v) {
               toShow = isObject(v) ? util.inspect(v, false, null) : v
-              rows.push([rowCtn + ':', toShow].join(' '))
-              ++rowCtn
+              rows.push([k + ':', toShow].join(' '))
             }
-          })
+          }
         } else {
           rows.push(a)
         }
@@ -63,9 +62,9 @@ export const displayError = e => {
       rows.push([lb, 'END'].join(' '))
     } else if (isObject(_msg)) {
       rows.push(lb)
-      forEach(_msg, (v, k) => {
-        rows.push([k + ':', v].join(' '))
-      })
+      for (const k in _msg) {
+        rows.push([k + ':', _msg[k]].join(' '))
+      }
       rows.push([lb + 'END'].join(' '))
     } else {
       // This is to accomdate the integration with other logging system sending back different messages

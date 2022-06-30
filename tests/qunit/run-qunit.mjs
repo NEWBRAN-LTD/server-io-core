@@ -19,6 +19,7 @@ const config = {
   reload: true,
   qunit: true,
   testFilePattern: '*.qunit.js',
+  libFilePattern: 'lib/*.lib.js',
   baseDir: '/home/joel/Projects/github/server-io-core/tests'
 }
 

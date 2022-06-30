@@ -81,7 +81,7 @@ export function extend (...args) {
 export function forEach (obj, cb) {
   let i = 0
   for (const name in obj) {
-    cb(obj[name], i)
+    cb(obj[name], name, i)
     ++i
   }
 }

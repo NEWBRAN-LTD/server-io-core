@@ -4,7 +4,7 @@
 ;(function () {
   let errors = []
   let i = 0
-  QUnit.log(function(res) {
+  QUnit.log(function (res) {
     ++i
     if (!res || !res.result) {
       errors.push(res)
@@ -16,13 +16,14 @@
         url: window.location.pathname
       }
       errors = []
-      console.log(data)
+      console.info('data to send', data)
       console.debug(data)
     }
   })
   QUnit.done(function (results) {
     results.tracebacks = errors
     results.url = window.location.pathname
+    console.info('test result', results)
     console.debug(results)
   })
 })()
