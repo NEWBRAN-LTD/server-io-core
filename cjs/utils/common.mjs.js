@@ -56,14 +56,6 @@ function extend (...args) {
   return Reflect.apply(Object.assign, null, args)
 }
 
-function forEach (obj, cb) {
-  let i = 0;
-  for (const name in obj) {
-    cb(obj[name], i);
-    ++i;
-  }
-}
-
 /**
  * @return {string} ip address
  */
@@ -228,7 +220,6 @@ Object.defineProperty(exports, 'template', {
 });
 exports.compact = compact;
 exports.extend = extend;
-exports.forEach = forEach;
 exports.getDirname = getDirname;
 exports.getDocLen = getDocLen;
 exports.getLocalIp = getLocalIp;

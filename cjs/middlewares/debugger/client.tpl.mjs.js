@@ -13,7 +13,7 @@ const debuggerClientTpl = `
 {
   'use strict'
   var nsp = io('<%= debuggerPath %>', {
-    transports: ['websocket']
+    transports: ['websocket'] {0}
   })
 
   /**
@@ -39,10 +39,11 @@ const debuggerClientTpl = `
     // callback is called with an Array[StackFrame]
     StackTrace.fromError(error)
       .then(function(data) {
+        console.info('catch error', error)
         send({ msg: data, from: 'error', color: 'warning' })
       })
       .catch(function(err) {
-        console.info('onerror', err)
+        console.error('onerror error!', err)
         var _msg = { msg: msg, file: file, line: line, col: col }
         send({ msg: _msg, from: 'catch onerror', color: 'debug' })
       })
@@ -53,7 +54,7 @@ const debuggerClientTpl = `
    * @param {object} e Error
    */
   window.onunhandledrejection = function(e) {
-    // console.info('onunhandledrejection', e)
+    console.info('onunhandledrejection', e)
     send({
       msg: e,
       from: 'onunhandledrejection',

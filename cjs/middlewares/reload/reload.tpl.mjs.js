@@ -6,7 +6,7 @@ const reloadTpl = `(function()
 {
   'use strict'
   var nsp = io('<%= reloadNamespace %>', {
-    transports: ['websocket']
+    transports: ['websocket'] {0}
   })
 
   nsp.on('hello', function(msg) {
@@ -14,7 +14,7 @@ const reloadTpl = `(function()
   })
 
   nsp.on('error', function(err) {
-    console.error('error', error);
+    console.error('error', error)
   })
 
   nsp.on('<%= eventName %>', function(payload) {

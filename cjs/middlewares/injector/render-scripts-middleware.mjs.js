@@ -4,6 +4,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 var fs = require('node:fs');
 var path = require('node:path');
+var utils = require('@jsonql/utils');
 require('debug');
 var constants = require('../../lib/constants.mjs.js');
 require('../../utils/open.mjs.js');
@@ -30,13 +31,19 @@ var template__default = /*#__PURE__*/_interopDefaultLegacy(template);
 // get where are we
 const __dirname$1 = common.getDirname((typeof document === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : (document.currentScript && document.currentScript.src || new URL('middlewares/injector/render-scripts-middleware.mjs.js', document.baseURI).href)));
 /**
+ * V2.2.0 add addtional config to the socket templates
+ */
+const prepareSocketClient = (str, config) => {
+  return utils.formatStr(str, `, path: '${config.socket.path}'`)
+};
+
+/**
  * Get scripts paths
  * @param {object} config the main config object
  * @return {object} parse file paths
  */
 const getFeatureScripts = function (config) {
-  // @TODO this will be replace with ws next
-  const socketIoJs = '/socket.io/socket.io.js';
+  const socketIoJs = [config.socket.path, 'socket.io.js'].join('');
   // Debugger
   const debuggerPath = config.debugger.namespace;
   const eventName = config.debugger.eventName;
@@ -135,7 +142,7 @@ function renderScriptsMiddleware (config) {
         case reloadJs: {
           try {
             const body = await Promise.resolve(
-              reload_tpl.reloadTpl
+              prepareSocketClient(reload_tpl.reloadTpl, config)
             ).then(data => {
               const clientFileFn = template__default["default"](data);
               const connectionOptions = common.getSocketConnectionConfig(config);
@@ -166,7 +173,7 @@ function renderScriptsMiddleware (config) {
         case debuggerJs: {
           try {
             const body = await Promise.resolve(
-              client_tpl.debuggerClientTpl
+              prepareSocketClient(client_tpl.debuggerClientTpl, config)
             ).then(data => {
               // If they want to ping the server back on init
               const ping =
@@ -203,5 +210,6 @@ function renderScriptsMiddleware (config) {
 
 exports.getFeatureScripts = getFeatureScripts;
 exports.hasExtraVirtualOverwrite = hasExtraVirtualOverwrite;
+exports.prepareSocketClient = prepareSocketClient;
 exports.renderScriptsMiddleware = renderScriptsMiddleware;
 exports.searchStacktraceSrc = searchStacktraceSrc;

@@ -57,14 +57,13 @@ const displayError = e => {
       msgToArr.forEach(a => {
         if (typeof a === 'object') {
           rows.push(lb);
-          let rowCtn = 1;
-          common.forEach(a, (v, k) => {
+          for (const k in a) {
+            const v = a[k];
             if (v) {
               toShow = common.isObject(v) ? util__default["default"].inspect(v, false, null) : v;
-              rows.push([rowCtn + ':', toShow].join(' '));
-              ++rowCtn;
+              rows.push([k + ':', toShow].join(' '));
             }
-          });
+          }
         } else {
           rows.push(a);
         }
@@ -72,9 +71,9 @@ const displayError = e => {
       rows.push([lb, 'END'].join(' '));
     } else if (common.isObject(_msg)) {
       rows.push(lb);
-      common.forEach(_msg, (v, k) => {
-        rows.push([k + ':', v].join(' '));
-      });
+      for (const k in _msg) {
+        rows.push([k + ':', _msg[k]].join(' '));
+      }
       rows.push([lb + 'END'].join(' '));
     } else {
       // This is to accomdate the integration with other logging system sending back different messages

@@ -5,8 +5,6 @@ var common = require('../common.mjs.js');
 var process$1 = require('process');
 
 // Move from the app.js to here
-const __dirname$1 = common.getDirname((typeof document === 'undefined' ? new (require('u' + 'rl').URL)('file:' + __filename).href : (document.currentScript && document.currentScript.src || new URL('utils/config/defaults.mjs.js', document.baseURI).href)));
-path.join(__dirname$1, '..', '..');
 ({
   NODE_VERSION: process$1.version, // 2022-06-21 discover v18 has bug with the http.createServer!
   /**
@@ -59,7 +57,8 @@ path.join(__dirname$1, '..', '..');
     socketOnly: true,
     transportConfig: ['websocket'],
     proxy: false,
-    namespace: [] // New on v1.0.2
+    namespace: [], // New in v1.0.2
+    path: '/server-io-core-ws/' // new in v2.2.0
   },
   /**
    * MIDDLEWARE DEFAULTS
