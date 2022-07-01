@@ -52,5 +52,16 @@ export default [
       plugins: outplugins
     }],
     plugins
+  },
+  {
+    external: /node_modules/,
+    input: join(__dirname, 'mastermind.mjs'),
+    output: [{
+      format: 'cjs',
+      file: join(__dirname, 'mastermind.js'),
+      sourcemap: false,
+      plugins: outplugins
+    }],
+    plugins
   }
 ]

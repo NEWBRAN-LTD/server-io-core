@@ -2,7 +2,7 @@
  * Socket server generator
  */
 import { WSClient, WSServer } from '../lib/socket-io.mjs'
-
+import { TRANSPORT } from '../lib/constants.mjs'
 /**
  * @param {object} server http server instance
  * @param {object} config full config options
@@ -10,7 +10,7 @@ import { WSClient, WSServer } from '../lib/socket-io.mjs'
  */
 export function socketIoGenerator (server, config) {
   // Force the socket.io server to use websocket protocol only
-  let socketConfig = ['websocket']
+  let socketConfig = TRANSPORT
   // if we want to use different protocol
   if (config.socket.socketOnly &&
     config.socket.transportConfig &&

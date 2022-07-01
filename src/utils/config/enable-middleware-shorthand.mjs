@@ -85,9 +85,10 @@ const extractArrayProps = config => {
  * wsProxy
  * @param {string} key looking for particular key to work with
  * @param {object} config the config object for that key
+ * @param {object} originalDefaults the default options
  * @return {object} the corrected config object
  */
-const handleSpecialCase = (key, config) => {
+const handleSpecialCase = (key, config, originalDefaults) => {
   if (key === WS_PROXY) {
     const target = extractArrayProps(config)
     if (target !== false) {
@@ -97,11 +98,17 @@ const handleSpecialCase = (key, config) => {
       }
     }
   } else if (key === MASTER_MIND) {
-    if (trueTypeOf(config) === 'string') {
-      return { namespace: ensureFirstSlash(config) }
-    } else if (trueTypeOf(config) === 'object' && config.namespace) {
-      return { namespace: ensureFirstSlash(config.namespace) }
+    if (trueTypeOf(config) === 'boolean' && config === true) {
+      const defaults = originalDefaults[key]
+      const { namespace } = defaults
+      return { namespace, enable: true }
+    } else if (trueTypeOf(config) === 'string') {
+      return { namespace: ensureFirstSlash(config), enable: true }
     }
+    /* we don't want them to pass this full object it could mess up
+    else if (trueTypeOf(config) === 'object' && config.namespace) {
+      return { namespace: ensureFirstSlash(config.namespace) }
+    } */
   }
   // @TODO handle the masterMind config here
   return false
@@ -149,7 +156,7 @@ export function enableMiddlewareShorthand (
      * enable: true
      * then the feature is not enable
      */
-    const specialCase = handleSpecialCase(prop, config[prop])
+    const specialCase = handleSpecialCase(prop, config[prop], originalDefaults)
     if (specialCase !== false) {
       config[prop] = specialCase
     } else if (config[prop] === true) {

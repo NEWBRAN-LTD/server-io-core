@@ -3,12 +3,14 @@
 import { createInternalServer } from './servers/internal-server.mjs'
 import { createPublicProxyServer } from './servers/public-proxy-server.mjs'
 import { openInBrowser } from './utils/open.mjs'
-import { INTERNAL_PORT } from './lib/constants.mjs'
+import { INTERNAL_PORT, MASTER_MIND } from './lib/constants.mjs'
 import { getDebug } from './utils/index.mjs'
 import { startMsg } from './utils/start-msg.mjs'
 const debug = getDebug('main')
 // Main
 export async function serverIoCore (config = {}) {
+  // v2.3.0 we need to retain the old port number and pass here again
+  let overwritePort = null
   // first start our internal
   const {
     webserver,
@@ -27,6 +29,9 @@ export async function serverIoCore (config = {}) {
     debug(`Internal server started on ${port0}`)
     config[INTERNAL_PORT] = port0
     config.socketIsEnabled = socketIsEnabled
+    if (config[MASTER_MIND].enable === true && overwritePort !== null) {
+      config.port = overwritePort
+    }
     const {
       startPublic,
       stopPublic
@@ -37,6 +42,9 @@ export async function serverIoCore (config = {}) {
       Reflect.apply(configCb, null, [config])
     }
     const { port, address } = await startPublic()
+    if (config[MASTER_MIND].enable === true) {
+      overwritePort = port
+    }
     debug('Public proxy server started on ', address, port)
     config.port = port // swap the port number because it could be a dynamic port now
     openInBrowser(config)

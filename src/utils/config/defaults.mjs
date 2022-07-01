@@ -121,6 +121,7 @@ const defaultOptions = {
     server: true // Allow passing configuration - see middleware.js for more detail
   },
   masterMind: { // 2.3.0
+    enable: false,
     namespace: `/mm-${ts}`
   }
 }

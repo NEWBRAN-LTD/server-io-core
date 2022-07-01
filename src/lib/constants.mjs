@@ -12,6 +12,7 @@ export const DEFAULT_HOST_IP = '0.0.0.0'
 export const cordovaJs = 'cordova.js'
 export const WS_PROXY = 'wsProxy'
 export const MASTER_MIND = 'masterMind'
+export const TRANSPORT = ['websocket']
 
 export const DEFAULT_HOSTNAME = 'localhost'
 
