@@ -1,5 +1,6 @@
 /**
- * Port from the original gulp-webserver
+ * @2018 Port from the original gulp-webserver
+ * @2022 already changed 90% of the code
  */
 import {
   toArray,
@@ -8,8 +9,14 @@ import {
   merge,
   ensureFirstSlash
 } from '../common.mjs'
-import { WS_PROXY, CONTEXT_KEY } from '../../lib/constants.mjs'
-
+import {
+  WS_PROXY,
+  CONTEXT_KEY,
+  MASTER_MIND
+} from '../../lib/constants.mjs'
+import {
+  trueTypeOf
+} from '@jsonql/utils'
 /**
  * prepare the proxies configuration
  */
@@ -48,11 +55,9 @@ const ensureArrayProps = (arraySource, options) => {
           [objKey]: merge({}, options[objKey], { [propKey]: toArray(value) })
         }
       }
-
       if (options[key]) {
         return { [key]: toArray(options[key]) }
       }
-
       return { [key]: [] }
     })
     .reduce((next, last) => {
@@ -91,7 +96,14 @@ const handleSpecialCase = (key, config) => {
         target: target
       }
     }
+  } else if (key === MASTER_MIND) {
+    if (trueTypeOf(config) === 'string') {
+      return { namespace: ensureFirstSlash(config) }
+    } else if (trueTypeOf(config) === 'object' && config.namespace) {
+      return { namespace: ensureFirstSlash(config.namespace) }
+    }
   }
+  // @TODO handle the masterMind config here
   return false
 }
 

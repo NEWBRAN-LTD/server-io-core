@@ -2,6 +2,9 @@
 import { join } from 'node:path'
 import { getServingIpforOS } from '../common.mjs'
 import { version } from 'process'
+import { timestamp } from '@jsonql/utils'
+// generate a timestamp
+const ts = timestamp()
 // const __dirname = getDirname(import.meta.url)
 // const src = join(__dirname, '..', '..')
 const defaultProperties = [
@@ -12,7 +15,8 @@ const defaultProperties = [
   'inject',
   'open',
   'https',
-  'socket'
+  'socket',
+  'masterMind'
 ]
 const arraySource = ['middlewares', 'proxies']
 const defaultOptions = {
@@ -68,7 +72,7 @@ const defaultOptions = {
     transportConfig: ['websocket'],
     proxy: false,
     namespace: [], // New in v1.0.2
-    path: '/server-io-core-ws/' // new in v2.2.0
+    path: `/server-io-core-ws-${ts}/` // v2.2.0 - 2.3.0 make it random
   },
   /**
    * MIDDLEWARE DEFAULTS
@@ -115,6 +119,9 @@ const defaultOptions = {
     broadcast: false,
     client: true, // Allow passing a configuration to overwrite the client
     server: true // Allow passing configuration - see middleware.js for more detail
+  },
+  masterMind: { // 2.3.0
+    namespace: `/mm-${ts}`
   }
 }
 

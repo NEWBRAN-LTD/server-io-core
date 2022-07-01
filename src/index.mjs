@@ -67,6 +67,7 @@ export async function serverIoCore (config = {}) {
   */
   // return all the references
   return {
+    config, // 2.3.0 return the config for master mind
     webserver,
     app,
     io,
