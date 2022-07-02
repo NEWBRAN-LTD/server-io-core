@@ -346,7 +346,7 @@ serverIoCore({
 });
 ```
 
-By default it will replace every occurance of the `target`. If you only want to replace the first result, then pass `all:false` to the object in the array. 
+By default it will replace every occurance of the `target`. If you only want to replace the first result, then pass `all:false` to the object in the array.
 
 You can also pass `file: /path/to/file` and it will try to read the file and replace with the target.
 
@@ -447,7 +447,16 @@ setup. Therefore, we are not going to do that for the time being. Since server-i
 
 ### Server Reload
 
-**This is removed and no longer support, you can use nodemon instead.**
+~~This is removed and no longer support, you can use nodemon instead.~~
+
+**V2.3.0 introduce master mind**
+
+This is our own way to use the socket to start / stop / restart the server. Build this purposely for other testing
+server that sometime require the dev server restart.
+
+To use include `import masterMind from 'server-io-core/mastermind'`
+
+More to come shortly
 
 ---
 
