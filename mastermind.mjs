@@ -1,7 +1,7 @@
 // this is a pupeteer to control the serverIoCore server start restart etc
 // the reason is we could use this to work with Cypress (or other test framework)
 // to control this dev server
-import { MASTER_MIND, AUTO_START } from './src/lib/constants.mjs'
+import { MASTER_MIND, AUTO_START, TRANSPORT } from './src/lib/constants.mjs'
 import { WSClient } from './src/lib/socket-io.mjs'
 import { logutil } from './src/utils/index.mjs'
 import serverIoCorePublic from './index.mjs'
@@ -26,7 +26,7 @@ export async function masterMind (options = {}) {
   if (config === false) {
     throw new Error('Mis-config master mind!')
   }
-  const { namespace } = config[MASTER_MIND]
+  const { namespace, client } = config[MASTER_MIND]
   const nsp = io.of(namespace)
   let result
   // start listening
@@ -50,8 +50,8 @@ export async function masterMind (options = {}) {
       }, 100)
     })
   })
-  // create a client and return it
-  const client = WSClient(namespace, { path: config.socket.path })
-  console.log(namespace, config.socket.path)
+  // if client is false then just return info to construct the client themselves
   return client
+    ? WSClient(namespace, { path: config.socket.path })
+    : { namespace, config: { path: config.socket.path, transports: TRANSPORT } }
 }

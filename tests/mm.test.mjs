@@ -13,19 +13,28 @@ test('First test if the configuration can be correctly apply', t => {
   t.true(config2.masterMind.enable)
 })
 
-test.skip('Testing the main master mind feature', async t => {
-  t.plan(2)
-  return promise(resolve => {
-    const client = masterMind()
+test('Testing the main master mind feature', async t => {
+  t.plan(3)
+  return promise(async resolve => {
+    const client = await masterMind()
+
+    console.log(client)
+
+    client.on('connect', () => {
+      t.pass()
+    })
+
     client.emit('start', null, (info) => {
       console.log(info)
       t.pass()
     })
+
     setTimeout(() => {
       client.emit('restart', null, (info) => {
         console.log(info)
         t.pass()
       })
+
       setTimeout(() => {
         client.emit('stop')
         resolve()

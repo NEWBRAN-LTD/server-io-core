@@ -101,14 +101,16 @@ const handleSpecialCase = (key, config, originalDefaults) => {
     if (trueTypeOf(config) === 'boolean' && config === true) {
       const defaults = originalDefaults[key]
       const { namespace } = defaults
-      return { namespace, enable: true }
+      return { namespace, enable: true, client: true }
     } else if (trueTypeOf(config) === 'string') {
-      return { namespace: ensureFirstSlash(config), enable: true }
+      return { namespace: ensureFirstSlash(config), enable: true, client: true }
+    } else if (trueTypeOf(config) === 'object') {
+      return {
+        enable: true,
+        client: config.client,
+        namespace: ensureFirstSlash(config.namespace)
+      }
     }
-    /* we don't want them to pass this full object it could mess up
-    else if (trueTypeOf(config) === 'object' && config.namespace) {
-      return { namespace: ensureFirstSlash(config.namespace) }
-    } */
   }
   // @TODO handle the masterMind config here
   return false
