@@ -17,28 +17,23 @@ test('Testing the main master mind feature', async t => {
   t.plan(3)
   return promise(async resolve => {
     const client = await masterMind()
-
-    console.log(client)
-
     client.on('connect', () => {
       t.pass()
     })
 
-    client.emit('start', null, (info) => {
-      console.log(info)
-      t.pass()
-    })
-
     setTimeout(() => {
-      client.emit('restart', null, (info) => {
-        console.log(info)
-        t.pass()
-      })
+      client.emit('restart', (info) => {
+        t.true(info.length > 0)
 
-      setTimeout(() => {
-        client.emit('stop')
-        resolve()
-      }, 300)
+        client.emit('status', (status) => {
+          t.true(status)
+
+          setTimeout(() => {
+            client.emit('stop')
+            resolve()
+          }, 100)
+        })
+      })
     }, 300)
   })
 })

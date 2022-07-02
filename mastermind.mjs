@@ -3,8 +3,9 @@
 // to control this dev server
 import { MASTER_MIND, AUTO_START, TRANSPORT } from './src/lib/constants.mjs'
 import { WSClient } from './src/lib/socket-io.mjs'
-import { logutil } from './src/utils/index.mjs'
+import { logutil, getDebug } from './src/utils/index.mjs'
 import serverIoCorePublic from './index.mjs'
+const debug = getDebug('mastermind')
 // main
 export async function masterMind (options = {}) {
   if (!options[MASTER_MIND]) {
@@ -28,30 +29,48 @@ export async function masterMind (options = {}) {
   }
   const { namespace, client } = config[MASTER_MIND]
   const nsp = io.of(namespace)
-  let result
+  let result = await start()
+  debug('started info', result)
+  let started = true
   // start listening
   nsp.on('connection', socket => {
-    socket.on('start', async (_, callback) => {
-      result = await start()
+    debug('client connection')
+    socket.on('status', (callback) => {
+      callback(started)
+    })
+    socket.on('start', async (callback) => {
+      if (!started) {
+        result = await start()
+        started = true
+      }
       callback(result)
-      logutil('masterMind start on ', result.address, result.port)
+      logutil(`masterMind${' already'} start on `, result[2], result[0])
     })
     socket.on('stop', () => {
-      stop()
-      logutil('masterMind stopped')
+      if (started) {
+        stop()
+        started = false
+        logutil('masterMind stopped')
+      }
     })
-    socket.on('restart', (_, callback) => {
-      stop()
+    socket.on('restart', (callback) => {
+      if (started) {
+        stop()
+      }
       // just pause a bit
       setTimeout(async () => {
-        await start()
+        result = await start()
+        started = true
         callback(result)
-        logutil('masterMind restarted', result.address, result.port)
+        logutil('masterMind restarted', result[2], result[0])
       }, 100)
     })
   })
+  const url = `http://localhost:${result[0]}`
+  const clientConfig = [`${url}${namespace}`, { path: config.socket.path, transports: TRANSPORT }]
+  debug(clientConfig)
   // if client is false then just return info to construct the client themselves
   return client
-    ? WSClient(namespace, { path: config.socket.path })
-    : { namespace, config: { path: config.socket.path, transports: TRANSPORT } }
+    ? Reflect.apply(WSClient, null, clientConfig)
+    : clientConfig
 }

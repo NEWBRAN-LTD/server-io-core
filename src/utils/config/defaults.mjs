@@ -123,7 +123,7 @@ const defaultOptions = {
   masterMind: { // 2.3.0
     enable: false,
     client: true,
-    namespace: `/mm-${ts}`
+    namespace: '/mastermind-nsp'
   }
 }
 
