@@ -9,6 +9,7 @@ var debug$1 = require('../../utils/debug.mjs.js');
 require('../../utils/open.mjs.js');
 var common = require('../../utils/common.mjs.js');
 require('../../utils/config/defaults.mjs.js');
+require('@jsonql/utils');
 
 // Script injector middleware
 const debug = debug$1.getDebug('inject');

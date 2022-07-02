@@ -3,8 +3,11 @@
 var path = require('node:path');
 var common = require('../common.mjs.js');
 var process$1 = require('process');
+var utils = require('@jsonql/utils');
 
 // Move from the app.js to here
+// generate a timestamp
+const ts = utils.timestamp();
 ({
   NODE_VERSION: process$1.version, // 2022-06-21 discover v18 has bug with the http.createServer!
   /**
@@ -48,7 +51,7 @@ var process$1 = require('process');
   },
   /**
    * NOTE:
-   * new at 1.5 take out the socket config
+   * v.1.5 take out the socket config
    * this is ready for the future V.2 develop to have
    * socket proxy out to a third parties server
    */
@@ -57,8 +60,8 @@ var process$1 = require('process');
     socketOnly: true,
     transportConfig: ['websocket'],
     proxy: false,
-    namespace: [], // New in v1.0.2
-    path: '/server-io-core-ws/' // new in v2.2.0
+    namespace: [], // v1.0.2
+    path: `/server-io-core-ws-${ts}/` // v2.2.0 - 2.3.0 make it random
   },
   /**
    * MIDDLEWARE DEFAULTS
@@ -95,7 +98,7 @@ var process$1 = require('process');
   // Create our socket.io debugger
   // using the socket.io instead of just normal post allow us to do this cross domain
   debugger: {
-    enable: true, // Turn on by default otherwise they wouldn't be using this version anyway
+    enable: true, // Turn on by default otherwise they wouldn't be using this anyway
     eventName: 'debugging',
     consoleDebug: true, // Overwrite the console.debug method
     verbose: false, // Add verbose option
@@ -105,5 +108,10 @@ var process$1 = require('process');
     broadcast: false,
     client: true, // Allow passing a configuration to overwrite the client
     server: true // Allow passing configuration - see middleware.js for more detail
+  },
+  masterMind: { // 2.3.0
+    enable: false,
+    client: true,
+    namespace: '/mastermind-nsp'
   }
 });

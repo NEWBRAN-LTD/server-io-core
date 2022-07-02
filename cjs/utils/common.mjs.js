@@ -45,6 +45,7 @@ function getDirname (url$1) {
 }
 
 /** should get rip of all the lodash crap long time ago */
+/* @TODO once again replace all these with @jsonql/utils */
 
 const isObject = (item) => {
   return (item && typeof item === 'object' && !Array.isArray(item))

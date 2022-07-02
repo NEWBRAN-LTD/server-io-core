@@ -13,6 +13,7 @@ var debug$1 = require('../utils/debug.mjs.js');
 require('../utils/open.mjs.js');
 require('../utils/common.mjs.js');
 require('../utils/config/defaults.mjs.js');
+require('@jsonql/utils');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 

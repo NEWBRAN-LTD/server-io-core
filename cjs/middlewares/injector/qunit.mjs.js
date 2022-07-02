@@ -8,6 +8,7 @@ var constants = require('../../lib/constants.mjs.js');
 require('../../utils/open.mjs.js');
 var common = require('../../utils/common.mjs.js');
 require('../../utils/config/defaults.mjs.js');
+require('@jsonql/utils');
 var helpers = require('./helpers.mjs.js');
 
 // This is a special qunit helper to replace the external load qunit files to the local serve files

@@ -14,6 +14,9 @@ const CSS_CONTENT_TYPE = 'text/css; charset=utf8';
 const dummyJs = '/server-io-core-dummy.js';
 const DEFAULT_HOST_IP = '0.0.0.0';
 const cordovaJs = 'cordova.js';
+const MASTER_MIND = 'masterMind';
+const TRANSPORT = ['websocket'];
+const AUTO_START = 'autoStart';
 
 const DEFAULT_HOSTNAME = 'localhost';
 
@@ -26,6 +29,7 @@ const DEFAULT_PORT = 0;
 const DEFAULT_HOST = 'localhost';
 const INTERNAL_PORT = '__internal_port__';
 
+exports.AUTO_START = AUTO_START;
 exports.CSS_CONTENT_TYPE = CSS_CONTENT_TYPE;
 exports.DEBUG_MAIN_KEY = DEBUG_MAIN_KEY;
 exports.DEFAULT_HOST = DEFAULT_HOST;
@@ -35,8 +39,10 @@ exports.DEFAULT_PORT = DEFAULT_PORT;
 exports.DEFAULT_WAIT = DEFAULT_WAIT;
 exports.EVENT_NAME = EVENT_NAME;
 exports.INTERNAL_PORT = INTERNAL_PORT;
+exports.MASTER_MIND = MASTER_MIND;
 exports.MAX_AGE = MAX_AGE;
 exports.MAX_MAX_AGE = MAX_MAX_AGE;
+exports.TRANSPORT = TRANSPORT;
 exports.contentType = contentType;
 exports.cordovaJs = cordovaJs;
 exports.dummyJs = dummyJs;

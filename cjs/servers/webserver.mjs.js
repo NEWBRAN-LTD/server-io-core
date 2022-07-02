@@ -10,6 +10,7 @@ var constants = require('../lib/constants.mjs.js');
 require('../utils/open.mjs.js');
 var common = require('../utils/common.mjs.js');
 require('../utils/config/defaults.mjs.js');
+require('@jsonql/utils');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 

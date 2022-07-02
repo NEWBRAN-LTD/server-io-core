@@ -7,6 +7,7 @@ require('../../utils/open.mjs.js');
 var constants = require('../../lib/constants.mjs.js');
 var common = require('../../utils/common.mjs.js');
 require('../../utils/config/defaults.mjs.js');
+require('@jsonql/utils');
 var watcher = require('../watcher/watcher.mjs.js');
 
 // watcher

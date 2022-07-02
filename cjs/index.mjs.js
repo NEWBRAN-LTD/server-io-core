@@ -10,11 +10,14 @@ var debug$1 = require('./utils/debug.mjs.js');
 var startMsg = require('./utils/start-msg.mjs.js');
 require('./utils/common.mjs.js');
 require('./utils/config/defaults.mjs.js');
+require('@jsonql/utils');
 
 // V.2 using ESM
 const debug = debug$1.getDebug('main');
 // Main
 async function serverIoCore (config = {}) {
+  // v2.3.0 we need to retain the old port number and pass here again
+  let overwritePort = null;
   // first start our internal
   const {
     webserver,
@@ -33,6 +36,9 @@ async function serverIoCore (config = {}) {
     debug(`Internal server started on ${port0}`);
     config[constants.INTERNAL_PORT] = port0;
     config.socketIsEnabled = socketIsEnabled;
+    if (config[constants.MASTER_MIND].enable === true && overwritePort !== null) {
+      config.port = overwritePort;
+    }
     const {
       startPublic,
       stopPublic
@@ -43,6 +49,9 @@ async function serverIoCore (config = {}) {
       Reflect.apply(configCb, null, [config]);
     }
     const { port, address } = await startPublic();
+    if (config[constants.MASTER_MIND].enable === true) {
+      overwritePort = port;
+    }
     debug('Public proxy server started on ', address, port);
     config.port = port; // swap the port number because it could be a dynamic port now
     open.openInBrowser(config);
@@ -58,21 +67,12 @@ async function serverIoCore (config = {}) {
     });
   };
   // now we deal with the autoStart here
-  if (config.autoStart) {
+  if (config[constants.AUTO_START] === true) {
     await startAllFn();
   }
-  /*
-  V.2.2.0 feature restart the server
-  retain the previous config stop --> start
-  using the previous public port but not re-open the browser
-  instead we need to add feature to the browser loaded code to
-  be able to know the server is restarting
-  const restart = () => {
-    console.log('@TODO V2.2.0')
-  }
-  */
   // return all the references
   return {
+    config, // 2.3.0 return the config for master mind
     webserver,
     app,
     io,
