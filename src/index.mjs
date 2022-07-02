@@ -3,7 +3,7 @@
 import { createInternalServer } from './servers/internal-server.mjs'
 import { createPublicProxyServer } from './servers/public-proxy-server.mjs'
 import { openInBrowser } from './utils/open.mjs'
-import { INTERNAL_PORT, MASTER_MIND } from './lib/constants.mjs'
+import { INTERNAL_PORT, MASTER_MIND, AUTO_START } from './lib/constants.mjs'
 import { getDebug } from './utils/index.mjs'
 import { startMsg } from './utils/start-msg.mjs'
 const debug = getDebug('main')
@@ -60,19 +60,9 @@ export async function serverIoCore (config = {}) {
     })
   }
   // now we deal with the autoStart here
-  if (config.autoStart) {
+  if (config[AUTO_START] === true) {
     await startAllFn()
   }
-  /*
-  V.2.2.0 feature restart the server
-  retain the previous config stop --> start
-  using the previous public port but not re-open the browser
-  instead we need to add feature to the browser loaded code to
-  be able to know the server is restarting
-  const restart = () => {
-    console.log('@TODO V2.2.0')
-  }
-  */
   // return all the references
   return {
     config, // 2.3.0 return the config for master mind

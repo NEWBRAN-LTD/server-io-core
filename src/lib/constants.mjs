@@ -13,6 +13,7 @@ export const cordovaJs = 'cordova.js'
 export const WS_PROXY = 'wsProxy'
 export const MASTER_MIND = 'masterMind'
 export const TRANSPORT = ['websocket']
+export const AUTO_START = 'autoStart'
 
 export const DEFAULT_HOSTNAME = 'localhost'
 

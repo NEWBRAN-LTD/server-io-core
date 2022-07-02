@@ -1,12 +1,16 @@
 // this is a pupeteer to control the serverIoCore server start restart etc
 // the reason is we could use this to work with Cypress (or other test framework)
 // to control this dev server
-import { MASTER_MIND } from './src/lib/constants.mjs'
+import { MASTER_MIND, AUTO_START } from './src/lib/constants.mjs'
 import { WSClient } from './src/lib/socket-io.mjs'
-import { logutil } from './src/utils'
+import { logutil } from './src/utils/index.mjs'
 import serverIoCorePublic from './index.mjs'
 // main
 export async function masterMind (options = {}) {
+  if (!options[MASTER_MIND]) {
+    options[MASTER_MIND] = true // enable it
+  }
+  options[AUTO_START] = false // it must be false
   const {
     config,
     // webserver,
@@ -24,28 +28,30 @@ export async function masterMind (options = {}) {
   }
   const { namespace } = config[MASTER_MIND]
   const nsp = io.of(namespace)
-  // also create a client and return it
-  const client = WSClient(namespace, { path: config.socket.path })
   let result
   // start listening
   nsp.on('connection', socket => {
-    socket.on('start', async () => {
+    socket.on('start', async (_, callback) => {
       result = await start()
-      logutil('Master minded server start on ', result.address, result.port)
+      callback(result)
+      logutil('masterMind start on ', result.address, result.port)
     })
     socket.on('stop', () => {
       stop()
-      logutil('Master minded server stopped')
+      logutil('masterMind stopped')
     })
-    socket.on('restart', () => {
+    socket.on('restart', (_, callback) => {
       stop()
       // just pause a bit
       setTimeout(async () => {
         await start()
-        logutil('Master mind server restarted', result.address, result.port)
+        callback(result)
+        logutil('masterMind restarted', result.address, result.port)
       }, 100)
     })
   })
-
+  // create a client and return it
+  const client = WSClient(namespace, { path: config.socket.path })
+  console.log(namespace, config.socket.path)
   return client
 }
