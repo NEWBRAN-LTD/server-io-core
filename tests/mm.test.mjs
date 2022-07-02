@@ -13,7 +13,7 @@ test('First test if the configuration can be correctly apply', t => {
   t.true(config2.masterMind.enable)
 })
 
-test('Testing the main master mind feature', async t => {
+test.skip('Testing the main master mind feature', async t => {
   t.plan(2)
   return promise(resolve => {
     const client = masterMind()

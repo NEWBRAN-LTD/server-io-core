@@ -42,6 +42,7 @@ export function getDirname (url) {
 }
 
 /** should get rip of all the lodash crap long time ago */
+/* @TODO once again replace all these with @jsonql/utils */
 
 export const isObject = (item) => {
   return (item && typeof item === 'object' && !Array.isArray(item))
@@ -180,6 +181,13 @@ export const toArray = param => {
 export const isString = opt => {
   return typeof opt === 'string'
 }
+
+/**
+ * @param {any} value to compare
+ * @param {array} arr for compare
+ * @return {boolean} true found
+ */
+export const inArray = (value, arr) => arr.includes(value)
 
 /**
  * Set headers @TODO there is bug here that cause the server not running correctly
@@ -347,10 +355,3 @@ export const stripFirstSlash = str => {
  * @return {string} output with slash at the beginning
  */
 export const ensureFirstSlash = str => '/' + stripFirstSlash(str)
-
-/**
- * @param {any} value to compare
- * @param {array} arr for compare
- * @return {boolean} true found
- */
-export const inArray = (value, arr) => arr.includes(value)
