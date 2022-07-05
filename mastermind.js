@@ -2216,7 +2216,7 @@ function prepareProxiesConfig ({ proxies }) {
 // V.2 using ESM
 const debug$2 = getDebug('main');
 // Main
-async function serverIoCore (config = {}) {
+async function serverIoCore$1 (config = {}) {
   // v2.3.0 we need to retain the old port number and pass here again
   let overwritePort = null;
   // first start our internal
@@ -2289,11 +2289,12 @@ const __dirname$1 = getDirname((typeof document === 'undefined' ? new (require('
 
 /**
  * Main entry point for server-io-core
+ * @2.4.0 change the name export BREAKING
  * @param {object} config options
  * @return {object} http server instance
  * @api public
  */
-async function serverIoCorePublic (config = {}) {
+async function serverIoCore (config = {}) {
   const configCopy = merge({}, config);
 
   const opts = createConfiguration(configCopy);
@@ -2306,7 +2307,7 @@ async function serverIoCorePublic (config = {}) {
   debug$1('user supplied config', configCopy);
   debug$1('options', util.inspect(opts, false, null, true));
 
-  return await serverIoCore(opts)
+  return await serverIoCore$1(opts)
 }
 
 // this is a pupeteer to control the serverIoCore server start restart etc
@@ -2324,7 +2325,7 @@ async function masterMind (options = {}) {
     io,
     start,
     stop
-  } = await serverIoCorePublic(options);
+  } = await serverIoCore(options);
   // We are re-using the io
   // one of the upside is even the server shutdown and re-start
   // the client will re-try until it reconnect, then we can
