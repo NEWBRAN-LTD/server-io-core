@@ -4,7 +4,7 @@
 import { MASTER_MIND, AUTO_START, TRANSPORT } from './src/lib/constants.mjs'
 import { WSClient } from './src/lib/socket-io.mjs'
 import { logutil, getDebug } from './src/utils/index.mjs'
-import serverIoCorePublic from './index.mjs'
+import { serverIoCore } from './index.mjs'
 const debug = getDebug('mastermind')
 // main
 export async function masterMind (options = {}) {
@@ -19,7 +19,7 @@ export async function masterMind (options = {}) {
     io,
     start,
     stop
-  } = await serverIoCorePublic(options)
+  } = await serverIoCore(options)
   // We are re-using the io
   // one of the upside is even the server shutdown and re-start
   // the client will re-try until it reconnect, then we can

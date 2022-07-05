@@ -21,7 +21,8 @@ For example in your `index.js`
 
 ```js
 'use strict';
-const serverIoCore = require('server-io-core');
+// @2.4.0 change the named export
+const { serverIoCore } = require('server-io-core');
 serverIoCore({
   webroot: ['/path/to/webroot', '/path/to/assets']
 });
@@ -74,7 +75,7 @@ The minimal setup is pass the `webroot`.
 
 ```js
 'use strict';
-const serverIoCore = require('server-io-core');
+const { serverIoCore } = require('server-io-core');
 serverIoCore({
   webroot: ['/path/to/webroot', '/path/to/assets']
 });
@@ -94,10 +95,10 @@ It's recommended to pass a full path to the webroot option.
 
 ```js
 'use strict';
-const server = require('server-io-core');
+const { serverIoCore } = require('server-io-core');
 const { join } = require('path');
 
-server({
+serverIoCore({
   webroot: [
     join(__dirname, 'path', 'to', 'dist'),
     join(__dirname, 'path', 'to', 'assets')
@@ -411,10 +412,10 @@ You can add any third parties middlewares (as long as it's Koa 2 compatible).
 
 ```js
 
-const server = require('server-io-core');
+const { serverIoCore } = require('server-io-core');
 const jsonql = require('jsonql-koa'); // this is our other cool tool under development
 
-server({
+serverIoCore({
   ...options,
   middlewares: [
     jsonql(configForJsonql)

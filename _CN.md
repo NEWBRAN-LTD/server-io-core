@@ -19,7 +19,8 @@ $ yarn add server-io-core --dev
 
 ```js
 'use strict';
-const serverIoCore = require('server-io-core');
+// BREAKKING @2.4.0 named export
+const { serverIoCore } = require('server-io-core');
 serverIoCore({
   webroot: ['/path/to/webroot', '/path/to/assets']
 });
@@ -72,7 +73,7 @@ const { webserver, app, start, stop, io } = serverIoCore({
 
 ```js
 'use strict';
-const serverIoCore = require('server-io-core');
+const { serverIoCore } = require('server-io-core');
 serverIoCore({
   webroot: ['/path/to/webroot', '/path/to/assets']
 });
@@ -92,10 +93,10 @@ serverIoCore({
 
 ```js
 'use strict';
-const server = require('server-io-core');
+const { serverIoCore } = require('server-io-core');
 const { join } = require('path');
 
-server({
+serverIoCore({
   webroot: [
     join(__dirname, 'path', 'to', 'dist'),
     join(__dirname, 'path', 'to', 'assets')

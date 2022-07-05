@@ -1,9 +1,9 @@
 // serverIoCore main
 const { join, resolve } = require('node:path')
 const { inspect } = require('node:util')
-const { createConfiguration } = require('./src/utils/config/index.mjs')
-const { serverIoCore } = require('./src/index.mjs')
-const { toArray, getDebug, merge, getPkgInfo } = require('./src/utils/index.mjs')
+const { createConfiguration } = require('./cjs/utils/config/index.mjs')
+const { serverIoCore } = require('./cjs/index.mjs')
+const { toArray, getDebug, merge, getPkgInfo } = require('./cjs/utils/index.mjs')
 
 const debug = getDebug('index')
 
@@ -13,7 +13,7 @@ const debug = getDebug('index')
  * @return {object} http server instance
  * @api public
  */
-module.exports = async function serverIoCorePublic (config = {}) {
+async function serverIoCorePublic (config = {}) {
   const configCopy = merge({}, config)
 
   const opts = createConfiguration(configCopy)
@@ -28,3 +28,5 @@ module.exports = async function serverIoCorePublic (config = {}) {
 
   return await serverIoCore(opts)
 }
+// named export
+module.exports = { serverIoCore: serverIoCorePublic }
