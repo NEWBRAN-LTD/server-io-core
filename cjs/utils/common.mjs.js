@@ -8,10 +8,11 @@ var path = require('node:path');
 require('node:util');
 var url = require('node:url');
 var log = require('fancy-log');
-var constants = require('../lib/constants.mjs.js');
 var template = require('lodash.template');
 var process$1 = require('process');
 require('fs-extra');
+var utils = require('@jsonql/utils');
+var constants = require('../lib/constants.mjs.js');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -22,7 +23,6 @@ var log__default = /*#__PURE__*/_interopDefaultLegacy(log);
 var template__default = /*#__PURE__*/_interopDefaultLegacy(template);
 
 // Utils
-
 const IS_TEST = process.env.NODE_ENV === 'test';
 
 function objLength (obj) {
@@ -42,19 +42,6 @@ function getDirname (url$1) {
     // console.log(__filename)
     return path__default["default"].dirname(__filename)
   }
-}
-
-/** should get rip of all the lodash crap long time ago */
-/* @TODO once again replace all these with @jsonql/utils */
-
-const isObject = (item) => {
-  return (item && typeof item === 'object' && !Array.isArray(item))
-};
-
-const compact = arr => arr.filter(Boolean);
-
-function extend (...args) {
-  return Reflect.apply(Object.assign, null, args)
 }
 
 /**
@@ -96,24 +83,6 @@ const logutil = function (...args) {
   if (!IS_TEST) {
     Reflect.apply(log__default["default"], null, args);
   }
-};
-
-/**
- * Make sure the supply argument is an array
- */
-const toArray = param => {
-  if (param) {
-    return Array.isArray(param) ? param : [param]
-  }
-  return []
-};
-
-/**
- * @param {mixed} opt
- * @return {boolean} result
- */
-const isString = opt => {
-  return typeof opt === 'string'
 };
 
 /**
@@ -196,7 +165,7 @@ const searchFileFromFiles = files => files
  */
 const searchIndexFile = config => {
   const { webroot, index } = config;
-  const webroots = toArray(webroot);
+  const webroots = utils.toArray(webroot);
   return webroots
     .map(d => [d, index].join('/'))
     .filter(fs__default["default"].existsSync)
@@ -219,8 +188,34 @@ Object.defineProperty(exports, 'template', {
   enumerable: true,
   get: function () { return template__default["default"]; }
 });
-exports.compact = compact;
-exports.extend = extend;
+Object.defineProperty(exports, 'compact', {
+  enumerable: true,
+  get: function () { return utils.compact; }
+});
+Object.defineProperty(exports, 'extend', {
+  enumerable: true,
+  get: function () { return utils.extend; }
+});
+Object.defineProperty(exports, 'inArray', {
+  enumerable: true,
+  get: function () { return utils.inArray; }
+});
+Object.defineProperty(exports, 'isObject', {
+  enumerable: true,
+  get: function () { return utils.isObject; }
+});
+Object.defineProperty(exports, 'isString', {
+  enumerable: true,
+  get: function () { return utils.isString; }
+});
+Object.defineProperty(exports, 'merge', {
+  enumerable: true,
+  get: function () { return utils.merge; }
+});
+Object.defineProperty(exports, 'toArray', {
+  enumerable: true,
+  get: function () { return utils.toArray; }
+});
 exports.getDirname = getDirname;
 exports.getDocLen = getDocLen;
 exports.getLocalIp = getLocalIp;
@@ -228,12 +223,9 @@ exports.getServingIpforOS = getServingIpforOS;
 exports.getSocketConnectionConfig = getSocketConnectionConfig;
 exports.headerParser = headerParser;
 exports.isHtmlFile = isHtmlFile;
-exports.isObject = isObject;
-exports.isString = isString;
 exports.isWindoze = isWindoze;
 exports.logutil = logutil;
 exports.objLength = objLength;
 exports.readDocument = readDocument;
 exports.searchFileFromFiles = searchFileFromFiles;
 exports.searchIndexFile = searchIndexFile;
-exports.toArray = toArray;

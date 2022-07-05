@@ -2,7 +2,7 @@
  * Modified from koa-static to allow us intercept the content and overwritten them
  */
 import send from 'koa-send'
-import { toArray, getDebug } from '../utils/index.mjs'
+import { toArray, getDebug, logutil } from '../utils/index.mjs'
 const debug = getDebug('static-serve')
 /**
  * Customize version of koa-static
@@ -21,6 +21,7 @@ export function serverStatic (app, config) {
   dirs.forEach(dir => {
     app.use(serve(dir, opts, config))
   })
+  logutil('[Static Serve] File serve up from', dirs)
 }
 /**
  * Serve static files from `root`.

@@ -8,7 +8,7 @@ var constants = require('../../lib/constants.mjs.js');
 require('../../utils/open.mjs.js');
 var common = require('../../utils/common.mjs.js');
 require('../../utils/config/defaults.mjs.js');
-require('@jsonql/utils');
+var utils = require('@jsonql/utils');
 var helpers = require('./helpers.mjs.js');
 var templates_tpl = require('./templates.tpl.mjs.js');
 
@@ -32,7 +32,7 @@ async function serveCordova (ctx, config) {
       helpers.success(ctx, templates_tpl.cordovaTpl);
       return true
     }
-    if (common.isString(config.cordova)) {
+    if (utils.isString(config.cordova)) {
       try {
         helpers.success(ctx, await common.readDocument(config.cordova));
         return true

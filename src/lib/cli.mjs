@@ -5,50 +5,51 @@ level call to include them
 */
 import path from 'node:path'
 import fsx from 'fs-extra'
-import meow from 'meow'
 import log from 'fancy-log'
 // import { serverIoCore } from '../index.mjs'
 // Config shorthand map
-const alias = {
+export const alias = {
   p: 'port',
   h: 'host',
   s: 'ssl',
   c: 'config'
 }
+export const cliTxt = `
+ Usage
+   $ server-io-core <root>
+   // or
+   $ srvio <root>
+
+ Options
+   -p, --port Port number (default 0 - dynamic)
+   -h, --host host name (default 0.0.0.0)
+   -s, --https use https using snake oil cert (default to false)
+   -c, --config pass a config json file (default '')
+
+ Examples
+   $ server-io-core /path/to/app
+ or pass as an array
+   $ server-io-core /path/to/app,node_modules,dev
+
+ Serve up to broadcast your app
+   $ server-io-core /path/to/app -h 0.0.0.0
+
+ Use a config file
+   $ server-io-core /path/to/app -c ./config.json
+ The configuration option is the same as in README
+ * When using --config (-c) flag, all the other flag will be ignore
+`
 // create cli
-const cli = meow(
-  `
-   Usage
-     $ server-io-core <root>
-     // or
-     $ srvio <root>
-
-   Options
-     -p, --port Port number (default 0 - dynamic)
-     -h, --host host name (default 0.0.0.0)
-     -s, --https use https using snake oil cert (default to false)
-     -c, --config pass a config json file (default '')
-
-   Examples
-     $ server-io-core /path/to/app
-   or pass as an array
-     $ server-io-core /path/to/app,node_modules,dev
-
-   Serve up to broadcast your app
-     $ server-io-core /path/to/app -h 0.0.0.0
-
-   Use a config file
-     $ server-io-core /path/to/app -c ./config.json
-   The configuration option is the same as in README
-   * When using --config (-c) flag, all the other flag will be ignore
- `,
-  { 
-    alias, 
+const getCli = (meow) => meow(
+  cliTxt,
+  {
+    alias,
     importMeta: import.meta // ESM required crap
   }
 )
 // we change the passing function from cli to serverIoCore that construct this on the root level
-export const serve = serverIoCore => {
+export const serve = async (meow, serverIoCore) => {
+  const cli = getCli(meow)
   if (!fsx.existsSync(cli.input[0])) {
     return log.error(
       'Sorry the path to your file is required! Run `server-io-core` --help for more information'

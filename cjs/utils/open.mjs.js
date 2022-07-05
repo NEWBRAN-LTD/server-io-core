@@ -6,6 +6,7 @@ var open = require('open');
 var debug$1 = require('./debug.mjs.js');
 var common = require('./common.mjs.js');
 var constants = require('../lib/constants.mjs.js');
+var utils = require('@jsonql/utils');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -51,7 +52,7 @@ function openInBrowser (config) {
     const args = [constructUrl(config)];
     // If there is just the true option then we need to construct the link
     if (config.open.browser) {
-      if (common.isString(config.open.browser)) {
+      if (utils.isString(config.open.browser)) {
         args.push({ app: config.open.browser });
       } else if (Array.isArray(config.open.browser)) {
         multiple = config.open.browser.map(browser => {

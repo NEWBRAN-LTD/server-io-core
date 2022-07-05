@@ -9,7 +9,7 @@ var debug$1 = require('../../utils/debug.mjs.js');
 require('../../utils/open.mjs.js');
 var common = require('../../utils/common.mjs.js');
 require('../../utils/config/defaults.mjs.js');
-require('@jsonql/utils');
+var utils = require('@jsonql/utils');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -202,7 +202,7 @@ const getFilesToInject = function (config) {
  * @return {string} overwritten HTML
  */
 const injectToHtml = (body, jsTags, cssTags, before = true) => {
-  const html = common.isString(body) ? body : body.toString('utf8');
+  const html = utils.isString(body) ? body : body.toString('utf8');
   const $ = cheerio__default["default"].load(html);
   // @2018-08-13 add check if there is existing javascript tags
   const $scripts = $('body script').toArray();

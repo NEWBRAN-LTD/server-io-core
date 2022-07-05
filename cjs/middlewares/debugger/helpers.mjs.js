@@ -4,6 +4,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 var util = require('node:util');
 var common = require('../../utils/common.mjs.js');
+var utils = require('@jsonql/utils');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -47,11 +48,11 @@ const displayError = e => {
     }
   });
   const _msg = parseObj(e.msg);
-  if (common.isString(_msg)) {
+  if (utils.isString(_msg)) {
     rows.push(['MESSAGE:', e.msg].join(' '));
   } else {
     let toShow;
-    const msgToArr = common.isString(_msg) ? parseObj(_msg) : _msg;
+    const msgToArr = utils.isString(_msg) ? parseObj(_msg) : _msg;
     if (Array.isArray(msgToArr)) {
       rows.push('MESSAGE(S):');
       msgToArr.forEach(a => {
@@ -60,7 +61,7 @@ const displayError = e => {
           for (const k in a) {
             const v = a[k];
             if (v) {
-              toShow = common.isObject(v) ? util__default["default"].inspect(v, false, null) : v;
+              toShow = utils.isObject(v) ? util__default["default"].inspect(v, false, null) : v;
               rows.push([k + ':', toShow].join(' '));
             }
           }
@@ -69,7 +70,7 @@ const displayError = e => {
         }
       });
       rows.push([lb, 'END'].join(' '));
-    } else if (common.isObject(_msg)) {
+    } else if (utils.isObject(_msg)) {
       rows.push(lb);
       for (const k in _msg) {
         rows.push([k + ':', _msg[k]].join(' '));

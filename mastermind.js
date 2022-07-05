@@ -87,7 +87,6 @@ function getDebug (key) {
 }
 
 // Utils
-
 const IS_TEST = process.env.NODE_ENV === 'test';
 
 /** wrap this one function because there is case the __dirname is wrong! */
@@ -115,44 +114,6 @@ function getDirname (url$1) {
     // console.log(__filename)
     return path__default["default"].dirname(__filename)
   }
-}
-
-/** should get rip of all the lodash crap long time ago */
-/* @TODO once again replace all these with @jsonql/utils */
-
-const isObject = (item) => {
-  return (item && typeof item === 'object' && !Array.isArray(item))
-};
-
-const mergeDeep = (target, ...sources) => {
-  if (!sources.length) return target
-  const source = sources.shift();
-
-  if (isObject(target) && isObject(source)) {
-    for (const key in source) {
-      if (isObject(source[key])) {
-        if (!target[key]) {
-          Object.assign(target, {
-            [key]: {}
-          });
-        }
-        mergeDeep(target[key], source[key]);
-      } else {
-        Object.assign(target, {
-          [key]: source[key]
-        });
-      }
-    }
-  }
-  return mergeDeep(target, ...sources)
-};
-// just alias it
-const merge = mergeDeep;
-
-const compact = arr => arr.filter(Boolean);
-
-function extend (...args) {
-  return Reflect.apply(Object.assign, null, args)
 }
 
 /** the key is a dot path */
@@ -210,24 +171,6 @@ const logutil = function (...args) {
   if (!IS_TEST) {
     Reflect.apply(log__default["default"], null, args);
   }
-};
-
-/**
- * Make sure the supply argument is an array
- */
-const toArray = param => {
-  if (param) {
-    return Array.isArray(param) ? param : [param]
-  }
-  return []
-};
-
-/**
- * @param {mixed} opt
- * @return {boolean} result
- */
-const isString = opt => {
-  return typeof opt === 'string'
 };
 
 /**
@@ -310,7 +253,7 @@ const searchFileFromFiles = files => files
  */
 const searchIndexFile = config => {
   const { webroot, index } = config;
-  const webroots = toArray(webroot);
+  const webroots = utils.toArray(webroot);
   return webroots
     .map(d => [d, index].join('/'))
     .filter(fs__default["default"].existsSync)
@@ -389,7 +332,7 @@ function openInBrowser (config) {
     const args = [constructUrl(config)];
     // If there is just the true option then we need to construct the link
     if (config.open.browser) {
-      if (isString(config.open.browser)) {
+      if (utils.isString(config.open.browser)) {
         args.push({ app: config.open.browser });
       } else if (Array.isArray(config.open.browser)) {
         multiple = config.open.browser.map(browser => {
@@ -607,16 +550,16 @@ const ensureArrayProps = (arraySource, options) => {
         const propKey = parts[1];
         // Here could be a problem if the level is deeper than one
         return {
-          [objKey]: merge({}, options[objKey], { [propKey]: toArray(value) })
+          [objKey]: utils.merge({}, options[objKey], { [propKey]: utils.toArray(value) })
         }
       }
       if (options[key]) {
-        return { [key]: toArray(options[key]) }
+        return { [key]: utils.toArray(options[key]) }
       }
       return { [key]: [] }
     })
     .reduce((next, last) => {
-      return extend(next, last)
+      return utils.extend(next, last)
     }, options)
 };
 
@@ -627,7 +570,7 @@ const ensureArrayProps = (arraySource, options) => {
  */
 const extractArrayProps = config => {
   if (typeof config === 'object' && config.target && config.enable !== false) {
-    return toArray(config.target)
+    return utils.toArray(config.target)
   }
   if (Array.isArray(config)) {
     return config
@@ -685,8 +628,8 @@ function enableMiddlewareShorthand (
   options
 ) {
   // Make a copy to use later
-  const originalOptions = merge({}, options);
-  const originalDefaults = merge({}, defaults);
+  const originalOptions = utils.merge({}, options);
+  const originalDefaults = utils.merge({}, defaults);
   /*
     @2018-03-19 The bug is here when call the merge
     lodash.merge merge object into array source turns it into
@@ -698,7 +641,7 @@ function enableMiddlewareShorthand (
     we need it to be an array
   */
   const tmpProp = ensureArrayProps(arraySource, options);
-  const config = merge({}, defaults, tmpProp);
+  const config = utils.merge({}, defaults, tmpProp);
   // This just make sure it's an array
   if (Object.prototype.toString.call(props) === '[object String]') {
     props = [props];
@@ -717,14 +660,14 @@ function enableMiddlewareShorthand (
     if (specialCase !== false) {
       config[prop] = specialCase;
     } else if (config[prop] === true) {
-      config[prop] = merge({}, originalDefaults[prop]);
+      config[prop] = utils.merge({}, originalDefaults[prop]);
       config[prop].enable = true;
     } else if (originalOptions[prop] && Object.keys(originalOptions[prop]).length) {
       // If the user has provided some property
       // Then we add the enable here for the App to use
       config[prop].enable = true;
     } else if (config[prop] === false) {
-      config[prop] = merge({}, originalDefaults[prop], { enable: false });
+      config[prop] = utils.merge({}, originalDefaults[prop], { enable: false });
     }
   }
   // Change from sessionId to timestamp, just for reference not in use anywhere
@@ -748,7 +691,7 @@ function createConfiguration (options = {}) {
 // Socket.io Server
 class WSServer extends socket_io.Server {}
 // Socket.io node client
-const WSClient = (url, config = {}) => socket_ioClient.io(url, extend({
+const WSClient = (url, config = {}) => socket_ioClient.io(url, utils.extend({
   transports: TRANSPORT
 }, config));
 
@@ -841,7 +784,7 @@ const debug$b = getDebug('static-serve');
  * @api public
  */
 function serverStatic (app, config) {
-  const dirs = toArray(config.webroot);
+  const dirs = utils.toArray(config.webroot);
   const opts = { defer: true };
   if (config.index) {
     opts.index = config.index;
@@ -1076,11 +1019,11 @@ const displayError = e => {
     }
   });
   const _msg = parseObj(e.msg);
-  if (isString(_msg)) {
+  if (utils.isString(_msg)) {
     rows.push(['MESSAGE:', e.msg].join(' '));
   } else {
     let toShow;
-    const msgToArr = isString(_msg) ? parseObj(_msg) : _msg;
+    const msgToArr = utils.isString(_msg) ? parseObj(_msg) : _msg;
     if (Array.isArray(msgToArr)) {
       rows.push('MESSAGE(S):');
       msgToArr.forEach(a => {
@@ -1089,7 +1032,7 @@ const displayError = e => {
           for (const k in a) {
             const v = a[k];
             if (v) {
-              toShow = isObject(v) ? util__default["default"].inspect(v, false, null) : v;
+              toShow = utils.isObject(v) ? util__default["default"].inspect(v, false, null) : v;
               rows.push([k + ':', toShow].join(' '));
             }
           }
@@ -1098,7 +1041,7 @@ const displayError = e => {
         }
       });
       rows.push([lb, 'END'].join(' '));
-    } else if (isObject(_msg)) {
+    } else if (utils.isObject(_msg)) {
       rows.push(lb);
       for (const k in _msg) {
         rows.push([k + ':', _msg[k]].join(' '));
@@ -1298,7 +1241,7 @@ const debug$8 = getDebug('reload');
  * @return {function} unwatch callback
  */
 function reloadGenerator (filePaths, io, config) {
-  const watcherCb = watcherGenerator(extend({ filePaths }, config));
+  const watcherCb = watcherGenerator(utils.extend({ filePaths }, config));
   const props = watcherCb(true);
   // First setup the socket io namespace
   // debug('[reload][setup]', 'setup namespace', config.namespace);
@@ -1390,7 +1333,7 @@ async function serveCordova (ctx, config) {
       success(ctx, cordovaTpl);
       return true
     }
-    if (isString(config.cordova)) {
+    if (utils.isString(config.cordova)) {
       try {
         success(ctx, await readDocument(config.cordova));
         return true
@@ -1810,7 +1753,7 @@ const getFilesToInject = function (config) {
  * @return {string} overwritten HTML
  */
 const injectToHtml = (body, jsTags, cssTags, before = true) => {
-  const html = isString(body) ? body : body.toString('utf8');
+  const html = utils.isString(body) ? body : body.toString('utf8');
   const $ = cheerio__default["default"].load(html);
   // @2018-08-13 add check if there is existing javascript tags
   const $scripts = $('body script').toArray();
@@ -1959,7 +1902,7 @@ function scriptsInjectorMiddleware (config) {
             const doc = await searchHtmlDocuments({
               webroot: config.webroot,
               p: isHtmlDoc,
-              js: compact([files, js]).join(''),
+              js: utils.compact([files, js]).join(''),
               css: css,
               insertBefore: config.inject.insertBefore
             })
@@ -2295,10 +2238,10 @@ const __dirname$1 = getDirname((typeof document === 'undefined' ? new (require('
  * @api public
  */
 async function serverIoCore (config = {}) {
-  const configCopy = merge({}, config);
+  const configCopy = utils.merge({}, config);
 
   const opts = createConfiguration(configCopy);
-  opts.webroot = toArray(opts.webroot).map(dir => path.resolve(dir));
+  opts.webroot = utils.toArray(opts.webroot).map(dir => path.resolve(dir));
   const { version } = getPkgInfo(path.join(__dirname$1, 'package.json'));
   opts.version = version;
 

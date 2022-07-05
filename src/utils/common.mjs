@@ -5,14 +5,23 @@ import path from 'node:path'
 import { promisify } from 'node:util'
 import { fileURLToPath } from 'node:url'
 import log from 'fancy-log'
-import { DEFAULT_HOST_IP } from '../lib/constants.mjs'
 import template from 'lodash.template'
 import { version } from 'process'
 import fsx from 'fs-extra'
+import { toArray, isString, isObject, merge, extend, compact } from '@jsonql/utils'
 
+import { DEFAULT_HOST_IP } from '../lib/constants.mjs'
 const IS_TEST = process.env.NODE_ENV === 'test'
 
-export { template }
+export {
+  template,
+  toArray,
+  isString,
+  isObject,
+  merge,
+  extend,
+  compact
+}
 
 /** wrap this one function because there is case the __dirname is wrong! */
 export function getPkgInfo (pkgFile) {
@@ -39,44 +48,6 @@ export function getDirname (url) {
     // console.log(__filename)
     return path.dirname(__filename)
   }
-}
-
-/** should get rip of all the lodash crap long time ago */
-/* @TODO once again replace all these with @jsonql/utils */
-
-export const isObject = (item) => {
-  return (item && typeof item === 'object' && !Array.isArray(item))
-}
-
-const mergeDeep = (target, ...sources) => {
-  if (!sources.length) return target
-  const source = sources.shift()
-
-  if (isObject(target) && isObject(source)) {
-    for (const key in source) {
-      if (isObject(source[key])) {
-        if (!target[key]) {
-          Object.assign(target, {
-            [key]: {}
-          })
-        }
-        mergeDeep(target[key], source[key])
-      } else {
-        Object.assign(target, {
-          [key]: source[key]
-        })
-      }
-    }
-  }
-  return mergeDeep(target, ...sources)
-}
-// just alias it
-export const merge = mergeDeep
-
-export const compact = arr => arr.filter(Boolean)
-
-export function extend (...args) {
-  return Reflect.apply(Object.assign, null, args)
 }
 
 export function forEach (obj, cb) {
@@ -163,31 +134,6 @@ export const logutil = function (...args) {
 export const getRandomInt = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
-
-/**
- * Make sure the supply argument is an array
- */
-export const toArray = param => {
-  if (param) {
-    return Array.isArray(param) ? param : [param]
-  }
-  return []
-}
-
-/**
- * @param {mixed} opt
- * @return {boolean} result
- */
-export const isString = opt => {
-  return typeof opt === 'string'
-}
-
-/**
- * @param {any} value to compare
- * @param {array} arr for compare
- * @return {boolean} true found
- */
-export const inArray = (value, arr) => arr.includes(value)
 
 /**
  * Set headers @TODO there is bug here that cause the server not running correctly

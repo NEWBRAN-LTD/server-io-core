@@ -1,5 +1,5 @@
 import { getConfigForQunit } from '../../helper.mjs'
-import serverIoCore from '../../index.mjs'
+import { serverIoCore } from '../../index.mjs'
 // export it
 async function runQunitSetup (userConfig) {
   return getConfigForQunit(userConfig)

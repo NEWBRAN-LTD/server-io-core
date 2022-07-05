@@ -7,7 +7,7 @@ require('../../utils/open.mjs.js');
 var constants = require('../../lib/constants.mjs.js');
 var common = require('../../utils/common.mjs.js');
 require('../../utils/config/defaults.mjs.js');
-require('@jsonql/utils');
+var utils = require('@jsonql/utils');
 var watcher = require('../watcher/watcher.mjs.js');
 
 // watcher
@@ -24,7 +24,7 @@ const debug = debug$1.getDebug('reload');
  * @return {function} unwatch callback
  */
 function reloadGenerator (filePaths, io, config) {
-  const watcherCb = watcher.watcherGenerator(common.extend({ filePaths }, config));
+  const watcherCb = watcher.watcherGenerator(utils.extend({ filePaths }, config));
   const props = watcherCb(true);
   // First setup the socket io namespace
   // debug('[reload][setup]', 'setup namespace', config.namespace);

@@ -5,9 +5,9 @@ Object.defineProperty(exports, '__esModule', { value: true });
 var send = require('koa-send');
 var debug$1 = require('../utils/debug.mjs.js');
 require('../utils/open.mjs.js');
-var common = require('../utils/common.mjs.js');
+require('../utils/common.mjs.js');
 require('../utils/config/defaults.mjs.js');
-require('@jsonql/utils');
+var utils = require('@jsonql/utils');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -25,7 +25,7 @@ const debug = debug$1.getDebug('static-serve');
  * @api public
  */
 function serverStatic (app, config) {
-  const dirs = common.toArray(config.webroot);
+  const dirs = utils.toArray(config.webroot);
   const opts = { defer: true };
   if (config.index) {
     opts.index = config.index;

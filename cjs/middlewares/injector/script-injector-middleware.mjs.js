@@ -9,7 +9,7 @@ var debug$1 = require('../../utils/debug.mjs.js');
 require('../../utils/open.mjs.js');
 var common = require('../../utils/common.mjs.js');
 require('../../utils/config/defaults.mjs.js');
-require('@jsonql/utils');
+var utils = require('@jsonql/utils');
 
 // Script injector middleware
 const debug = debug$1.getDebug('inject');
@@ -105,7 +105,7 @@ function scriptsInjectorMiddleware (config) {
             const doc = await searchHtmlDocuments({
               webroot: config.webroot,
               p: isHtmlDoc,
-              js: common.compact([files, js]).join(''),
+              js: utils.compact([files, js]).join(''),
               css: css,
               insertBefore: config.inject.insertBefore
             })
