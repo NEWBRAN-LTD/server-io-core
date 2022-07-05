@@ -8,7 +8,7 @@ import log from 'fancy-log'
 import template from 'lodash.template'
 import { version } from 'process'
 import fsx from 'fs-extra'
-import { toArray, isString, isObject, merge, extend, compact } from '@jsonql/utils'
+import { toArray, isString, isObject, merge, extend, compact, isFunction } from '@jsonql/utils'
 
 import { DEFAULT_HOST_IP } from '../lib/constants.mjs'
 const IS_TEST = process.env.NODE_ENV === 'test'
@@ -20,7 +20,8 @@ export {
   isObject,
   merge,
   extend,
-  compact
+  compact,
+  isFunction
 }
 
 /** wrap this one function because there is case the __dirname is wrong! */

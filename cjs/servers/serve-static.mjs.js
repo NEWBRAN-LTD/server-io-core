@@ -5,7 +5,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 var send = require('koa-send');
 var debug$1 = require('../utils/debug.mjs.js');
 require('../utils/open.mjs.js');
-require('../utils/common.mjs.js');
+var common = require('../utils/common.mjs.js');
 require('../utils/config/defaults.mjs.js');
 var utils = require('@jsonql/utils');
 
@@ -34,6 +34,7 @@ function serverStatic (app, config) {
   dirs.forEach(dir => {
     app.use(serve(dir, opts));
   });
+  common.logutil('[Static Serve] File serve up from', dirs);
 }
 /**
  * Serve static files from `root`.

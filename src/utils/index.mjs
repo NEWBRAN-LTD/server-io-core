@@ -31,7 +31,8 @@ export {
   searchIndexFile,
   isHtmlFile,
   stripFirstSlash,
-  ensureFirstSlash
+  ensureFirstSlash,
+  isFunction
 } from './common.mjs'
 export {
   defaultOptions,

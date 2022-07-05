@@ -48,7 +48,7 @@ const getCli = (meow) => meow(
   }
 )
 // we change the passing function from cli to serverIoCore that construct this on the root level
-export const serve = async (meow, serverIoCore) => {
+export function serve (meow, serverIoCore) {
   const cli = getCli(meow)
   if (!fsx.existsSync(cli.input[0])) {
     return log.error(

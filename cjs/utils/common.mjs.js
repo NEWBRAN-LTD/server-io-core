@@ -196,9 +196,9 @@ Object.defineProperty(exports, 'extend', {
   enumerable: true,
   get: function () { return utils.extend; }
 });
-Object.defineProperty(exports, 'inArray', {
+Object.defineProperty(exports, 'isFunction', {
   enumerable: true,
-  get: function () { return utils.inArray; }
+  get: function () { return utils.isFunction; }
 });
 Object.defineProperty(exports, 'isObject', {
   enumerable: true,

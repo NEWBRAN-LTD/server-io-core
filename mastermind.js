@@ -793,6 +793,7 @@ function serverStatic (app, config) {
   dirs.forEach(dir => {
     app.use(serve(dir, opts));
   });
+  logutil('[Static Serve] File serve up from', dirs);
 }
 /**
  * Serve static files from `root`.

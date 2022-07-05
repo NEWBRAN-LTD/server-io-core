@@ -4,28 +4,9 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 var path = require('node:path');
 var fsx = require('fs-extra');
-require('meow');
 var log = require('fancy-log');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
-
-function _interopNamespace(e) {
-  if (e && e.__esModule) return e;
-  var n = Object.create(null);
-  if (e) {
-    Object.keys(e).forEach(function (k) {
-      if (k !== 'default') {
-        var d = Object.getOwnPropertyDescriptor(e, k);
-        Object.defineProperty(n, k, d.get ? d : {
-          enumerable: true,
-          get: function () { return e[k]; }
-        });
-      }
-    });
-  }
-  n["default"] = e;
-  return Object.freeze(n);
-}
 
 var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
 var fsx__default = /*#__PURE__*/_interopDefaultLegacy(fsx);
@@ -78,8 +59,7 @@ const getCli = (meow) => meow(
   }
 );
 // we change the passing function from cli to serverIoCore that construct this on the root level
-const serve = async (serverIoCore) => {
-  const meow = await Promise.resolve().then(function () { return /*#__PURE__*/_interopNamespace(require('meow')); });
+function serve (meow, serverIoCore) {
   const cli = getCli(meow);
   if (!fsx__default["default"].existsSync(cli.input[0])) {
     return log__default["default"].error(
@@ -126,6 +106,8 @@ const serve = async (serverIoCore) => {
       return config
     })()
   );
-};
+}
 
+exports.alias = alias;
+exports.cliTxt = cliTxt;
 exports.serve = serve;
