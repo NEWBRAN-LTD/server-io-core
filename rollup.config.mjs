@@ -17,7 +17,7 @@ const outplugins = [
 ]
 
 export default [
-  {
+/*  { 2.4.2 no longer support CJS too much work for no reason
     external: /node_modules/,
     input: join(__dirname, 'src', 'index.mjs'), // V2.1.0 only build the src to cjs
     output: [{
@@ -41,7 +41,7 @@ export default [
       plugins: outplugins
     }],
     plugins
-  },
+  },  */
   {
     external: /node_modules/,
     input: join(__dirname, 'helper.mjs'),

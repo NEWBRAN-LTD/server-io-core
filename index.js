@@ -1,9 +1,9 @@
 // serverIoCore main
-const { join, resolve } = require('node:path')
-const { inspect } = require('node:util')
-const { createConfiguration } = require('./cjs/utils/config/index.mjs.js')
-const { serverIoCore } = require('./cjs/index.mjs.js')
-const { toArray, getDebug, merge, getPkgInfo } = require('./cjs/utils/index.mjs.js')
+const { join, resolve } = require('path')
+const { inspect } = require('util')
+const { createConfiguration } = require('./cjs/utils/config/index.mjs')
+const { serverIoCore } = require('./cjs/index.mjs')
+const { toArray, getDebug, merge, getPkgInfo } = require('./cjs/utils/index.mjs')
 
 const debug = getDebug('index')
 
